@@ -5,6 +5,11 @@
 __pycache__/
 .venv/
 
+# astro / node（2026-09-23 站骨架并入）
+node_modules/
+dist/
+.astro/
+
 # os
 Thumbs.db
 .DS_Store

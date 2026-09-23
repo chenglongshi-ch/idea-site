@@ -1,0 +1,142 @@
+---
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-head">
+      <a class="site-title" href="/">想法站</a>
+      <span class="site-sub">每个想法一页：想法 + 可交互 demo</span>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-foot">本地预览 · 当前为占位假数据</footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --text: #24292f;
+    --muted: #57606a;
+    --border: #d8dee4;
+    --bg: #ffffff;
+    --bg-soft: #f6f8fa;
+    --accent: #0969da;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+      'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    line-height: 1.75;
+  }
+
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  main {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    flex: 1;
+  }
+
+  .site-head {
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 28px 20px 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .site-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .site-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .site-foot {
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px 20px 32px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin: 0 0 8px;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  /* 状态标签 */
+  .status {
+    display: inline-block;
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .status-seed {
+    background: var(--bg-soft);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .status-growing {
+    background: #fff4d6;
+    color: #8a6100;
+  }
+
+  .status-shipped {
+    background: #dafbe1;
+    color: #116329;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// 首页 = 想法卡片列表（spec §3）：标题 + 一句话 + 状态标签 + 日期
+const ideas = (await getCollection('ideas')).sort((a, b) =>
+  a.data.created < b.data.created ? 1 : -1
+);
+const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
+---
+
+<Layout title="想法站">
+  <section class="idea-list">
+    {ideas.map((idea) => (
+      <a class="card" href={`/ideas/${idea.id}/`}>
+        <div class="card-head">
+          <h2>{idea.data.title}</h2>
+          <span class={`status status-${idea.data.status}`}>{statusLabel[idea.data.status]}</span>
+        </div>
+        <p class="summary">{idea.data.summary}</p>
+        <div class="card-meta">
+          <time>{idea.data.created}</time>
+          {idea.data.tags.map((t) => (
+            <span class="tag">#{t}</span>
+          ))}
+        </div>
+      </a>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .idea-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    display: block;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .summary {
+    margin: 8px 0 12px;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .tag {
+    color: var(--accent);
+  }
+</style>

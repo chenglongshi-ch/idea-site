@@ -30,3 +30,16 @@
 **抛弃**（域不匹配）：视频管线整套——poller 轮询、ffmpeg 合成、shows 分集组织、60s 视频节流地板。文本/图像是同步 HTTP 调用，零轮询需求；site 的域模型是「想法/demo/查询」，不是短剧分集。日后真要加视频再回 vedio 搬。
 
 状态：build（2026-09-23 立项，先本地跑通）
+
+## 本地开发
+
+站为 [Astro](https://astro.build) 静态站（官方 minimal 模板起手，2026-09-23 并入；功能面以 [docs/spec-site.md](docs/spec-site.md) 为准）：
+
+```sh
+npm install        # 安装依赖
+npm run dev        # 本地开发服务器 http://localhost:4321
+npm run build      # 生产构建到 ./dist/
+npm run preview    # 本地预览构建产物
+```
+
+路由：`/` 想法卡片列表；`/ideas/<slug>/` 想法页（问题与方案 + 页内 demo iframe + 更新日志 + 评论区占位）；`/demos/<slug>/` 纯 demo 直链（`public/demos/` 静态直出）。想法条目在 `src/content/ideas/`，frontmatter 见 spec §4。

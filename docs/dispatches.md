@@ -16,3 +16,4 @@
 | 2026-09-23 | scaffold | 最小骨架：CLAUDE.md(71行,含锚段)+STATUS+README(继承清单)+git 首提 | 175s | 52,043 | 完成 → 首提 `b427436`（27 文件 3075 行），.env 未跟踪三重验证，工作树 clean，主线程核验过（锚行/thinking 标记/模型表/两节/继承清单全在） | — |
 | 2026-09-23 | fix:audit-debt | 审计清偿——血统 rev 治本+回填、glm52 血统指向、footer 位置立法 | — | — | 完成（本行所属提交） | — |
 | 2026-09-23 | docs:product-card | 一页纸产品卡——premise-audit+spec 提炼(2fcc 遗留2) | — | — | 完成（本行所属提交） | — |
+| 2026-09-23 | scaffold:site-preview | 站骨架提前——Astro minimal+4页+假数据+E1 demo 实嵌+截图 | — | — | 完成（本行所属提交） | — |
