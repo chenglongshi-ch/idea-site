@@ -1,0 +1,12 @@
+# State
+
+| task_id | status | 一句话 | 指针 |
+|---|---|---|---|
+| scaffold | done | 最小骨架+调研+双实验已就位 | research/ docs/dispatches.md |
+| first-real-idea | pending | 用真实想法跑通「想法→demo→挂本地站」全链 | 等用户提供想法 |
+
+# Deadends
+
+| 试了 | 死于 | 别再试 | 时点 |
+|---|---|---|---|
+| glm-5.2 单发大 HTML | reasoning 吃预算+16k 截断+读超时（203s） | 别再拿它做一次性大文件生成，长处在长上下文问答/改码 | 2026-09-23 E1b |

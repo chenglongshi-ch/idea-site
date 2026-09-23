@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>番茄钟 · 今日待办</title>
+<style>
+:root {
+  --bg: #15110f;
+  --bg-2: #1f1815;
+  --card: #221a17;
+  --border: #3a2c25;
+  --fg: #f5ebe3;
+  --muted: #8a7a70;
+  --accent: #ff5a3c;
+  --accent-2: #ffa94d;
+  --accent-soft: rgba(255, 90, 60, 0.15);
+  --rest: #4caf80;
+  --rest-soft: rgba(76, 175, 128, 0.15);
+  --danger: #ff3b30;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(255, 90, 60, 0.12), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 90%, rgba(255, 169, 77, 0.08), transparent 60%),
+    radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff8a6a, #ff5a3c 50%, #c9392a 100%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.1) inset, 0 0 24px rgba(255, 90, 60, 0.45);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.brand-mark::before, .brand-mark::after {
+  content: "";
+  position: absolute;
+  background: #4a7a2a;
+  top: -4px;
+  border-radius: 3px 3px 0 0;
+}
+
+.brand-mark::before { left: 14px; width: 4px; height: 8px; transform: rotate(-18deg); }
+.brand-mark::after { left: 20px; width: 4px; height: 10px; transform: rotate(12deg); }
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-title { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
+.brand-sub { font-size: 10px; color: var(--muted); letter-spacing: 3px; margin-top: 2px; }
+
+.date-now {
+  font-family: "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.4;
+}
+.date-now b { color: var(--accent-2); font-weight: 700; font-size: 15px; }
+
+.main {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 28px;
+}
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; }
+  .app { padding: 24px 16px; }
+  .header { margin-bottom: 24px; }
+}
+
+.card {
+  background: linear-gradient(180deg, var(--card), var(--bg-2));
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,90,60,0.5), transparent);
+}
+
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 16px 0 8px;
+  background: rgba(0,0,0,0.3);
+  padding: 4px;
+  border-radius: 10px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mode-tab {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.mode-tab:hover { color: var(--fg); }
+
+.mode-tab.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255, 90, 60, 0.4);
+}
+
+body.rest-mode .mode-tab.active {
+  background: var(--rest);
+  box-shadow: 0 2px 8px rgba(76, 175, 128, 0.4);
+}
+
+.timer-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0 0;
+}
+
+.timer-ring {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 16px 0 28px;
+}
+
+.timer-ring svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.timer-ring .track {
+  fill: none;
+  stroke: rgba(255,255,255,0.05);
+  stroke-width: 8;
+}
+
+.timer-ring .progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px rgba(255, 90, 60, 0.6));
+  transition: stroke-dashoffset 0.3s linear, stroke 0.4s, filter 0.4s;
+}
+
+body.rest-mode .timer-ring .progress {
+  stroke: var(--rest);
+  filter: drop-shadow(0 0 10px rgba(76, 175, 128, 0.6));
+}
+
+body.rest-mode .dot { background: var(--rest); box-shadow: 0 0 8px var(--rest); }
+body.rest-mode .btn-primary { background: linear-gradient(135deg, var(--rest), #2e8b57); box-shadow: 0 8px 24px -8px rgba(76, 175, 128, 0.6); }
+body.rest-mode .btn-primary:hover { background: linear-gradient(135deg, #5cbd92, #3a9d6c); }
+body.rest-mode .btn:hover { border-color: var(--rest); background: var(--rest-soft); }
+body.rest-mode .todo-input:focus { border-color: var(--rest); box-shadow: 0 0 0 3px var(--rest-soft); }
+body.rest-mode .todo-add-btn { background: var(--rest); }
+body.rest-mode .todo-add-btn:hover { background: #5cbd92; }
+body.rest-mode .todo:hover { border-color: rgba(76, 175, 128, 0.3); }
+
+.timer-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.timer-state {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.timer-time {
+  font-family: "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 66px;
+  font-weight: 200;
+  letter-spacing: -2px;
+  color: var(--fg);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-task {
+  font-size: 12px;
+  color: var(--accent-2);
+  max-width: 220px;
+  text-align: center;
+  margin-top: 6px;
+  min-height: 16px;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 12px 26px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #c9392a);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px -8px rgba(255, 90, 60, 0.6);
+  min-width: 110px;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ff7558, #d44030);
+  border-color: transparent;
+}
+
+.session-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border);
+  width: 100%;
+}
+
+.session-info .item { text-align: center; min-width: 60px; }
+
+.session-info .num {
+  font-family: "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent-2);
+}
+
+.session-info .lbl {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 3px;
+  font-weight: 600;
+}
+
+.session-info .divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border);
+}
+
+.todos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  min-height: 240px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.todos::-webkit-scrollbar { width: 4px; }
+.todos::-webkit-scrollbar-track { background: transparent; }
+.todos::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.25s;
+  cursor: pointer;
+  position: relative;
+}
+
+.todo:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255, 90, 60, 0.3);
+  transform: translateX(2px);
+}
+
+.todo-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.todo:hover .todo-checkbox { border-color: var(--accent); }
+
+.todo.done .todo-checkbox {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.todo.done .todo-checkbox::after {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--fg);
+  transition: all 0.3s;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.todo.done .todo-text {
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+  color: var(--muted);
+}
+
+.todo-del {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 18px;
+  line-height: 1;
+  transition: all 0.2s;
+  border-radius: 6px;
+}
+
+.todo:hover .todo-del { opacity: 0.6; }
+
+.todo-del:hover {
+  opacity: 1;
+  color: var(--danger);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.todo.focused {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 4px 16px -4px rgba(255, 90, 60, 0.3);
+}
+
+.todo.focused::before {
+  content: "专注中";
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  font-size: 9px;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.todo-empty {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--muted);
+  font-size: 13px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+.todo-empty .hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.todo-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+.todo-count {
+  font-family: "SF Mono", monospace;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.todo-count b { color: var(--accent-2); font-weight: 700; }
+
+.todo-add {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+
+.todo-input {
+  flex: 1;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.25);
+  color: var(--fg);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.todo-input:focus {
+  border-color: var(--accent);
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.todo-input::placeholder { color: var(--muted); }
+
+.todo-add-btn {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.todo-add-btn:hover { background: #ff7558; transform: translateY(-1px); }
+.todo-add-btn:active { transform: translateY(0); }
+
+.timer-ring.alert .progress {
+  animation: alert-flash 0.5s ease-in-out infinite;
+}
+
+@keyframes alert-flash {
+  0%, 100% { stroke: var(--accent); filter: drop-shadow(0 0 10px rgba(255, 90, 60, 0.6)); }
+  50% { stroke: var(--accent-2); filter: drop-shadow(0 0 24px rgba(255, 169, 77, 0.95)); }
+}
+
+.timer-ring.alert .timer-time {
+  animation: alert-text 0.5s ease-in-out infinite;
+}
+
+@keyframes alert-text {
+  0%, 100% { color: var(--fg); }
+  50% { color: var(--accent-2); }
+}
+
+.toast {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: linear-gradient(135deg, var(--accent), #c9392a);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(255, 90, 60, 0.45);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 100;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+body.rest-mode .toast {
+  background: linear-gradient(135deg, var(--rest), #2e8b57);
+  box-shadow: 0 10px 30px rgba(76, 175, 128, 0.45);
+}
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 3px;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <div class="brand-title">POMODORO</div>
+          <div class="brand-sub">FOCUS · LIST</div>
+        </div>
+      </div>
+      <div class="date-now" id="dateNow"></div>
+    </header>
+
+    <div class="main">
+      <section class="card">
+        <div class="card-title"><span class="dot"></span>FOCUS TIMER</div>
+
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="work" data-min="25">工作 25</button>
+          <button class="mode-tab" data-mode="short" data-min="5">短休 5</button>
+          <button class="mode-tab" data-mode="long" data-min="15">长休 15</button>
+        </div>
+
+        <div class="timer-wrap">
+          <div class="timer-ring" id="timerRing">
+            <svg viewBox="0 0 280 280">
+              <circle class="track" cx="140" cy="140" r="130"></circle>
+              <circle class="progress" id="progressCircle" cx="140" cy="140" r="130"></circle>
+            </svg>
+            <div class="timer-center">
+              <div class="timer-state" id="timerState">READY</div>
+              <div class="timer-time" id="timerTime">25:00</div>
+              <div class="timer-task" id="timerTask"></div>
+            </div>
+          </div>
+
+          <div class="timer-controls">
+            <button class="btn btn-primary" id="startBtn">开始</button>
+            <button class="btn" id="resetBtn">重置</button>
+          </div>
+
+          <div class="session-info">
+            <div class="item">
+              <div class="num" id="completedCount">0</div>
+              <div class="lbl">完成番茄</div>
+            </div>
+            <div class="divider"></div>
+            <div class="item">
+              <div class="num" id="focusTime">0m</div>
+              <div class="lbl">专注时长</div>
+            </div>
+            <div class="divider"></div>
+            <div class="item">
+              <div class="num" id="modeLabel">工作</div>
+              <div class="lbl">当前模式</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">
+          <span class="dot" style="background:var(--accent-2);box-shadow:0 0 8px var(--accent-2)"></span>TODAY'S TASKS
+        </div>
+
+        <div class="todos" id="todoList"></div>
+
+        <div class="todo-stats">
+          <div class="todo-count" id="todoCount"><b>0</b> / 0 完成</div>
+          <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+          <div class="todo-count" id="todoPercent">0%</div>
+        </div>
+
+        <div class="todo-add">
+          <input type="text" class="todo-input" id="todoInput" placeholder="添加一个任务，回车确认..." maxlength="60">
+          <button class="todo-add-btn" id="addBtn">添加</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">STAY FOCUSED · ONE THING AT A TIME</div>
+  </div>
+
+  <div class="toast" id="toast">时间到！</div>
+
+<script>
+const state = {
+  mode: 'work',
+  modes: { work: 25, short: 5, long: 15 },
+  totalSeconds: 25 * 60,
+  remainingSeconds: 25 * 60,
+  running: false,
+  intervalId: null,
+  completedPomodoros: 0,
+  focusMinutes: 0,
+  currentTaskId: null,
+  todos: [
+    { id: 1, text: '完成项目原型设计稿', done: false },
+    { id: 2, text: '回复客户的合作邮件', done: true },
+    { id: 3, text: '整理本周会议纪要', done: false },
+    { id: 4, text: '阅读《深度工作》第三章', done: false }
+  ]
+};
+
+const $ = id => document.getElementById(id);
+const timerTime = $('timerTime');
+const timerState = $('timerState');
+const timerTask = $('timerTask');
+const timerRing = $('timerRing');
+const progressCircle = $('progressCircle');
+const startBtn = $('startBtn');
+const resetBtn = $('resetBtn');
+const todoList = $('todoList');
+const todoInput = $('todoInput');
+const addBtn = $('addBtn');
+const completedCount = $('completedCount');
+const focusTime = $('focusTime');
+const modeLabel = $('modeLabel');
+const todoCount = $('todoCount');
+const todoPercent = $('todoPercent');
+const progressFill = $('progressFill');
+const toast = $('toast');
+const dateNow = $('dateNow');
+
+const RADIUS = 130;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+progressCircle.style.strokeDasharray = CIRCUMFERENCE;
+progressCircle.style.strokeDashoffset = CIRCUMFERENCE;
+
+function updateDate() {
+  const now = new Date();
+  const days = ['周日','周一','周二','周三','周四','周五','周六'];
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  dateNow.innerHTML = `<b>${m}.${d}</b><br>${days[now.getDay()]} · ${hh}:${mm}`;
+}
+updateDate();
+setInterval(updateDate, 30000);
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function renderTimer() {
+  timerTime.textContent = formatTime(state.remainingSeconds);
+  const progress = (state.totalSeconds - state.remainingSeconds) / state.totalSeconds;
+  progressCircle.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+
+  if (state.running) {
+    timerState.textContent = state.mode === 'work' ? 'FOCUSING' : 'RESTING';
+    startBtn.textContent = '暂停';
+  } else if (state.remainingSeconds < state.totalSeconds) {
+    timerState.textContent = 'PAUSED';
+    startBtn.textContent = '继续';
+  } else {
+    timerState.textContent = 'READY';
+    startBtn.textContent = '开始';
+  }
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  state.totalSeconds = state.modes[mode] * 60;
+  state.remainingSeconds = state.totalSeconds;
+  state.running = false;
+  clearInterval(state.intervalId);
+
+  document.querySelectorAll('.mode-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.mode === mode);
+  });
+
+  const labels = { work: '工作', short: '短休', long: '长休' };
+  modeLabel.textContent = labels[mode];
+
+  document.body.classList.toggle('rest-mode', mode !== 'work');
+
+  timerRing.classList.remove('alert');
+  renderTimer();
+}
+
+function tick() {
+  state.remainingSeconds--;
+  renderTimer();
+  if (state.remainingSeconds <= 0) finishTimer();
+}
+
+function finishTimer

@@ -1,0 +1,38 @@
+{
+  "producer": "d:\\project\\site\\research\\experiments\\e1b-sensenova-html-demo\\e1b_gen.py",
+  "date": "2026-09-23",
+  "model": "sensenova-6.8-flash-lite",
+  "provider": "sensenova",
+  "key_label": "SENSENOVA_API_KEY(默认)",
+  "idea": "番茄钟 + 今日待办清单 二合一小工具：25 分钟倒计时、可暂停重置、到点提醒；旁边一张待办列表可勾选、勾完自动划线。整体暗色主题。",
+  "smoke_seconds": 1.9,
+  "smoke_content": "",
+  "smoke_reasoning_len": 0,
+  "smoke_msg_fields": [
+    "reasoning",
+    "role"
+  ],
+  "gen_seconds": 31.7,
+  "gen_request_extra": {
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "gen_reasoning_len": 0,
+  "usage": {
+    "prompt_tokens": 219,
+    "completion_tokens": 4745,
+    "total_tokens": 4964,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "output": "demo.html",
+  "output_chars": 13972,
+  "starts_with_doctype": true,
+  "ends_with_html": true
+}

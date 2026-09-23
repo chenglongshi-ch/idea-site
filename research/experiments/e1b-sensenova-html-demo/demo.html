@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>番茄钟 · 今日待办</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --bg2:#161922;
+    --card:#1b1f2b;
+    --card2:#232838;
+    --line:#2c3346;
+    --txt:#e7e9f0;
+    --muted:#8b93a7;
+    --accent:#ff6b6b;
+    --accent2:#ff9f5a;
+    --good:#4ade80;
+    --warn:#fbbf24;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 15% -10%,#1d2233 0%,transparent 55%),
+               radial-gradient(900px 500px at 110% 10%,#241a24 0%,transparent 55%),
+               var(--bg);
+    color:var(--txt);
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+    line-height:1.5;
+  }
+  .wrap{
+    width:100%;
+    max-width:980px;
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:22px;
+  }
+  @media (max-width:820px){
+    .wrap{grid-template-columns:1fr}
+  }
+  .card{
+    background:linear-gradient(180deg,var(--card),var(--bg2));
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:26px;
+    box-shadow:0 24px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  h1{font-size:20px;margin-top:6px;font-weight:600}
+  .subtitle{color:var(--muted);font-size:13px;margin-top:2px}
+
+  /* Timer */
+  .timer-body{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:18px}
+  .ring{
+    position:relative;width:280px;height:280px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+  .ring .track{fill:none;stroke:var(--card2);stroke-width:14}
+  .ring .progress{
+    fill:none;stroke:url(#grad);stroke-width:14;stroke-linecap:round;
+    stroke-dasharray:754;stroke-dashoffset:0;
+    transition:stroke-dashoffset .35s linear;
+    filter:drop-shadow(0 0 10px rgba(255,107,107,.35));
+  }
+  .time{
+    font-variant-numeric:tabular-nums;
+    font-size:74px;font-weight:700;letter-spacing:-1px;
+    background:linear-gradient(180deg,#fff,#cfd4e6);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .stage{
+    font-size:12px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;
+    margin-top:2px;min-height:16px;
+  }
+  .stage.run{color:var(--accent)}
+  .stage.done{color:var(--good)}
+
+  .presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .chip{
+    background:var(--card2);border:1px solid var(--line);color:var(--muted);
+    padding:6px 12px;border-radius:999px;font-size:12px;cursor:pointer;transition:.2s;
+  }
+  .chip:hover{color:var(--txt);border-color:#3a425a}
+  .chip.active{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#1a0d0d;border-color:transparent;font-weight:600}
+
+  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .btn{
+    border:1px solid var(--line);background:var(--card2);color:var(--txt);
+    padding:11px 18px;border-radius:12px;font-size:14px;cursor:pointer;transition:.18s;
+    display:inline-flex;align-items:center;gap:8px;font-weight:600;
+  }
+  .btn:hover{border-color:#414a64;transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn.primary{
+    background:linear-gradient(180deg,var(--accent),var(--accent2));
+    border-color:transparent;color:#1a0d0d;
+    box-shadow:0 10px 30px rgba(255,107,107,.28);
+  }
+  .btn.ghost{background:transparent}
+  .ic{width:14px;height:14px;display:inline-block}
+
+  .stats{
+    display:flex;gap:10px;justify-content:center;margin-top:6px;flex-wrap:wrap;
+  }
+  .stat{
+    background:rgba(255,255,255,.03);border:1px solid var(--line);
+    padding:8px 14px;border-radius:12px;min-width:88px;text-align:center;
+  }
+  .stat .n{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:11px;color:var(--muted);letter-spacing:.08em}
+
+  /* Todo */
+  .todo-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .count{
+    font-size:12px;color:var(--muted);
+    background:var(--card2);border:1px solid var(--line);
+    padding:6px 12px;border-radius:999px;white-space:nowrap;
+  }
+  .count b{color:var(--good)}
+  .add{display:flex;gap:8px;margin-bottom:14px}
+  .add input{
+    flex:1;background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+    padding:11px 14px;border-radius:12px;font-size:14px;outline:none;transition:.2s;
+  }
+  .add input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,107,107,.15)}
+  .add button{
+    background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;color:#1a0d0d;
+    padding:0 18px;border-radius:12px;font-weight:700;cursor:pointer;font-size:14px;
+  }
+  .todo-list{list-style:none;display:flex;flex-direction:column;gap:8px;max-height:330px;overflow:auto}
+  .todo-list::-webkit-scrollbar{width:8px}
+  .todo-list::-webkit-scrollbar-thumb{background:#2c3346;border-radius:8px}
+  .todo{
+    display:flex;align-items:center;gap:12px;
+    background:var(--card2);border:1px solid var(--line);
+    padding:11px 14px;border-radius:12px;transition:.2s;
+  }
+  .todo:hover{border-color:#3a425a}
+  .check{
+    width:22px;height:22px;border-radius:7px;border:2px solid #464f6b;
+    flex:none;cursor:pointer;position:relative;transition:.18s;
+  }
+  .check:hover{border-color:var(--accent)}
+  .check.on{background:var(--good);border-color:var(--good)}
+  .check.on::after{
+    content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;
+    border:solid #0f1115;border-width:0 2.5px 2.5px 0;transform:rotate(45deg);
+  }
+  .txt{flex:1;cursor:pointer;word-break:break-word;font-size:14px;transition:.2s}
+  .todo.done .txt{text-decoration:line-through;color:var(--muted)}
+  .del{
+    background:transparent;border:none;color:var(--muted);cursor:pointer;
+    font-size:18px;line-height:1;padding:2px 6px;border-radius:8px;transition:.18s;
+  }
+  .del:hover{color:var(--accent);background:rgba(255,107,107,.1)}
+  .empty{
+    text-align:center;color:var(--muted);font-size:13px;padding:28px 10px;
+    border:1px dashed var(--line);border-radius:12px;
+  }
+  .clear{
+    margin-top:14px;background:transparent;border:1px solid var(--line);
+    color:var(--muted);padding:8px 14px;border-radius:10px;font-size:12px;cursor:pointer;transition:.2s;
+  }
+  .clear:hover{color:var(--accent);border-color:#4a2c2c}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 番茄钟 -->
+  <section class="card">
+    <div class="tag"><span class="dot"></span>番茄钟 · FOCUS</div>
+    <h1 id="title">专注开始</h1>
+    <div class="subtitle">25 分钟高效工作，休息片刻再继续</div>
+
+    <div class="timer-body">
+      <div class="ring">
+        <svg width="280" height="280" viewBox="0 0 280 280">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff6b6b"/>
+              <stop offset="100%" stop-color="#ff9f5a"/>
+            </linearGradient>
+          </defs>
+          <circle class="track" cx="140" cy="140" r="120"/>
+          <circle id="progress" class="progress" cx="140" cy="140" r="120"/>
+        </svg>
+        <div>
+          <div id="time" class="time">25:00</div>
+          <div id="stage" class="stage">准备就绪</div>
+        </div>
+      </div>
+
+      <div class="presets" id="presets">
+        <button class="chip active" data-min="25">25 分钟</button>
+        <button class="chip" data-min="50">50 分钟</button>
+        <button class="chip" data-min="5">5 分钟</button>
+        <button class="chip" data-min="15">15 分钟</button>
+      </div>
+
+      <div class="controls">
+        <button id="start" class="btn primary">
+          <svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          开始
+        </button>
+        <button id="pause" class="btn">暂停</button>
+        <button id="reset" class="btn ghost">重置</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="n" id="sessions">0</div><div class="l">今日番茄</div></div>
+        <div class="stat"><div class="n" id="doneCount">0</div><div class="l">完成待办</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 待办 -->
+  <section class="card">
+    <div class="todo-head">
+      <div>
+        <div class="tag"><span class="dot" style="background:var(--good);box-shadow:0 0 12px var(--good)"></span>今日待办 · TODO</div>
+        <h1>今天要完成的事</h1>
+        <div class="subtitle">完成后自动划线，保持专注</div>
+      </div>
+      <div class="count" id="count">0 / 0 完成</div>
+    </div>
+
+    <div class="add">
+      <input id="input" type="text" placeholder="输入新任务，回车添加…" maxlength="120"/>
+      <button id="addBtn">添加</button>
+    </div>
+
+    <ul id="list" class="todo-list"></ul>
+    <div class="clear" id="clear">清除已完成</div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 番茄钟 ---------- */
+  var totalSec = 25*60, left = totalSec, running = false, timer = null;
+  var circumference = 2*Math.PI*120;
+  var progress = document.getElementById('progress');
+  progress.style.strokeDasharray = circumference;
+
+  var timeEl = document.getElementById('time');
+  var stageEl = document.getElementById('stage');
+  var startBtn = document.getElementById('start');
+  var pauseBtn = document.getElementById('pause');
+  var resetBtn = document.getElementById('reset');
+  var sessionsEl = document.getElementById('sessions');
+  var presets = document.getElementById('presets');
+
+  function fmt(s){
+    var m = Math.floor(s/60), ss = s%60;
+    return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+  }
+  function render(){
+    timeEl.textContent = fmt(left);
+    var pct = totalSec>0 ? left/totalSec : 0;
+    progress.style.strokeDashoffset = circumference*(1-pct);
+  }
+  function setStage(text, cls){
+    stageEl.textContent = text;
+    stageEl.className = 'stage'+(cls?(' '+cls):'');
+  }
+  function start(){
+    if(running) return;
+    if(left<=0){ left = totalSec; }
+    running = true;
+    setStage('专注中…','run');
+    timer = setInterval(tick, 1000);
+  }
+  function pause(){
+    if(!running) return;
+    running = false;
+    clearInterval(timer);
+    setStage('已暂停','');
+  }
+  function reset(){
+    running = false;
+    clearInterval(timer);
+    left = totalSec;
+    setStage('准备就绪','');
+    render();
+  }
+  function tick(){
+    left--;
+    render();
+    if(left<=0){
+      clearInterval(timer);
+      running = false;
+      left = 0;
+      render();
+      alert('⏰ 番茄完成！休息一下吧～');
+      setStage('完成 🎉','done');
+      sessions += 1;
+      sessionsEl.textContent = sessions;
+    }
+  }
+  startBtn.addEventListener('click', start);
+  pauseBtn.addEventListener('click', pause);
+  resetBtn.addEventListener('click', reset);
+
+  presets.addEventListener('click', function(e){
+    var b = e.target.closest('.chip');
+    if(!b) return;
+    Array.prototype.forEach.call(presets.children, function(c){c.classList.remove('active')});
+    b.classList.add('active');
+    totalSec = parseInt(b.dataset.min,10)*60;
+    left = totalSec;
+    pause();
+    setStage('准备就绪','');
+    render();
+  });
+
+  var sessions = 0;
+
+  /* ---------- 待办 ---------- */
+  var input = document.getElementById('input');
+  var addBtn = document.getElementById('addBtn');
+  var list = document.getElementById('list');
+  var countEl = document.getElementById('count');
+  var doneCountEl = document.getElementById('doneCount');
+  var clearBtn = document.getElementById('clear');
+
+  var STORAGE = 'todo_dark_list_v1';
+  var tasks = [];
+  try{ tasks = JSON.parse(localStorage.getItem(STORAGE) || '[]'); }catch(e){ tasks = []; }
+  if(!Array.isArray(tasks)) tasks = [];
+
+  function save(){ localStorage.setItem(STORAGE, JSON.stringify(tasks)); }
+
+  function updateCount(){
+    var done = tasks.filter(function(t){return t.done}).length;
+    countEl.innerHTML = '<b>'+done+'</b> / '+tasks.length+' 完成';
+    doneCountEl.textContent = done;
+  }
+
+  function render(){
+    list.innerHTML = '';
+    if(tasks.length === 0){
+      var li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = '还没有任务，添加一个开始专注吧 ✨';
+      list.appendChild(li);
+    } else {
+      tasks.forEach(function(t, i){
+        var li = document.createElement('li');
+        li.className = 'todo'+(t.done?' done':'');
+        var chk = document.createElement('div');
+        chk.className = 'check'+(t.done?' on':'');
+        chk.addEventListener('click', function(){ toggle(i); });
+        var txt = document.createElement('div');
+        txt.className = 'txt';
+        txt.textContent = t.text;
+        txt.addEventListener('click', function(){ toggle(i); });
+        var del = document.createElement('button');
+        del.className = 'del';
+        del.innerHTML = '&times;';
+        del.title = '删除';
+        del.addEventListener('click', function(){ remove(i); });
+        li.appendChild(chk);
+        li.appendChild(txt);
+        li.appendChild(del);
+        list.appendChild(li);
+      });
+    }
+    updateCount();
+  }
+
+  function addTask(){
+    var v = input.value.trim();
+    if(!v) return;
+    tasks.push({text:v, done:false});
+    input.value = '';
+    save();
+    render();
+    input.focus();
+  }
+  function toggle(i){
+    tasks[i].done = !tasks[i].done;
+    save();
+    render();
+  }
+  function remove(i){
+    tasks.splice(i,1);
+    save();
+    render();
+  }
+  addBtn.addEventListener('click', addTask);
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter') addTask(); });
+  clearBtn.addEventListener('click', function(){
+    tasks = tasks.filter(function(t){return !t.done});
+    save();
+    render();
+  });
+
+  /* ---------- 初始化 ---------- */
+  render();
+})();
+</script>
+</body>
+</html>
