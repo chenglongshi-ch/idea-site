@@ -1,6 +1,6 @@
 # 本地站功能 spec（spec-lite）
 
-- **状态**：v1，2026-09-23 定稿——first-real-idea（本地全链跑通）的功能依据与验收依据。
+- **状态**：v1.1（2026-09-23 骨架实装回填），2026-09-23 定稿——first-real-idea（本地全链跑通）的功能依据与验收依据。
 - **推导来源**：`research/precedent-products.md` §二（发布形态与页面清单）+ CLAUDE.md 通道定稿（模型直出单文件 HTML + 静态站承载）。与调研默认不同处（框架起手）已注明理由。
 - **范围**：**本地阶段**——`npm run dev` 可跑、可新增想法、可实机验收即达标。上线件单列 §6 预留，本期一律不做。
 
@@ -38,6 +38,7 @@ status: seed | growing | shipped   # 萌芽（仅想法）/ 在验证（有 demo
 tags: []
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
+changelog: []                # 可选，[{date, note}]——更新日志数据面（实现已用，v1.1 回填）
 ```
 
 demo 产物 = `public/demos/<slug>/index.html` + 同目录 `lineage.json`（必含 `producer`（脚本路径）+ `rev`（git rev，脏树记内容哈希））。
@@ -65,3 +66,4 @@ demo 产物 = `public/demos/<slug>/index.html` + 同目录 `lineage.json`（必�
 - iframe 高度策略：E1 用定高 520px 实测可行；自适应（scrollHeight 注入）待实测定，首版按定高。
 - demo 迭代策略：想法变更后重生成，倾向覆盖 + lineage 追加 rev 记录（不版本化目录）。
 - `gen_demo.py` 参数化面：prompt 模板固化到什么程度（想法原文直传 vs 结构化字段拼装）。
+- dev 模式 /demos/<slug>/ 目录直链：Vite dev 中间件不解析目录 index，已在 astro.config.mjs 加 dev-only 重写（build/preview 不受影响）。

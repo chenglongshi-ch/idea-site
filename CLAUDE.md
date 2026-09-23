@@ -56,7 +56,8 @@
 ## 构建命令
 
 - 实验脚本：`python research/experiments/<实验名>/<脚本>.py`（系统 python 或 `d:/project/vedio/.venv/Scripts/python.exe` 皆可）；key 从 `.env` export 后再跑：`set -a; source .env; set +a`。
-- 站构建命令：待 Astro 脚手架后补。
+- 站构建命令：`npm install`（首次）；`npm run dev`（本地站 http://localhost:4321，4 页见 docs/spec-site.md §3）；`npm run build`（静态产物）。
+- demo 生成脚本 `scripts/gen_demo.py` 待从 `e1_gen.py` 提炼（spec §5）。
 
 <!-- pl-status-contract@0.16.0 正本: ~/.claude/skills/project-lifecycle/templates/status-contract.md（vintage 锚，manager sediment-audit 对账用；本地适配在下一行可选注记） -->
 

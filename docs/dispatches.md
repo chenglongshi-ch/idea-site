@@ -17,3 +17,4 @@
 | 2026-09-23 | fix:audit-debt | 审计清偿——血统 rev 治本+回填、glm52 血统指向、footer 位置立法 | — | — | 完成（本行所属提交） | — |
 | 2026-09-23 | docs:product-card | 一页纸产品卡——premise-audit+spec 提炼(2fcc 遗留2) | — | — | 完成（本行所属提交） | — |
 | 2026-09-23 | scaffold:site-preview | 站骨架提前——Astro minimal+4页+假数据+E1 demo 实嵌+截图 | — | — | 完成（本行所属提交） | — |
+| 2026-09-23 | fix:preview-polish | iframe 定高适配+构建命令回填+spec v1.1 对账 | — | — | 完成（本行所属提交） | — |
