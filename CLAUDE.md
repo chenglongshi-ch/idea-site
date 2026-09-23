@@ -37,7 +37,7 @@
 
 ## 约定
 
-- Conventional Commits（feat/fix/docs/chore/refactor）+ 阶段 footer：当前 `[build]`（2026-09-23 起）。
+- Conventional Commits（feat/fix/docs/chore/refactor）+ 阶段 footer：当前 `[build]`（2026-09-23 起），统一置于 subject 尾。
 - **main 只收 change-set 级 squash merge**：功能分支过程提交自由，压回 main 一条——`git log` 保持可读作变更台账。
 - 调研沉淀在 `research/`；CLAUDE.md 只留结论与指针，细节进调研文件；外部事实引用标注时点。
 - 生成产物带血统：lineage json 必含 `producer`（生成脚本路径）+ `rev`（git rev，脏树记内容哈希）——继承 vedio 实证模式（`research/vedio-assets.md` §4）。

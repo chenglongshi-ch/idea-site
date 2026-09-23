@@ -5,8 +5,10 @@ IDEA 与 PROMPT 逐字保留 E1 原文（对比实验控制变量）。
 producer = 本文件；输出 demo.html + lineage.json 到本目录。
 用法：先 export SENSENOVA_API_KEY（及可选 SENSENOVA_BASE_URL、SENSENOVA_KEY_LABEL），再运行本脚本。
 """
+import hashlib
 import json
 import os
+import subprocess
 import time
 import urllib.request
 
@@ -85,8 +87,31 @@ if content.startswith("```"):
 with open(os.path.join(HERE, "demo.html"), "w", encoding="utf-8") as f:
     f.write(content)
 
+
+def lineage_rev(output_path):
+    """血统 rev：干净树记 git short rev；脏树记产物内容哈希（sha256 前 12 位）；git 失败记 unavailable，不抛异常。"""
+    try:
+        short = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=HERE,
+                               capture_output=True, text=True).stdout.strip()
+        if not short:
+            return "unavailable", "unavailable"
+        dirty = subprocess.run(["git", "status", "--porcelain"], cwd=HERE,
+                               capture_output=True, text=True).stdout.strip()
+        if dirty:
+            with open(output_path, "rb") as f:
+                digest = hashlib.sha256(f.read()).hexdigest()[:12]
+            return digest, "content-hash-dirty"
+        return short, "git"
+    except Exception:
+        return "unavailable", "unavailable"
+
+
+rev, rev_mode = lineage_rev(os.path.join(HERE, "demo.html"))
+
 lineage = {
     "producer": os.path.abspath(__file__),
+    "rev": rev,
+    "rev_mode": rev_mode,
     "date": time.strftime("%Y-%m-%d"),
     "model": MODEL,
     "provider": "sensenova",
