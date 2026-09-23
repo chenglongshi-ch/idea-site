@@ -3,7 +3,8 @@
 | task_id | status | 一句话 | 指针 |
 |---|---|---|---|
 | scaffold | done | 最小骨架+调研+双实验已就位 | research/ docs/dispatches.md |
-| first-real-idea | pending | 用真实想法跑通「想法→demo→挂本地站」全链 | 等用户提供想法 |
+| site-spec | done | 本地站功能定稿（4 页/内容模型/全链工作流/验收） | docs/spec-site.md |
+| first-real-idea | pending | 用真实想法跑通「想法→demo→挂本地站」全链；功能面以 spec 为准 | 等用户提供想法; docs/spec-site.md |
 
 # Deadends
 

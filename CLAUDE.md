@@ -41,6 +41,7 @@
 - **main 只收 change-set 级 squash merge**：功能分支过程提交自由，压回 main 一条——`git log` 保持可读作变更台账。
 - 调研沉淀在 `research/`；CLAUDE.md 只留结论与指针，细节进调研文件；外部事实引用标注时点。
 - 生成产物带血统：lineage json 必含 `producer`（生成脚本路径）+ `rev`（git rev，脏树记内容哈希）——继承 vedio 实证模式（`research/vedio-assets.md` §4）。
+- 本地站功能面以 `docs/spec-site.md` 为准（4 页/内容模型/全链工作流/验收，2026-09-23 定稿，first-real-idea 的验收依据）。
 
 ### 调研索引
 
