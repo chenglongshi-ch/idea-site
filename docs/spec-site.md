@@ -1,6 +1,6 @@
 # 本地站功能 spec（spec-lite）
 
-- **状态**：v1.1（2026-09-23 骨架实装回填），2026-09-23 定稿——first-real-idea（本地全链跑通）的功能依据与验收依据。
+- **状态**：v1.2（2026-09-26 design-spec ⑦-3 同步：删 `slug` 必填——文件名即 slug，零消费字段即冗余）；v1.1（2026-09-23 骨架实装回填），2026-09-23 定稿——first-real-idea（本地全链跑通）的功能依据与验收依据。
 - **推导来源**：`research/precedent-products.md` §二（发布形态与页面清单）+ CLAUDE.md 通道定稿（模型直出单文件 HTML + 静态站承载）。与调研默认不同处（框架起手）已注明理由。
 - **范围**：**本地阶段**——`npm run dev` 可跑、可新增想法、可实机验收即达标。上线件单列 §6 预留，本期一律不做。
 
@@ -28,10 +28,9 @@
 
 ## 4. 内容模型
 
-想法条目 = `src/content/ideas/<slug>.md`，frontmatter：
+想法条目 = `src/content/ideas/<slug>.md`（**文件名即 slug，路由用 entry.id**，标题可中文），frontmatter：
 
 ```yaml
-slug: <英文短slug>          # 标题可中文，slug 用英文短词
 title: <标题>
 summary: <一句话>
 status: seed | growing | shipped   # 萌芽（仅想法）/ 在验证（有 demo）/ 已做成（digital garden 成熟度隐喻）

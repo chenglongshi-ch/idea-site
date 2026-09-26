@@ -11,21 +11,25 @@ const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成'
 
 <Layout title="想法站">
   <section class="idea-list">
-    {ideas.map((idea) => (
-      <a class="card" href={`/ideas/${idea.id}/`}>
-        <div class="card-head">
-          <h2>{idea.data.title}</h2>
-          <span class={`status status-${idea.data.status}`}>{statusLabel[idea.data.status]}</span>
-        </div>
-        <p class="summary">{idea.data.summary}</p>
-        <div class="card-meta">
-          <time>{idea.data.created}</time>
-          {idea.data.tags.map((t) => (
-            <span class="tag">#{t}</span>
-          ))}
-        </div>
-      </a>
-    ))}
+    {ideas.length === 0 ? (
+      <p class="muted">还没有想法——第一个想法落进 <code>src/content/ideas/</code> 就会出现</p>
+    ) : (
+      ideas.map((idea) => (
+        <a class="card" href={`/ideas/${idea.id}/`}>
+          <div class="card-head">
+            <h2>{idea.data.title}</h2>
+            <span class={`status status-${idea.data.status}`}>{statusLabel[idea.data.status]}</span>
+          </div>
+          <p class="summary">{idea.data.summary}</p>
+          <div class="card-meta">
+            <time>{idea.data.created}</time>
+            {idea.data.tags.map((t) => (
+              <span class="tag">#{t}</span>
+            ))}
+          </div>
+        </a>
+      ))
+    )}
   </section>
 </Layout>
 
@@ -40,7 +44,7 @@ const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成'
     display: block;
     padding: 18px 20px;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     text-decoration: none;
     color: inherit;
     transition: border-color 0.15s;
@@ -50,11 +54,17 @@ const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成'
     border-color: var(--accent);
   }
 
+  /* hover 微升（design-spec ⑦-9）：标题与边框同变 accent，禁阴影/位移/缩放 */
+  .card:hover h2 {
+    color: var(--accent);
+  }
+
   .card-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    flex-wrap: wrap; /* 状态胶囊窄屏换行（⑦-4），移动端②规则由此全局兜底 */
   }
 
   .card h2 {
@@ -72,6 +82,7 @@ const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成'
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap; /* 日期+tag 行窄屏换行（design-spec ⑦-4） */
     color: var(--muted);
     font-size: 0.8rem;
   }

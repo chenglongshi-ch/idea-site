@@ -1,5 +1,4 @@
 ---
-slug: example-b
 title: 示例想法 B（占位假数据）
 summary: 萌芽阶段的想法长这样：只有想法，还没有 demo。
 status: seed

@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -14,7 +16,21 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
-const hasDemo = entry.data.status !== 'seed';
+// hasDemo = 文件存在性探测（design-spec §⑦-1）：status 只管胶囊文案，不再推断存在性
+const hasDemo = fs.existsSync(path.join(process.cwd(), 'public/demos', entry.id, 'index.html'));
+
+// 300 字断言（design-spec §③）：body 去 markdown 标记后按字符计，>300 构建/dev 期报错阻断
+const plain = (entry.body ?? '')
+  .replace(/```[\s\S]*?```/g, '') // 代码围栏整块剥
+  .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // 链接/图片：留锚文字剥标记
+  .replace(/[#*_`>]/g, '') // 标题/强调/行内代码/引用标记
+  .replace(/^\s*[-+]\s+/gm, ''); // 列表标记
+const charCount = Array.from(plain.replace(/\s/g, '')).length; // Array.from 防 surrogate 拆半
+if (charCount > 300) {
+  throw new Error(
+    `[300 字断言] 「${entry.data.title}」问题与方案 ${charCount} 字，超 300 字上限——精简到 300 字内或拆分`
+  );
+}
 ---
 
 <Layout title={`${entry.data.title} · 想法站`}>
@@ -24,6 +40,9 @@ const hasDemo = entry.data.status !== 'seed';
       <div class="meta">
         <span class={`status status-${entry.data.status}`}>{statusLabel[entry.data.status]}</span>
         <span class="muted">创建 {entry.data.created} · 更新 {entry.data.updated}</span>
+        {entry.data.tags.length > 0 && (
+          <span class="muted">{entry.data.tags.map((t) => `#${t}`).join(' ')}</span>
+        )}
       </div>
     </header>
 
@@ -35,7 +54,14 @@ const hasDemo = entry.data.status !== 'seed';
     </section>
 
     <section class="block">
-      <h2>Demo</h2>
+      {hasDemo ? (
+        <div class="demo-head">
+          <h2>Demo</h2>
+          <a class="demo-open" href={`/demos/${entry.id}/`} target="_blank">新窗口打开 ↗</a>
+        </div>
+      ) : (
+        <h2>Demo</h2>
+      )}
       {hasDemo ? (
         <iframe
           src={`/demos/${entry.id}/`}
@@ -61,7 +87,7 @@ const hasDemo = entry.data.status !== 'seed';
           ))}
         </ul>
       ) : (
-        <p class="muted">暂无记录。</p>
+        <p class="muted">暂无更新记录。</p>
       )}
     </section>
 
@@ -94,18 +120,42 @@ const hasDemo = entry.data.status !== 'seed';
     margin: 0 0 12px;
   }
 
+  /* 直链檐口（design-spec ②+④T3）：浅色带缓冲暗色 demo 突兀上沿，h2 左、直链右 */
+  .demo-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 14px;
+    margin-bottom: 12px; /* 接替 h2 基线下边距，块间距节奏不变 */
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .demo-head h2 {
+    margin: 0;
+  }
+
+  .demo-open {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
   iframe {
     width: 100%;
     height: 600px; /* 定高，spec §8 开放点：首版定高，2026-09-23 实机适配 E1 demo（520 裁切上调） */
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0 0 var(--radius) var(--radius);
+    margin-top: -1px; /* 与上方檐口边框融合成一只画框 */
     background: var(--bg-soft);
   }
 
   .placeholder {
     padding: 20px;
     border: 1px dashed var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     color: var(--muted);
     font-size: 0.9rem;
     background: var(--bg-soft);
@@ -128,5 +178,12 @@ const hasDemo = entry.data.status !== 'seed';
   .changelog time {
     color: var(--muted);
     white-space: nowrap;
+  }
+
+  /* 移动端单断点（design-spec ④T4）：③600 定高在竖屏压过整屏，80vh 兜底 */
+  @media (max-width: 639px) {
+    iframe {
+      height: min(600px, 80vh);
+    }
   }
 </style>

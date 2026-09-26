@@ -25,3 +25,4 @@
 | 2026-09-26 | design:W2-experience | UI 设计规格·体验稿：视觉 token/状态空态/形态定位（同 run） | 143s | 36,106 | 完成 → agents/W2-experience.md 58 行 7 节，核验过（token 封顶 13、暗 demo 檐口、空态两档制、朴素线偏内定位） | — |
 | 2026-09-26 | design:RT-review | 红队：两稿对抗审（spec/代码/稿间三对照系，P0-P2 分级）（同 run） | 248s | 51,150 | 完成 → agents/RT-review.md 37 行，核验过（P0×0/P1×6/P2×3；hasDemo 缝行号实证；五对撞全落副责交集带） | — |
 | 2026-09-26 | design:fold | 合稿：按 synthesis-rulings.md 升格 docs/design-spec-site.md 为正式规格（同 run） | 278s | 54,869 | 完成 → design-spec-site.md v1.0（118 行 8 节，裁决 9/9 落位，8 处实机验收标记与⑧表对齐，主线程终检过） | — |
+| 2026-09-26 | implement:design-spec-7 | design-spec ⑦ 实现清单 11 条落码（run 20260926T211205-323e，用户直令「先做出效果」） | 301s | 53,731 | 完成 → 11/11 落码（digest 核验过：file:line 逐条对上；build 主线程复跑绿、dev 三页 200；V2-V7 主线程实机代验通过，V1/V8 留用户走查） | — |

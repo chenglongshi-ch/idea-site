@@ -11,7 +11,7 @@ const ymd = z
 const ideas = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/ideas' }),
   schema: z.object({
-    slug: z.string(),
+    // slug 已裁删（design-spec §⑦-3）：路由消费 entry.id，frontmatter slug 零消费即冗余
     title: z.string(),
     summary: z.string(),
     status: z.enum(['seed', 'growing', 'shipped']),

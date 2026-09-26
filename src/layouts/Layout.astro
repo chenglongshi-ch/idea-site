@@ -33,6 +33,15 @@ const { title } = Astro.props;
     --bg: #ffffff;
     --bg-soft: #f6f8fa;
     --accent: #0969da;
+    /* design-spec ④T2 收编（封顶 13 不再增）：radius + 三态状态色，色值原样搬家零视觉变化；
+       seed 态现值即 token 组合，变量指向原 token 保持单一来源 */
+    --radius: 10px;
+    --status-seed-bg: var(--bg-soft);
+    --status-seed-fg: var(--muted);
+    --status-growing-bg: #fff4d6;
+    --status-growing-fg: #8a6100;
+    --status-shipped-bg: #dafbe1;
+    --status-shipped-fg: #116329;
   }
 
   * {
@@ -121,22 +130,33 @@ const { title } = Astro.props;
   }
 
   .status-seed {
-    background: var(--bg-soft);
-    color: var(--muted);
+    background: var(--status-seed-bg);
+    color: var(--status-seed-fg);
     border: 1px solid var(--border);
   }
 
   .status-growing {
-    background: #fff4d6;
-    color: #8a6100;
+    background: var(--status-growing-bg);
+    color: var(--status-growing-fg);
   }
 
   .status-shipped {
-    background: #dafbe1;
-    color: #116329;
+    background: var(--status-shipped-bg);
+    color: var(--status-shipped-fg);
   }
 
   .muted {
     color: var(--muted);
+  }
+
+  /* 移动端单断点（design-spec ④T4，仅此一条 media query）：①副标语独占一行 + ④main padding 24→16 */
+  @media (max-width: 639px) {
+    .site-sub {
+      width: 100%;
+    }
+
+    main {
+      padding: 16px 20px 48px;
+    }
   }
 </style>

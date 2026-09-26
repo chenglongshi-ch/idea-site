@@ -1,5 +1,4 @@
 ---
-slug: example-a
 title: 示例想法 A（占位假数据）
 summary: 一句话占位：这个想法想解决什么问题、给谁用——等第一个真实想法替换。
 status: growing
