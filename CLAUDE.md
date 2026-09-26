@@ -33,6 +33,7 @@
 
 - 思考字段名不统一：glm 系回 `reasoning_content`，商汤自研回 `reasoning`——判空两个都查；冒烟响应可能连 `content` 字段都没有，通路判据 = HTTP 200 + 合法 JSON。
 - 冒烟探测别限小 `max_tokens`：思考模型 reasoning token 也吃预算（E1 冒烟 max_tokens=20 返回空串）。
+- **dev server 别跨 schema 变更长驻**：content.config.ts 改动后，长驻 dev 会话某次热更可能用陈旧 schema 校验新 fixture（collection 清空 → 全页 404 假象，2026-09-26 实测）；`npm run build`（新进程）为准，形态验证前重启 dev。另：TaskStop 杀 npm wrapper 杀不死 astro 子进程，须 `npx astro dev stop`。
 - API key 只进 `.env`（已 gitignore），绝不写进代码、仓库或对话。
 
 ## 约定
