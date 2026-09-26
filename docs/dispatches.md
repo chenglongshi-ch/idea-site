@@ -18,3 +18,10 @@
 | 2026-09-23 | docs:product-card | 一页纸产品卡——premise-audit+spec 提炼(2fcc 遗留2) | — | — | 完成（本行所属提交） | — |
 | 2026-09-23 | scaffold:site-preview | 站骨架提前——Astro minimal+4页+假数据+E1 demo 实嵌+截图 | — | — | 完成（本行所属提交） | — |
 | 2026-09-23 | fix:preview-polish | iframe 定高适配+构建命令回填+spec v1.1 对账 | — | — | 完成（本行所属提交） | — |
+| 2026-09-26 | research:site-functions | 功能面盘点：spec 定义 vs src/pages 实现差距（只读 digest） | 35s | 30,847 | 完成 → digest 回主线程（骨架与 spec 功能面对齐；缺口=gen_demo.py 生成侧通路+真实数据） | — |
+| 2026-09-26 | research:site-ui-docs | 文档地图+界面现状+UI 设计规格缺口清单（只读 digest） | 89s | 125,991 | 完成 → digest 回主线程（4 页形态全实装、视觉=GitHub 风极简；UI 规格 5 类待答问题清单） | — |
+| 2026-09-26 | research:competitors | 竞品：先消费 precedent-products.md 再 web 补搜增量（只读 digest） | 1,331s | 37,189 | 完成 → digest 回主线程（增量：halfbakery/neal.fun/uneed/wip/v0 等；WebSearch 429 限流改 curl 定向补验，主线程 curl 抽核 halfbakery 200、neal.fun 403=CDN 拦 curl 非翻案） | — |
+| 2026-09-26 | design:W1-structure | UI 设计规格·结构稿：屏清单/交互流/数据依赖（run 20260926T204624-3de3） | 139s | 36,100 | 完成 → agents/W1-structure.md 70 行 7 节，核验过（iframe 定高+逃生门、hasDemo 缝、300 字构建期断言） | — |
+| 2026-09-26 | design:W2-experience | UI 设计规格·体验稿：视觉 token/状态空态/形态定位（同 run） | 143s | 36,106 | 完成 → agents/W2-experience.md 58 行 7 节，核验过（token 封顶 13、暗 demo 檐口、空态两档制、朴素线偏内定位） | — |
+| 2026-09-26 | design:RT-review | 红队：两稿对抗审（spec/代码/稿间三对照系，P0-P2 分级）（同 run） | 248s | 51,150 | 完成 → agents/RT-review.md 37 行，核验过（P0×0/P1×6/P2×3；hasDemo 缝行号实证；五对撞全落副责交集带） | — |
+| 2026-09-26 | design:fold | 合稿：按 synthesis-rulings.md 升格 docs/design-spec-site.md 为正式规格（同 run） | 278s | 54,869 | 完成 → design-spec-site.md v1.0（118 行 8 节，裁决 9/9 落位，8 处实机验收标记与⑧表对齐，主线程终检过） | — |

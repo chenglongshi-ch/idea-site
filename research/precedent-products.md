@@ -125,3 +125,24 @@
 | GitHub API：umami-software/umami、plausible/analytics、giscus/giscus、getfider/fider | 仓库元数据（★/pushed_at） | 2026-09-23 |
 | GitHub API 搜索：astro/nextjs 模板、"feedback widget self-hosted" | 检索结果 | 2026-09-23 |
 | maggieappleton.com/llms.txt（404）、marclou.com/llms.txt（307→404） | 反例检查 | 2026-09-23 |
+
+---
+
+## 2026-09-26 增量补验（派发 research:competitors，digest 回主线程）
+
+> 通道声明：当日 WebSearch/webReader 配额耗尽（429，10-06 恢复）+ WebFetch 域名校验被网络策略挡——开放式关键词搜索未进行，增量来自 curl 定向补验（原调研遗留未核实候选 + 高相关定向候选）。主线程抽核：halfbakery 200 ✓；neal.fun 对 curl 回 403（CDN 拦 curl 客户端，非站点死）。
+
+| 竞品 | 实测 | 形态 | 对本站启示 |
+|---|---|---|---|
+| halfbakery.com | 2026-09 仍有新想法（croissant/fishbone 投票） | 25+ 年「半成品想法」社区：纯文字+注解投票，无 demo，氛围偏娱乐 | 「想法当内容」有长尾生命力、形态可极朴素；它无 demo 无 AI 可发现性——本站=其现代化升级位 |
+| neal.fun | HTTP 200 | 单人可交互网页玩具集（Password Game 等） | 「一人+每想法一可交互页」最著名成品形态；但是成品玩具集，非未验证想法 |
+| uneed.best | HTTP 200 | 每日 launch+投票+评论 | PH 替代品（原调研只测到 301 未核实，现已验明）；平台弹药库+1，daily launch 更平权 |
+| wip.co | HTTP 200 | maker 打卡社区（todo/streak 互助 ship） | BIP 平台的活跃存续者；过程记录型脉冲口 |
+| validatorai.com | HTTP 200 | AI 验证想法工具（「Is Your Idea Any Good?」），输出报告 | 不沉淀公开页——与本站「公开可发现」错位 |
+| v0.dev/community | HTTP 200 | AI 生成 UI 模板公开展廊，可 remix | 生成物画廊：无想法原文无血统；与 neal.fun 一夹，本站空位=「想法→demo→反响」验证链 |
+| eleduck.com（电鸭） | HTTP 200 | 中文 indie 社区（论坛形态） | 中文侧参照，形态错位（论坛非想法页） |
+| V2EX 分享创造节点 | 本网络不可达（000） | — | 未核实，网络恢复再补 |
+
+**差异化结论**：护城河在「想法原文→可玩 demo→反响」这条验证链（neal.fun 是成品集、v0 是生成物画廊、halfbakery 无 demo），不在生成物本身——警惕做偏成纯 demo 画廊。
+
+> Chrome DevTools 实机复核（2026-09-26，用户直令）：halfbakery 首页 = 纯文字列表（recent 视图，一行一想法标题+注解，白底默认蓝链，零装饰）——「形态可极朴素」实证；neal.fun 首页 = 卡片网格（一玩具一卡：插画+标题，个人 tagline 开场）——浏览器通道过 CDN（curl 403 非站点死，翻案排除）。实机截图见会话记录。

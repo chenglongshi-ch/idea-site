@@ -4,7 +4,7 @@
 |---|---|---|---|
 | scaffold | done | 最小骨架+调研+双实验已就位 | research/ docs/dispatches.md |
 | site-spec | done | 本地站功能定稿（4 页/内容模型/全链工作流/验收） | docs/spec-site.md |
-| first-real-idea | pending | 用真实想法跑通「想法→demo→挂本地站」全链；功能面以 spec 为准 | 等用户提供想法; docs/spec-site.md |
+| first-real-idea | pending | 用真实想法跑通「想法→demo→挂本地站」全链。**2026-09-26 定界（用户）：site 只做承载+协议+验收，不管落码**——demo 在外部项目生成，按 docs/demo-protocol.md v0.1 提交（两件套+lineage 血统+三跳实机验收）。站侧待办：design-spec ⑦ 实现清单 11 条落码（⑦-1 hasDemo 探测必改）+ V1-V8 实机验收；⏸5 可翻案 | 等外部项目首个提交; docs/spec-site.md; docs/design-spec-site.md; docs/demo-protocol.md |
 | process-audit | done | 流程合规审计裁定=有条件成立（6 域 5 符合；rev 血统欠账已清偿，治本+回填见 5d9a6ca）；观察项：实验截图无 LFS 约定、dispatches 机器面（agent_spawns.jsonl）未闭环对账 | run 20260923T190745-a8ee |
 
 # Deadends
