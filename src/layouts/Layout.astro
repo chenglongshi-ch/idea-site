@@ -1,8 +1,11 @@
 ---
+// 全局骨架（design-spec v2.② 视觉系统：暗色默认双主题 + surface 卡面 + violet accent + 页头 nav / 页脚 RSS·llms.txt）
 interface Props {
   title: string;
+  description?: string;
 }
-const { title } = Astro.props;
+const { title, description = '每个想法一页：想法原文 + 可交互 demo，从萌芽到做成全程公开。' } =
+  Astro.props;
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -11,37 +14,76 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
     <title>{title}</title>
   </head>
   <body>
     <header class="site-head">
-      <a class="site-title" href="/">想法站</a>
-      <span class="site-sub">每个想法一页：想法 + 可交互 demo</span>
+      <div class="shell head-inner">
+        <a class="site-title" href="/">想法站<span class="title-dot" aria-hidden="true"></span></a>
+        <nav class="site-nav" aria-label="站内导航">
+          <a href="/about/">about</a>
+          <a href="/now/">now</a>
+        </nav>
+      </div>
     </header>
-    <main>
+    <main class="shell">
       <slot />
     </main>
-    <footer class="site-foot">本地预览 · 当前为占位假数据</footer>
+    <footer class="site-foot">
+      <div class="shell foot-inner">
+        <span class="muted">本地预览 · 当前为占位假数据</span>
+        <span class="foot-links">
+          <a href="/rss.xml">RSS</a>
+          <span class="muted"> · </span>
+          <a href="/llms.txt">llms.txt</a>
+        </span>
+      </div>
+    </footer>
   </body>
 </html>
 
 <style is:global>
+  /* ---- token 双套（v2.②，supersede v1 ④T1/T2 的 13 封顶）：暗色默认 ---- */
   :root {
-    --text: #24292f;
-    --muted: #57606a;
-    --border: #d8dee4;
-    --bg: #ffffff;
-    --bg-soft: #f6f8fa;
-    --accent: #0969da;
-    /* design-spec ④T2 收编（封顶 13 不再增）：radius + 三态状态色，色值原样搬家零视觉变化；
-       seed 态现值即 token 组合，变量指向原 token 保持单一来源 */
-    --radius: 10px;
-    --status-seed-bg: var(--bg-soft);
-    --status-seed-fg: var(--muted);
-    --status-growing-bg: #fff4d6;
-    --status-growing-fg: #8a6100;
-    --status-shipped-bg: #dafbe1;
-    --status-shipped-fg: #116329;
+    color-scheme: dark;
+    --bg: #0b0e14; /* 页面底 */
+    --bg-soft: #11151d; /* 比页面底亮一档：檐口/占位/分隔线底 */
+    --surface: #161b26; /* 卡面色 */
+    --border: #242c3a;
+    --text: #e6e9f0;
+    --muted: #98a1b3;
+    --accent: #8b5cf6; /* violet 系（v2.②：不追 GitHub 蓝） */
+    --radius: 12px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35); /* v2 解禁，仅一档，卡 hover 用 */
+    /* 状态色三对（v2.②：暗底可读档调过，非 v1 浅底值平移） */
+    --status-seed-bg: #1b212c;
+    --status-seed-fg: #9aa4b8;
+    --status-growing-bg: #37300f;
+    --status-growing-fg: #f5c453;
+    --status-shipped-bg: #102a1b;
+    --status-shipped-fg: #52d58a;
+  }
+
+  /* 亮色覆盖套：prefers-color-scheme: light 自动切（状态色继承 v1 ④T2 的浅底值） */
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --bg-soft: #f6f8fa;
+      --surface: #f7f8fb;
+      --border: #d8dee4;
+      --text: #24292f;
+      --muted: #57606a;
+      --accent: #7c3aed; /* 亮底下降一档保对比 */
+      --shadow: 0 10px 30px rgba(30, 34, 40, 0.1);
+      --status-seed-bg: #f0f2f5;
+      --status-seed-fg: #57606a;
+      --status-growing-bg: #fff4d6;
+      --status-growing-fg: #8a6100;
+      --status-shipped-bg: #dafbe1;
+      --status-shipped-fg: #116329;
+    }
   }
 
   * {
@@ -63,63 +105,117 @@ const { title } = Astro.props;
     min-height: 100vh;
   }
 
-  main {
+  /* 宽壳：网格页吃满 1080；想法页/about/now 各自收窄到内容列 */
+  .shell {
     width: 100%;
-    max-width: 720px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 24px 20px 48px;
-    flex: 1;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
+  main.shell {
+    flex: 1;
+    padding-top: 8px;
+    padding-bottom: 64px;
+  }
+
+  /* 页头：sticky + 底色模糊，产品脸的最便宜一档 */
   .site-head {
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 28px 20px 8px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .head-inner {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    padding-bottom: 14px;
   }
 
   .site-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--text);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
   }
 
-  .site-sub {
+  /* accent 小点缀（v2.② 页头条款）：站名后一枚发光圆点 */
+  .title-dot {
+    width: 8px;
+    height: 8px;
+    margin-left: 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  .site-nav a {
     color: var(--muted);
-    font-size: 0.85rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-left: 18px;
+    transition: color 0.15s;
+  }
+
+  .site-nav a:hover {
+    color: var(--accent);
   }
 
   .site-foot {
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 16px 20px 32px;
-    color: var(--muted);
-    font-size: 0.8rem;
     border-top: 1px solid var(--border);
+    padding-top: 18px;
+    padding-bottom: 34px;
+  }
+
+  .foot-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+
+  .foot-links a {
+    font-size: 0.8rem;
   }
 
   h1 {
-    font-size: 1.5rem;
-    line-height: 1.4;
-    margin: 0 0 8px;
+    font-size: 1.6rem;
+    line-height: 1.35;
+    margin: 0 0 10px;
   }
 
   h2 {
-    font-size: 1.05rem;
-    margin: 0 0 12px;
+    font-size: 1.02rem;
+    margin: 0 0 14px;
   }
 
   a {
     color: var(--accent);
   }
 
-  /* 状态标签 */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  /* 状态胶囊（三态视觉语言 v1 ⑤ 保留，token 双套自动适配） */
   .status {
     display: inline-block;
     font-size: 0.75rem;
@@ -132,7 +228,7 @@ const { title } = Astro.props;
   .status-seed {
     background: var(--status-seed-bg);
     color: var(--status-seed-fg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border); /* seed 色淡，描边保轮廓（v1 现状维持） */
   }
 
   .status-growing {
@@ -149,14 +245,16 @@ const { title } = Astro.props;
     color: var(--muted);
   }
 
-  /* 移动端单断点（design-spec ④T4，仅此一条 media query）：①副标语独占一行 + ④main padding 24→16 */
-  @media (max-width: 639px) {
-    .site-sub {
-      width: 100%;
-    }
+  /* meta/日期行用系统 mono（v2.② 字体条款） */
+  .mono {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'PingFang SC', monospace;
+  }
 
-    main {
-      padding: 16px 20px 48px;
+  /* 移动端单断点（design-spec ④T4 ④，v2 继承）：横向 padding 24→16 */
+  @media (max-width: 639px) {
+    .shell {
+      padding-left: 16px;
+      padding-right: 16px;
     }
   }
 </style>

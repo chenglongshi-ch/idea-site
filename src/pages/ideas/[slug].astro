@@ -3,8 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
+import { siteConfig } from '../../config';
 
-// 想法页四件套（spec §3）：①问题与方案 ②demo iframe ③更新日志 ④评论区占位
+// 想法页四件套（spec §3，顺序本身是主张）：①问题与方案 ②demo iframe ③更新日志 ④反响
+// v2.② 重皮：块状 section 卡 + surface 檐口；以下执法逻辑 v1 全保留（v2.0 增补节「保留有效」清单）
 export async function getStaticPaths() {
   const ideas = await getCollection('ideas');
   return ideas.map((entry) => ({
@@ -16,10 +18,10 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
-// hasDemo = 文件存在性探测（design-spec §⑦-1）：status 只管胶囊文案，不再推断存在性
+// hasDemo = 文件存在性探测（v1 ⑦-1 保留）：status 只管胶囊文案，不再推断存在性
 const hasDemo = fs.existsSync(path.join(process.cwd(), 'public/demos', entry.id, 'index.html'));
 
-// 300 字断言（design-spec §③）：body 去 markdown 标记后按字符计，>300 构建/dev 期报错阻断
+// 300 字断言（v1 ③ 保留）：body 去 markdown 标记后按字符计，>300 构建/dev 期报错阻断
 const plain = (entry.body ?? '')
   .replace(/```[\s\S]*?```/g, '') // 代码围栏整块剥
   .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // 链接/图片：留锚文字剥标记
@@ -31,13 +33,17 @@ if (charCount > 300) {
     `[300 字断言] 「${entry.data.title}」问题与方案 ${charCount} 字，超 300 字上限——精简到 300 字内或拆分`
   );
 }
+
+// giscus 配置驱动（v2.③）：四字段齐才挂载，否则占位说明
+const giscus = siteConfig.giscus;
+const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && giscus.categoryId);
 ---
 
 <Layout title={`${entry.data.title} · 想法站`}>
   <article class="idea">
-    <header>
+    <header class="page-head">
       <h1>{entry.data.title}</h1>
-      <div class="meta">
+      <div class="meta mono">
         <span class={`status status-${entry.data.status}`}>{statusLabel[entry.data.status]}</span>
         <span class="muted">创建 {entry.data.created} · 更新 {entry.data.updated}</span>
         {entry.data.tags.length > 0 && (
@@ -53,25 +59,27 @@ if (charCount > 300) {
       </div>
     </section>
 
-    <section class="block">
+    <section class={`block${hasDemo ? ' demo-live' : ''}`}>
       {hasDemo ? (
-        <div class="demo-head">
+        <>
+          <!-- 檐口（v1 ② 保留，v2.② 改 surface 色带适配暗色页）：直链逃生门 + 暗 demo 上沿缓冲 -->
+          <div class="demo-head">
+            <h2>Demo</h2>
+            <a class="demo-open" href={`/demos/${entry.id}/`} target="_blank">新窗口打开 ↗</a>
+          </div>
+          <iframe
+            src={`/demos/${entry.id}/`}
+            title={`${entry.data.title} 的可交互 demo`}
+            loading="lazy"
+          ></iframe>
+        </>
+      ) : (
+        <>
           <h2>Demo</h2>
-          <a class="demo-open" href={`/demos/${entry.id}/`} target="_blank">新窗口打开 ↗</a>
-        </div>
-      ) : (
-        <h2>Demo</h2>
-      )}
-      {hasDemo ? (
-        <iframe
-          src={`/demos/${entry.id}/`}
-          title={`${entry.data.title} 的可交互 demo`}
-          loading="lazy"
-        ></iframe>
-      ) : (
-        <div class="placeholder">
-          尚无 demo（萌芽阶段）。demo 生成后，这里会变成页内可直接玩的可交互区域。
-        </div>
+          <div class="placeholder">
+            尚无 demo（萌芽阶段）。demo 生成后，这里会变成页内可直接玩的可交互区域。
+          </div>
+        </>
       )}
     </section>
 
@@ -93,23 +101,71 @@ if (charCount > 300) {
 
     <section class="block">
       <h2>反响</h2>
-      <!-- 评论区上线挂载点：发布阶段在此接入 giscus（spec §6——本地一律不挂） -->
-      <div class="placeholder">评论区尚未上线（本地阶段不挂）。</div>
+      {giscusReady ? (
+        // giscus 标准挂载（v2.③）：外链 script，主题跟暗色走 dark_dimmed；is:inline 防 Astro 打包改写
+        <div class="giscus-wrap">
+          <script
+            is:inline
+            src="https://giscus.app/client.js"
+            data-repo={giscus.repo}
+            data-repo-id={giscus.repoId}
+            data-category={giscus.category}
+            data-category-id={giscus.categoryId}
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark_dimmed"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async></script>
+        </div>
+      ) : (
+        <div class="placeholder">
+          评论区待接入：在 GitHub 建公开仓库并开启 Discussions，把 repo/repoId/category/categoryId
+          填入 <code>src/config.ts</code>，这里就会变成 giscus 评论区。
+        </div>
+      )}
     </section>
   </article>
 </Layout>
 
 <style>
+  /* 内容列收窄（1080 宽壳内）：长文阅读不吃满网格宽 */
+  .idea {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* 页头卡（v2.② 重皮） */
+  .page-head {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px 18px;
+    margin-top: 24px;
+  }
+
+  .page-head h1 {
+    margin: 0 0 10px;
+  }
+
   .meta {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 0.85rem;
-    margin-bottom: 8px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
   }
 
+  /* 四件套各为 section 卡（v2.② 重皮；顺序/数据依赖/空态文案 = v1 ③ 原样） */
   .block {
-    margin-top: 32px;
+    margin-top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
   }
 
   .prose {
@@ -120,18 +176,20 @@ if (charCount > 300) {
     margin: 0 0 12px;
   }
 
-  /* 直链檐口（design-spec ②+④T3）：浅色带缓冲暗色 demo 突兀上沿，h2 左、直链右 */
+  /* 有 demo 时块内距归零：檐口+iframe 融成一只画框（v1 ② 机制，v2.② 换 surface 檐口） */
+  .block.demo-live {
+    padding: 0;
+    overflow: hidden;
+  }
+
   .demo-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 8px 14px;
-    margin-bottom: 12px; /* 接替 h2 基线下边距，块间距节奏不变 */
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-bottom: none;
-    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 10px 20px;
+    background: var(--bg-soft); /* surface 系色带：暗色页内的中介底（v2.②） */
+    border-bottom: 1px solid var(--border);
   }
 
   .demo-head h2 {
@@ -141,24 +199,37 @@ if (charCount > 300) {
   .demo-open {
     color: var(--muted);
     font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .demo-open:hover {
+    color: var(--accent);
   }
 
   iframe {
+    display: block;
     width: 100%;
-    height: 600px; /* 定高，spec §8 开放点：首版定高，2026-09-23 实机适配 E1 demo（520 裁切上调） */
-    border: 1px solid var(--border);
-    border-radius: 0 0 var(--radius) var(--radius);
-    margin-top: -1px; /* 与上方檐口边框融合成一只画框 */
-    background: var(--bg-soft);
+    height: 600px; /* 定高 600（v1 ② 保留）：首版定高，残余裁切由直链逃生门兜底 */
+    border: none;
+    background: var(--bg-soft); /* 中性灰两界合法中介（v1 ④T3 精神继承） */
   }
 
   .placeholder {
     padding: 20px;
     border: 1px dashed var(--border);
-    border-radius: var(--radius);
+    border-radius: calc(var(--radius) - 4px);
     color: var(--muted);
     font-size: 0.9rem;
     background: var(--bg-soft);
+  }
+
+  .placeholder code {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+    font-size: 0.85em;
+  }
+
+  .giscus-wrap {
+    min-height: 120px;
   }
 
   .changelog {
@@ -180,7 +251,7 @@ if (charCount > 300) {
     white-space: nowrap;
   }
 
-  /* 移动端单断点（design-spec ④T4）：③600 定高在竖屏压过整屏，80vh 兜底 */
+  /* 移动端（v1 ④T4 ③ 保留，V14 继承）：600 定高竖屏压整屏，80vh 兜底 */
   @media (max-width: 639px) {
     iframe {
       height: min(600px, 80vh);

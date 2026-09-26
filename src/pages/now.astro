@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// now 页（design-spec v2.③）：当前焦点 = growing 状态想法（从 collection 过滤静态渲染）
+const growing = (await getCollection('ideas'))
+  .filter((i) => i.data.status === 'growing')
+  .sort((a, b) => (a.data.updated < b.data.updated ? 1 : -1));
+---
+
+<Layout title="现在 · 想法站">
+  <article class="page narrow">
+    <h1>现在</h1>
+    <p class="muted">当前正在验证的想法（growing 状态自动列出）。</p>
+
+    {growing.length === 0 ? (
+      <p class="muted">暂时没有在验证的想法。</p>
+    ) : (
+      <ul class="focus-list">
+        {growing.map((idea) => (
+          <li>
+            <a href={`/ideas/${idea.id}/`}>{idea.data.title}</a>
+            <span class="muted"> — {idea.data.summary}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <!-- 待用户改写（design-spec v2.③ /now 件）：下一步占位一句话 -->
+    <h2>下一步</h2>
+    <p class="muted">占位：用第一个真实想法跑通「想法 → demo → 挂站」全链。</p>
+  </article>
+</Layout>
+
+<style>
+  .narrow {
+    max-width: 760px;
+    margin: 24px auto 0;
+  }
+
+  .page h2 {
+    margin-top: 28px;
+  }
+
+  .page p {
+    font-size: 0.95rem;
+  }
+
+  .focus-list {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+  }
+
+  .focus-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--bg-soft);
+    font-size: 0.95rem;
+  }
+</style>

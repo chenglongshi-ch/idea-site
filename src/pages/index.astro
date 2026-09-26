@@ -1,93 +1,419 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-// 首页 = 想法卡片列表（spec §3）：标题 + 一句话 + 状态标签 + 日期
+// 首页（design-spec v2.①/v2.②）：hero + 搜索过滤工具条 + preview 卡脸网格
+const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
 const ideas = (await getCollection('ideas')).sort((a, b) =>
   a.data.created < b.data.created ? 1 : -1
 );
-const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
+
+// preview 探测（v2.③ preview 图消费，demo 协议 v0.2 第三件套）：
+// 探 public/demos/<slug>/preview.{png,jpg,jpeg} 存在性，缺图回退状态色渐变占位，不阻断
+const previewExts = ['png', 'jpg', 'jpeg'] as const;
+function findPreview(slug: string): string | null {
+  for (const ext of previewExts) {
+    if (fs.existsSync(path.join(process.cwd(), 'public/demos', slug, `preview.${ext}`))) {
+      return `/demos/${slug}/preview.${ext}`;
+    }
+  }
+  return null;
+}
+
+// 工具条数据（构建期派生）：状态 chips 只列在册状态，tag chips 从 collection 去重
+const statusOrder = ['seed', 'growing', 'shipped'] as const;
+const presentStatuses = statusOrder.filter((s) => ideas.some((i) => i.data.status === s));
+const allTags = [...new Set(ideas.flatMap((i) => i.data.tags))];
+
+// hero 计数小字
+const counts = {
+  total: ideas.length,
+  growing: ideas.filter((i) => i.data.status === 'growing').length,
+  shipped: ideas.filter((i) => i.data.status === 'shipped').length,
+};
 ---
 
 <Layout title="想法站">
-  <section class="idea-list">
-    {ideas.length === 0 ? (
-      <p class="muted">还没有想法——第一个想法落进 <code>src/content/ideas/</code> 就会出现</p>
-    ) : (
-      ideas.map((idea) => (
-        <a class="card" href={`/ideas/${idea.id}/`}>
-          <div class="card-head">
-            <h2>{idea.data.title}</h2>
-            <span class={`status status-${idea.data.status}`}>{statusLabel[idea.data.status]}</span>
-          </div>
-          <p class="summary">{idea.data.summary}</p>
-          <div class="card-meta">
-            <time>{idea.data.created}</time>
-            {idea.data.tags.map((t) => (
-              <span class="tag">#{t}</span>
-            ))}
-          </div>
-        </a>
-      ))
-    )}
-  </section>
+  {ideas.length === 0 ? (
+    // 零想法空态（v1 ③ 空态文案表沿用；发布期换文案=演化位 E8）
+    <p class="muted empty-site">还没有想法——第一个想法落进 <code>src/content/ideas/</code> 就会出现</p>
+  ) : (
+    <>
+      <section class="hero">
+        <h1>把想法做成<span class="hl">能玩的 demo</span>，一页一个</h1>
+        <p class="hero-sub">
+          想法原文、可交互 demo、更新日志与读者反响收在同一页——看一个想法从萌芽走到做成。
+        </p>
+        <p class="hero-meta mono">
+          {counts.total} 个想法 · {counts.growing} 在验证 · {counts.shipped} 已做成
+        </p>
+      </section>
+
+      <!-- 搜索 + 过滤工具条（v2.③ 搜索过滤件：静态渲染 + 客户端 vanilla JS 过滤） -->
+      <div class="toolbar">
+        <input
+          id="q"
+          type="search"
+          placeholder="搜索想法 / 关键词…"
+          autocomplete="off"
+          aria-label="搜索想法"
+        />
+        <div class="chips" role="group" aria-label="按状态或标签过滤">
+          {presentStatuses.map((s) => (
+            <button type="button" class="chip" data-filter-status={s}>
+              {statusLabel[s]}
+            </button>
+          ))}
+          {allTags.map((t) => (
+            <button type="button" class="chip" data-filter-tag={t}>
+              #{t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <section class="grid" aria-label="想法列表">
+        {ideas.map((idea) => {
+          const preview = findPreview(idea.id);
+          return (
+            <a
+              class="card"
+              href={`/ideas/${idea.id}/`}
+              data-title={idea.data.title}
+              data-summary={idea.data.summary}
+              data-status={idea.data.status}
+              data-tags={idea.data.tags.join(',')}
+            >
+              {preview ? (
+                <img
+                  class="preview"
+                  src={preview}
+                  alt={`${idea.data.title} demo 预览`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <div class={`fallback fallback-${idea.data.status}`} aria-hidden="true">
+                  {statusLabel[idea.data.status]}
+                </div>
+              )}
+              <div class="card-body">
+                <div class="card-head">
+                  <h2>{idea.data.title}</h2>
+                  <span class={`status status-${idea.data.status}`}>
+                    {statusLabel[idea.data.status]}
+                  </span>
+                </div>
+                <p class="summary">{idea.data.summary}</p>
+                <div class="card-meta mono">
+                  <time>{idea.data.created}</time>
+                  {idea.data.tags.map((t) => (
+                    <span class="tag">#{t}</span>
+                  ))}
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </section>
+      <!-- 空结果行内空态（v2.②：文案对齐 v1 空态两档制——行内 muted 不配框） -->
+      <p id="empty-hint" class="muted empty-hint" hidden>没有匹配的想法——换个关键词或清掉过滤</p>
+    </>
+  )}
 </Layout>
 
-<style>
-  .idea-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+<script>
+  // 客户端过滤（v2.③）：关键词（防抖 150ms）+ 状态 chips + tag chips，纯前端，静态站无后端
+  const input = document.getElementById('q') as HTMLInputElement | null;
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
+  const emptyHint = document.getElementById('empty-hint');
+  let query = '';
+  let activeStatus: string | null = null;
+  let activeTag: string | null = null;
+
+  function apply() {
+    const q = query.trim().toLowerCase();
+    let visible = 0;
+    for (const card of cards) {
+      const hay =
+        `${card.dataset.title ?? ''} ${card.dataset.summary ?? ''} ${(card.dataset.tags ?? '')
+          .split(',')
+          .join(' ')}`.toLowerCase();
+      const ok =
+        (!q || hay.includes(q)) &&
+        (!activeStatus || card.dataset.status === activeStatus) &&
+        (!activeTag || (card.dataset.tags ?? '').split(',').includes(activeTag));
+      card.hidden = !ok;
+      if (ok) visible++;
+    }
+    if (emptyHint) emptyHint.hidden = visible > 0;
   }
 
-  .card {
-    display: block;
-    padding: 18px 20px;
+  function syncChipStates() {
+    for (const chip of chips) {
+      const isActive = chip.dataset.filterStatus
+        ? chip.dataset.filterStatus === activeStatus
+        : chip.dataset.filterTag === activeTag;
+      chip.classList.toggle('active', isActive);
+    }
+  }
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  input?.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      query = input.value;
+      apply();
+    }, 150); // 防抖 150ms（v2.③）
+  });
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      // 同组再点一次 = 取消
+      if (chip.dataset.filterStatus) {
+        activeStatus = activeStatus === chip.dataset.filterStatus ? null : chip.dataset.filterStatus;
+      }
+      if (chip.dataset.filterTag) {
+        activeTag = activeTag === chip.dataset.filterTag ? null : chip.dataset.filterTag;
+      }
+      syncChipStates();
+      apply();
+    });
+  }
+</script>
+
+<style>
+  .empty-site {
+    padding: 48px 0;
+  }
+
+  /* hero（v2.②）：大字收紧行距 + 渐变高亮一档，不做插画 */
+  .hero {
+    padding: 48px 0 32px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.5vw, 2.75rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+
+  .hero .hl {
+    background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 45%, var(--text)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1.02rem;
+    margin: 0 0 10px;
+    max-width: 46em;
+  }
+
+  .hero-meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  /* 工具条 */
+  .toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    text-decoration: none;
-    color: inherit;
+    margin-bottom: 28px;
+  }
+
+  .toolbar input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) - 6px);
+    color: var(--text);
+    font: inherit;
     transition: border-color 0.15s;
   }
 
-  .card:hover {
+  .toolbar input:focus {
     border-color: var(--accent);
+    outline: none;
   }
 
-  /* hover 微升（design-spec ⑦-9）：标题与边框同变 accent，禁阴影/位移/缩放 */
+  .toolbar input::placeholder {
+    color: var(--muted);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+
+  .chip:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* 卡片网格（v2.②，supersede v1 ⑥ 纵列 + E5/E6/E7 转本期做） */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+
+  /* hidden 属性 vs display:flex：作者样式压过 UA 的 [hidden]，须显式兜底（过滤隐藏依赖此行） */
+  .card[hidden] {
+    display: none;
+  }
+
+  /* hover（v2.② 解禁阴影/位移但克制）：边框 accent + 标题 accent + 上浮 2px + 一档阴影 */
+  .card:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+
   .card:hover h2 {
     color: var(--accent);
+  }
+
+  /* 卡脸：preview 图 16:10 cover 圆角（卡 overflow:hidden 出上圆角） */
+  .preview {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* 缺 preview 回退（v2.②/v2.③）：状态色对渐变占位 + 居中状态词 */
+  .fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fallback-seed {
+    background: linear-gradient(
+      135deg,
+      var(--status-seed-bg),
+      color-mix(in srgb, var(--status-seed-fg) 16%, var(--status-seed-bg))
+    );
+    color: var(--status-seed-fg);
+  }
+
+  .fallback-growing {
+    background: linear-gradient(
+      135deg,
+      var(--status-growing-bg),
+      color-mix(in srgb, var(--status-growing-fg) 18%, var(--status-growing-bg))
+    );
+    color: var(--status-growing-fg);
+  }
+
+  .fallback-shipped {
+    background: linear-gradient(
+      135deg,
+      var(--status-shipped-bg),
+      color-mix(in srgb, var(--status-shipped-fg) 18%, var(--status-shipped-bg))
+    );
+    color: var(--status-shipped-fg);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 16px 18px 14px;
   }
 
   .card-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap; /* 状态胶囊窄屏换行（⑦-4），移动端②规则由此全局兜底 */
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .card h2 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    transition: color 0.18s;
   }
 
   .summary {
     margin: 8px 0 12px;
     color: var(--muted);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* summary 两行截断（v2.②） */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .card-meta {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap; /* 日期+tag 行窄屏换行（design-spec ⑦-4） */
+    flex-wrap: wrap; /* 日期+tag 行窄屏换行（v1 ⑦-4 保留） */
+    margin-top: auto; /* meta 行钉到卡底，参差行高的 summary 不再顶乱基线 */
     color: var(--muted);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
 
   .tag {
     color: var(--accent);
   }
+
+  .empty-hint {
+    padding: 24px 0;
+  }
+
+  /* 移动端（v2.④ V14）：网格 auto-fill minmax(300px) 在 375px 天然 1 列，无额外规则需要 */
 </style>

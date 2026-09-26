@@ -1,16 +1,19 @@
 # demo 提交协议（site ↔ 外部 demo 项目）
 
 - **读者**：外部 demo 项目的作者与其 agent。site 定位 = 承载方 + 协议定义方 + 验收方，**不负责生成 demo**（2026-09-26 用户定界：「这边不管落码，只是提供一个功能和协议接口，我会在其余的地方开始」）。
-- **血统**：功能面以 `docs/spec-site.md` v1.1 为准，UI 面以 `docs/design-spec-site.md` v1.0 为准；约束来源 = E1/E1b 实验结论 + CLAUDE.md 血统约定。协议版本 **v0.1**（2026-09-26 立）。
+- **血统**：功能面以 `docs/spec-site.md` v1.2 为准，UI 面以 `docs/design-spec-site.md` v2.0 为准；约束来源 = E1/E1b 实验结论 + CLAUDE.md 血统约定。协议版本 **v0.2**（2026-09-26 升：+preview 第三件套，v2.0 形态翻案的卡片脸面来源）。
 
 ## 1. 提交物清单（一个想法一次提交）
 
 ```
 public/demos/<slug>/
 ├── index.html     # 可交互 demo，单文件
+├── preview.*      # 首帧截图（可选，v0.2）：png/jpg/jpeg，建议 1200×750——首页卡片脸面
 └── lineage.json   # 血统（schema 见 §3）
 src/content/ideas/<slug>.md   # 想法条目（schema 见 §4）
 ```
+
+- preview **缺失不阻断**（站侧回退：状态色渐变占位卡），但 growing/shipped 想法强烈建议附带——卡片有没有「脸」直接决定首页信息密度（2026-09-26 用户否决纯文字卡的实证）。
 
 ## 2. index.html 约束
 
@@ -34,7 +37,7 @@ src/content/ideas/<slug>.md   # 想法条目（schema 见 §4）
 
 ## 4. 想法条目（src/content/ideas/\<slug\>.md）
 
-- frontmatter 对齐 `src/content.config.ts` schema：`title/summary/status/tags/created/updated/changelog[]`（`slug` 字段零消费待删⏸）。
+- frontmatter 对齐 `src/content.config.ts` schema：`title/summary/status/tags/created/updated/changelog[]`（`slug` 已删，v1.2）。
 - body ≤ **300 字**（构建期断言，超长报错阻断——执法点见 design-spec §③）。
 - `status` 语义与 demo 存在性**解耦**：seed=仅想法 / growing=有 demo 在验证 / shipped=已做成；demo 是否存在由站侧**文件探测**（hasDemo，design-spec ⑦-1），status 不隐含。
 
