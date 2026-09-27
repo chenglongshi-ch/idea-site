@@ -143,7 +143,7 @@
 | 搜索过滤 | 首页 vanilla JS，静态渲染 + 客户端过滤 | V10 |
 | giscus 评论 | `src/config.ts` 集中配置（repo/repoId/category 等留空）→ 未配置渲染暗色占位说明（含配置步骤一句话）；配置后加载 giscus script（主题跟随） | V13 |
 | RSS | `/rss.xml` 手写 XML endpoint（零依赖，Astro endpoint），条目=想法（title/summary/link/pubDate=updated） | V12 |
-| llms.txt | `public/llms.txt` 静态：站定位 + 想法索引（标题+一句话+链接）；想法变更手动同步（自动化留触发） | V12 |
+| llms.txt | 构建期自动派生（`src/pages/llms.txt.js`，源 = ideas collection，序 = updated 倒序同 RSS；2026-09-27 v0.3 治本，手动同步面归零——首跑漏同步事故的解法） | V12 |
 | /about /now | 两页 10 行级文案（用户后续自改），now 列当前 growing 想法链接 | V11 |
 
 - preview 图消费：卡片探测 `public/demos/<slug>/preview.{png,jpg,jpeg}`（协议 v0.2 第三件套）；缺失回退渐变占位，不阻断。

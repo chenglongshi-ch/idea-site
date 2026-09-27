@@ -1,19 +1,26 @@
 # demo 提交协议（site ↔ 外部 demo 项目）
 
 - **读者**：外部 demo 项目的作者与其 agent。site 定位 = 承载方 + 协议定义方 + 验收方，**不负责生成 demo**（2026-09-26 用户定界：「这边不管落码，只是提供一个功能和协议接口，我会在其余的地方开始」）。
-- **血统**：功能面以 `docs/spec-site.md` v1.2 为准，UI 面以 `docs/design-spec-site.md` v2.0 为准；约束来源 = E1/E1b 实验结论 + CLAUDE.md 血统约定。协议版本 **v0.2**（2026-09-26 升：+preview 第三件套，v2.0 形态翻案的卡片脸面来源）。
+- **血统**：功能面以 `docs/spec-site.md` v1.2 为准，UI 面以 `docs/design-spec-site.md` v2.0 为准；约束来源 = E1/E1b 实验结论 + CLAUDE.md 血统约定 + **首跑实录（run 20260927T162733-41bb，时空语录全链——v0.3 九条缺口的来源）**。协议版本 **v0.3**（2026-09-27 升：首跑缺口 9 条裁入 + llms.txt 治本收编 + 分析槽位占位；v0.2 = +preview 第三件套）。
+
+## 0. 措辞约定（v0.3 统一，消「两件套/三件套」漂移）
+
+- **三件套** = `public/demos/<slug>/` 内 3 文件：`index.html` + `preview.*` + `lineage.json`。
+- **ideas 条目** = `src/content/ideas/<slug>.md`，不计入三件套。
+- 一次完整提交 = 三件套 + ideas 条目（preview 缺失不阻断，见 §1）。
 
 ## 1. 提交物清单（一个想法一次提交）
 
 ```
 public/demos/<slug>/
 ├── index.html     # 可交互 demo，单文件
-├── preview.*      # 首帧截图（可选，v0.2）：png/jpg/jpeg，建议 1200×750——首页卡片脸面
+├── preview.*      # 首帧截图（可选，v0.2）：png/jpg/jpeg——首页卡片脸面
 └── lineage.json   # 血统（schema 见 §3）
 src/content/ideas/<slug>.md   # 想法条目（schema 见 §4）
 ```
 
 - preview **缺失不阻断**（站侧回退：状态色渐变占位卡），但 growing/shipped 想法强烈建议附带——卡片有没有「脸」直接决定首页信息密度（2026-09-26 用户否决纯文字卡的实证）。
+- **preview 规格（v0.3 补全）**：内容基准 = demo **首屏的确定状态**——开屏随机的 demo（如时空语录）须截固定帧（初始帧或指定状态），保证可复现；尺寸建议 1200×750 逻辑像素（16:10），DPR 1 或 2 均可（2x 卡片缩放后更清晰）；浅色/中性环境（暗色 demo 截自身首屏即可）。
 
 ## 2. index.html 约束
 
@@ -28,18 +35,29 @@ src/content/ideas/<slug>.md   # 想法条目（schema 见 §4）
 | 字段 | 必填 | 说明 |
 |---|---|---|
 | `producer` | ✅ | 生成脚本/工具的**可指认路径**（如 `d:/project/<x>/scripts/gen.py`） |
-| `rev` | ✅ | 生成时刻的 git rev；脏树记内容哈希 |
+| `rev` | ✅ | 语义 v0.3 定，见表下注① |
 | `date` | ✅ | YYYY-MM-DD |
 | `generator` | 推荐 | `{"model": "<模型ID>", "channel": "<端点别名>"}`（通道事实卡见 CLAUDE.md 模型通道表） |
 | `slug` | 推荐 | 与目录名一致 |
 
 缺必填项 = **提交不合规**（血统立法，继承 vedio 实证模式）。
 
+表下注（v0.3）：
+
+① **rev 语义**：`rev` = 生成时刻工作树 HEAD 的 git rev（12 位 hex，**无论脏净一律记**）；工作树脏时**必加** `artifact_sha256`（demo `index.html` 的 sha256 前 12 位）——语义 =「代码基线锚 rev，产物内容锚哈希」，两者互配回答「什么版本什么产物」（新增字段，向后兼容）。可选 `rev_mode` 自由注记（`clean` / `dirty@<基线rev>`）。
+
+② **producer 可指认最低要求（2026-09-27 人裁定案 A）**：走 run 体系（project-lifecycle 等）的提交方，`producer` 指 run 目录（repo 外持久 + run_id 现成追溯 join key，首跑事实通路升格为规范）；**不走 run 的提交方必加 `producer_sha256`**（脚本内容哈希；向后兼容——仅对新提交生效，老 demo 不追溯）。三案利弊与判据存档 `docs/producer-lineage-decision.md`；skill-data 体系迁移/弃用时回填此注，升级路径 = 第三方提交方或里程碑 demo 出现时按 §8 加字段。
+
+③ **自由扩展边界**：提交方可自加字段（attempts/usage 等），站侧验收只消费协议字段、自加字段风险自负；**禁止**与协议字段同名异义（不得覆盖协议字段语义）。
+
+④ 生成脚本侧注意：写产物用二进制或 `newline=''`，免 Windows 文本模式 CRLF 膨胀致 `size_bytes` 与磁盘不符（首跑实录瑕疵）。
+
 ## 4. 想法条目（src/content/ideas/\<slug\>.md）
 
 - frontmatter 对齐 `src/content.config.ts` schema：`title/summary/status/tags/created/updated/changelog[]`（`slug` 已删，v1.2）。
-- body ≤ **300 字**（构建期断言，超长报错阻断——执法点见 design-spec §③）。
+- body ≤ **300 字**（构建期断言，超长报错阻断——执法点见 design-spec §③）。**计数口径（v0.3 附）**：body 先剥 markdown——代码围栏整块剥；链接/图片留锚文字剥标记；剥 `#`/`*`/`_`/`` ` ``/`>` 字符；剥行首列表标记（`- `/`+ `）；然后**去全部空白**、按 Unicode 码点计数（不拆代理对）。真·外部提交方无站仓跑不了断言时，按此口径自算。
 - `status` 语义与 demo 存在性**解耦**：seed=仅想法 / growing=有 demo 在验证 / shipped=已做成；demo 是否存在由站侧**文件探测**（hasDemo，design-spec ⑦-1），status 不隐含。
+- **status/changelog 时序（v0.3 定，首跑裁量明文化）**：想法+demo **同批一次提交**时 `status` 取 `growing`（「有 demo 在验证」的阶段主张，与文件探测解耦不冲突）；`changelog` 行**随条目由提交方写**，站侧过验后只追加验收记事、不改写。
 
 ## 5. slug 规则
 
@@ -48,20 +66,41 @@ src/content/ideas/<slug>.md   # 想法条目（schema 见 §4）
 ## 6. 提交流程
 
 1. 外部项目生成 demo → **浏览器自验通过**（形态类只认实机，E1b 教训：倒计时冻结 bug 读代码看不出）。
-2. 按 §1 落位两件套（demos/ + ideas/）。
+2. 按 §0/§1 落位**三件套 + ideas 条目**。
 3. 站侧验收：`npm run dev` → 三跳走查（首页 → 想法页 → demo 页内可玩）。
 4. 过验 → changelog 簿记一行 + STATUS 更新；不过 → 打回外部项目修。
+
+**验收噪音归类（v0.3 定）**：走查中 console/网络报错分两类——**demo 责任**（外链请求、弹窗、demo 自身 JS 报错 → 打回提交方）；**站级噪音**（宿主资源缺失，如 `/favicon.ico` 404 → 站侧待办，不归提交方）。
 
 ## 7. 站侧暴露面（site 提供给外部的接口）
 
 - **URL 结构**：`/`（想法列表）/ `/ideas/<slug>/`（想法页四件套）/ `/demos/<slug>/`（demo 直链）。
-- **发现机制**（上线后启用，方案已沉淀 `research/ai-discoverability.md`）：llms.txt + robots + 干净 HTML。
+- **发现机制**（上线后启用，方案已沉淀 `research/ai-discoverability.md`）：llms.txt + robots + 干净 HTML。**llms.txt 自 v0.3 起构建期自动派生**（2026-09-27 用户裁定治本，落码 `src/pages/llms.txt.js`，源 = ideas collection，序 = updated 倒序同 RSS）——协议提交物**不含** llms.txt、提交方零责任，首跑「漏同步」事故的解法：手动同步面归零。
 - **反响面**：giscus 评论（上线后）。
 
 ## 8. 协议变更管理
 
 本协议独立版本化；**向后兼容承诺**：已提交 demo 不因协议升级失效（新增字段一律可选）。变更走 git 提交（Conventional Commits `[build]`）。
 
+## 9. 分析槽位（可选；2026-09-27 设计轮拍板，P1-P6 全裁定稿）
+
+- 方向（2026-09-27 用户愿景）：想法上架前可附**坟场对比/多人格评审分析产物**——职业人格 agent 从坟场死因库（killedbyai.net 128 条结构化死因，CC BY 4.0；可行性裁定见 `research/graveyard-compare.md`）评估学习后对想法评审。设计全文 `docs/graveyard-review-design.md`（P1-P6 裁定回填在 §7）。
+- 落位同 demo 定界：**生成归外部项目**（拉数据/面板调用/经验库/consolidation 全在外部侧），站零运行时不变；站只收**带血统的产物文件** + 构建期断言 + 实机走查展示面。
+- **产物文件（P3 裁）**：`public/demos/<slug>/analysis.md`——三件套扩为四件套**可选**件。内容 = 各视角论断列（严重度 + 坟场条目引用 + deathType 语境标注——大厂砍杀逻辑 ≠ solo 想法死法）+ 主持人摘要 + 诚实边界声明（首版定位「撞车提醒+死因视角」，非判生死）。
+- **lineage.json 扩展（analysis.md 在场时必填，构建期断言——同 300 字断言先例）**：
+
+  | 字段 | 说明 |
+  |---|---|
+  | `review_producer` | 评审系统脚本路径（可指认规则同 §3②） |
+  | `data_source` | `"killedbyai.net graveyard.json @ <commit/日期>"` |
+  | `data_as_of` | YYYY-MM-DD——死因库截至日期，随报告走 |
+  | `personas` | 本轮实际出场透镜（首版 5，见下） |
+
+- **首版面板（P1 人裁）**：**5 人格 N+1 流水线**——五透镜独立调用互不见面不辩论 + 1 次汇总调用，成本约 ×6（质量档，用户裁）；透镜从六 deathType 映射（产品砍杀/功能移除/创业失败/模型升级/平台依赖）。单调用 SPP 式（3+1）降为降级备选。保分歧不表决，**作者人裁终审**。
+- **数据纪律（P5 裁）**：坟场源数据不归档不快照——评审 agent 每次直连源拉当期数据（api.github.com contents API 通道）；**引用即最小快照**（analysis 引用条目自带条目名+deathType+关键句，CC BY 署名随引用走）；回测 = 重看新数据对照旧结论。
+- **经验库（P2 裁）**：住外部项目侧（supersede 软删不物理删）；跨项目真复用时再毕业进站。
+- 渲染面：想法页可选区块（「坟场对照」），等首个真实分析产物同批落——本批不做 UI。
+
 ---
 
-*v0.1 未尽：自动化校验器（lineage 必填项 + 体积检查脚本）留待沉淀触发；gen_demo.py 角色从「站内生成器」转为「外部项目的参考实现」，提炼归属外部项目侧。*
+*v0.1 未尽：自动化校验器（lineage 必填项 + 体积检查脚本）留待沉淀触发——v0.3 时点复发证据仅首跑 1 次，300 字口径已附正文先行解盲写摩擦，脚本缓建；gen_demo.py 角色从「站内生成器」转为「外部项目的参考实现」，提炼归属外部项目侧。*
