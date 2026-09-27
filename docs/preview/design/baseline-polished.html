@@ -1,0 +1,263 @@
+<!doctype html>
+<!-- 血统：run 20260926T222859-d9e1 / M1 / 2026-09-27
+  基线打磨版 mockup = v2.0 现状脸（rev 823f22c token 原样：violet accent #8b5cf6 / 近黑底 #0b0e14 / 系统栈）
+  + v2.1-A 净改善落地：①圆角分化三档（容器 12 / 卡 8 / chip·胶囊 4）②卡 hover 收敛（删位移删阴影，
+  留边框变强+标题变色；页面底部有 before/after 并排对照块）③hero-meta 中点串换语义分隔（量词动词领起）
+  ④缺图回退渐变换素面+文字 ⑤附带 v2.1-A #8 title-dot 光晕撤除、#5 reduced-motion 守卫、#7 直链词删 ↗。
+  零外链零 JS；桌面 1200px；假数据=E1/E1b demo 相关想法名。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>想法站 — 基线打磨版 mockup</title>
+<style>
+  /* ---- token：现状照搬（v2.②）+ 净改善 #2 圆角分化 ---- */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0e14;
+    --bg-soft: #11151d;
+    --surface: #161b26;
+    --border: #242c3a;
+    --border-strong: #3a465c;
+    --text: #e6e9f0;
+    --muted: #98a1b3;
+    --accent: #8b5cf6;
+    --radius-lg: 12px; /* 大容器：工具条 */
+    --radius-md: 8px;  /* 卡片 */
+    --radius-sm: 4px;  /* chip / 状态胶囊等小件 */
+    --status-seed-bg: #1b212c;   --status-seed-fg: #9aa4b8;
+    --status-growing-bg: #37300f; --status-growing-fg: #f5c453;
+    --status-shipped-bg: #102a1b; --status-shipped-fg: #52d58a;
+  }
+  * { box-sizing: border-box; }
+  html {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    line-height: 1.75;
+  }
+  body { margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+  .shell { width: 100%; max-width: 1200px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+  main.shell { flex: 1; padding-top: 8px; padding-bottom: 64px; }
+
+  /* 页头：现状结构照搬；title-dot 光晕撤除（净改善 #8） */
+  .site-head {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .head-inner { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; padding-bottom: 14px; }
+  .site-title { font-size: 1.15rem; font-weight: 700; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; }
+  .title-dot { width: 8px; height: 8px; margin-left: 7px; border-radius: 999px; background: var(--accent); }
+  .site-nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; margin-left: 18px; transition: color 0.15s; }
+  .site-nav a:hover { color: var(--accent); }
+
+  /* hero：现状排版照搬；meta 行=净改善 #6 语义分隔（无中点串） */
+  .hero { padding: 48px 0 32px; }
+  .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.75rem); line-height: 1.18; letter-spacing: -0.01em; margin: 0 0 12px; }
+  .hero .hl {
+    background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 45%, var(--text)));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-sub { color: var(--muted); font-size: 1.02rem; margin: 0 0 10px; max-width: 46em; }
+  .hero-meta { color: var(--muted); font-size: 0.85rem; margin: 0; }
+
+  /* 工具条：大容器圆角档（12） */
+  .toolbar {
+    display: flex; flex-direction: column; gap: 12px; padding: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); margin-bottom: 28px;
+  }
+  .toolbar input {
+    width: 100%; padding: 10px 14px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    color: var(--text); font: inherit; transition: border-color 0.15s;
+  }
+  .toolbar input:focus { border-color: var(--accent); outline: none; }
+  .toolbar input::placeholder { color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 5px 12px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--muted);
+    font-size: 0.8rem; font-family: inherit; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .chip:hover { border-color: var(--border-strong); color: var(--text); }
+  .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* 卡片网格：现状 auto-fill 照搬；卡片圆角 8 档 */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .card {
+    display: flex; flex-direction: column; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    overflow: hidden; text-decoration: none; color: inherit;
+    transition: border-color 0.18s;
+  }
+  /* hover 收敛（净改善 #1）：只留边框变强 + 标题变色；位移/阴影删除 */
+  .card:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .card:hover h2 { color: var(--accent); }
+
+  /* 缺图回退：净改善 #4 渐变洗换素面（纯色 + 文字 treatment） */
+  .fallback {
+    display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 10;
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 0.14em;
+    border-bottom: 1px solid var(--border);
+  }
+  .fallback-seed { background: var(--status-seed-bg); color: var(--status-seed-fg); }
+  .fallback-growing { background: var(--status-growing-bg); color: var(--status-growing-fg); }
+  .fallback-shipped { background: var(--status-shipped-bg); color: var(--status-shipped-fg); }
+
+  .card-body { display: flex; flex-direction: column; flex: 1; padding: 16px 18px 14px; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .card h2 { margin: 0; font-size: 1.05rem; transition: color 0.18s; }
+  .summary {
+    margin: 8px 0 12px; color: var(--muted); font-size: 0.9rem;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-meta {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-top: auto; color: var(--muted); font-size: 0.78rem;
+  }
+  .tag { color: var(--accent); }
+
+  /* 状态胶囊：小件圆角档（4），去胶囊化同步拆「万物同圆角」 */
+  .status { display: inline-block; font-size: 0.75rem; line-height: 1; padding: 4px 8px; white-space: nowrap; border-radius: var(--radius-sm); }
+  .status-seed { background: var(--status-seed-bg); color: var(--status-seed-fg); border: 1px solid var(--border); }
+  .status-growing { background: var(--status-growing-bg); color: var(--status-growing-fg); }
+  .status-shipped { background: var(--status-shipped-bg); color: var(--status-shipped-fg); }
+
+  .mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'PingFang SC', monospace; }
+  .muted { color: var(--muted); }
+
+  /* 页脚：现状照搬 */
+  .site-foot { border-top: 1px solid var(--border); padding-top: 18px; padding-bottom: 34px; }
+  .foot-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; }
+
+  /* 质量地板：净改善 #5 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+  /* ---- hover 对照实验块（净改善 #1 的静态呈示）---- */
+  .hover-lab { margin-top: 56px; padding-top: 28px; border-top: 1px dashed var(--border-strong); }
+  .lab-title { font-size: 0.95rem; color: var(--muted); font-weight: 600; margin: 0 0 16px; }
+  .lab-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .lab-cell { margin: 0; }
+  .lab-cell figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+  .mini {
+    display: flex; flex-direction: column; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;
+    text-decoration: none; color: inherit;
+  }
+  .mini-face {
+    display: grid; place-items: center; aspect-ratio: 16 / 7;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.14em;
+    background: var(--status-growing-bg); color: var(--status-growing-fg);
+    border-bottom: 1px solid var(--border);
+  }
+  .mini-body { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 12px 14px; }
+  .mini-body strong { font-size: 0.95rem; }
+  .mini-body .mono { font-size: 0.72rem; color: var(--muted); }
+  /* before：现状 hover 四件齐发的定格（含位移+阴影） */
+  .before-hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  }
+  .before-hover .mini-body strong { color: var(--accent); }
+  /* after：收敛后两件（边框变强 + 标题变色），无位移无阴影 */
+  .after-hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .after-hover .mini-body strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="shell head-inner">
+    <a class="site-title" href="#">想法站<span class="title-dot" aria-hidden="true"></span></a>
+    <nav class="site-nav" aria-label="站内导航"><a href="#">about</a><a href="#">now</a></nav>
+  </div>
+</header>
+<main class="shell">
+  <section class="hero">
+    <h1>把想法做成<span class="hl">能玩的 demo</span>，一页一个</h1>
+    <p class="hero-sub">想法原文、可交互 demo、更新日志与读者反响收在同一页——看一个想法从萌芽走到做成。</p>
+    <p class="hero-meta mono">收录 4 个想法，其中在验证 2 个、已做成 1 个</p>
+  </section>
+
+  <div class="toolbar">
+    <input type="search" placeholder="搜索想法 / 关键词…" aria-label="搜索想法">
+    <div class="chips" role="group" aria-label="按状态或标签过滤">
+      <button type="button" class="chip active">在验证</button>
+      <button type="button" class="chip">萌芽</button>
+      <button type="button" class="chip">已做成</button>
+      <button type="button" class="chip">#效率</button>
+      <button type="button" class="chip">#时间</button>
+      <button type="button" class="chip">#工具</button>
+      <button type="button" class="chip">#工程</button>
+    </div>
+  </div>
+
+  <section class="grid" aria-label="想法列表">
+    <a class="card" href="#">
+      <div class="fallback fallback-growing" aria-hidden="true">在验证</div>
+      <div class="card-body">
+        <div class="card-head"><h2>番茄钟专注计时</h2><span class="status status-growing">在验证</span></div>
+        <p class="summary">25 分钟一段的专注节拍，走完亮一格；中断清零重来，不糊弄自己。附单文件 demo。</p>
+        <div class="card-meta mono"><time>2026-09-23</time><span class="tag">#效率</span></div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="fallback fallback-growing" aria-hidden="true">在验证</div>
+      <div class="card-body">
+        <div class="card-head"><h2>倒计时提醒</h2><span class="status status-growing">在验证</span></div>
+        <p class="summary">给任何一件事设个倒数，临近时提醒渐亮；到点只留一件事——去办它。</p>
+        <div class="card-meta mono"><time>2026-09-25</time><span class="tag">#时间</span><span class="tag">#效率</span></div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="fallback fallback-seed" aria-hidden="true">萌芽</div>
+      <div class="card-body">
+        <div class="card-head"><h2>番茄钟周报小报表</h2><span class="status status-seed">萌芽</span></div>
+        <p class="summary">把一周的专注段落汇成一张一眼读完的小报表：哪几天在长、哪几天荒了。</p>
+        <div class="card-meta mono"><time>2026-09-26</time><span class="tag">#工具</span></div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="fallback fallback-shipped" aria-hidden="true">已做成</div>
+      <div class="card-body">
+        <div class="card-head"><h2>demo 提交协议收口</h2><span class="status status-shipped">已做成</span></div>
+        <p class="summary">外部项目按两件套提交 demo，站侧只做承载、协议与验收——边界定死，各管各的。</p>
+        <div class="card-meta mono"><time>2026-09-26</time><span class="tag">#工程</span></div>
+      </div>
+    </a>
+  </section>
+
+  <!-- 净改善 #1 呈示：hover 收敛前后并排对照（静态定格两态） -->
+  <section class="hover-lab">
+    <h2 class="lab-title">卡片 hover · 收敛前后对照（v2.1-A #1，悬停态定格示意）</h2>
+    <div class="lab-row">
+      <figure class="lab-cell">
+        <div class="mini before-hover">
+          <div class="mini-face">在验证</div>
+          <div class="mini-body"><strong>番茄钟专注计时</strong><span class="mono">2026-09-23</span></div>
+        </div>
+        <figcaption>before · 现状四件齐发：上浮 2px + 阴影 + 边框变色 + 标题变色（SaaS 味 tell #4 邻位）</figcaption>
+      </figure>
+      <figure class="lab-cell">
+        <div class="mini after-hover">
+          <div class="mini-face">在验证</div>
+          <div class="mini-body"><strong>番茄钟专注计时</strong><span class="mono">2026-09-23</span></div>
+        </div>
+        <figcaption>after · 收敛成两件：边框变强 + 标题变色；位移与阴影删除，反馈同强度、噪音更小</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+<footer class="site-foot">
+  <div class="shell foot-inner">
+    <span class="muted">本地预览 · 当前为占位假数据</span>
+    <span class="foot-links"><a href="#">RSS</a> <a href="#">llms.txt</a></span>
+  </div>
+</footer>
+</body>
+</html>

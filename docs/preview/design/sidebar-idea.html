@@ -1,0 +1,233 @@
+<!doctype html>
+<!-- 血统：run 20260926T222859-d9e1 / M3 / 2026-09-27
+  侧边栏布局 pass · 想法页（深度），假数据 = 番茄钟专注计时。样式基线 = baseline-polished.html（M1）
+  照搬不换脸：token / 圆角三档 / 净改善全套。四件套结构照 src/pages/ideas/[slug].astro（rev 823f22c）。
+  页面划分裁定注：主区顶部不做「← 上一株 / 下一株 →」——想法间跳转已由侧边栏索引承载，主区保持干净。
+  demo 檐口直链无 ↗ 尾缀（净改善 #7）；更新日志线化禁用；评论区为 giscus 未配置占位态（V13 样式）。
+  <900px 侧栏收成顶栏 + 汉堡（演示级 JS）；桌面 1200px 主验。零外链。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>想法站 — 侧栏布局 mockup · 想法页（番茄钟专注计时）</title>
+<style>
+  /* ---- token：M1 基线照搬 + 圆角三档 ---- */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0e14; --bg-soft: #11151d; --surface: #161b26;
+    --border: #242c3a; --border-strong: #3a465c;
+    --text: #e6e9f0; --muted: #98a1b3; --accent: #8b5cf6;
+    --radius-lg: 12px; --radius-md: 8px; --radius-sm: 4px;
+    --status-seed-bg: #1b212c;    --status-seed-fg: #9aa4b8;
+    --status-growing-bg: #37300f; --status-growing-fg: #f5c453;
+    --status-shipped-bg: #102a1b; --status-shipped-fg: #52d58a;
+  }
+  * { box-sizing: border-box; }
+  html {
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    line-height: 1.75;
+  }
+  body { margin: 0; }
+  .mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'PingFang SC', monospace; }
+  .muted { color: var(--muted); }
+
+  /* ---- 布局骨架：左 260 全高 sticky 侧栏 + 右主区（文档站/工作台型） ---- */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 260px; flex-shrink: 0; position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; overflow-y: auto;
+    background: var(--bg-soft); border-right: 1px solid var(--border);
+    padding: 18px 14px 0;
+  }
+  .main { flex: 1; min-width: 0; }
+  .main-inner { max-width: 780px; padding: 26px 36px 72px; }
+
+  /* 侧栏：站标识行（点击回首页语义） */
+  .brand { display: inline-flex; align-items: center; padding: 2px 8px 12px; font-size: 1.05rem; font-weight: 700; text-decoration: none; }
+  .title-dot { width: 8px; height: 8px; margin-left: 7px; border-radius: 999px; background: var(--accent); }
+
+  /* 侧栏：docs 式搜索（圆角 8 档） */
+  .side-search input {
+    width: 100%; padding: 8px 12px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    color: var(--text); font: inherit; font-size: 0.88rem; transition: border-color 0.15s;
+  }
+  .side-search input:focus { border-color: var(--accent); outline: none; }
+  .side-search input::placeholder { color: var(--muted); }
+
+  /* 侧栏：主导航 3 项（想法页无当前导航项——当前位由索引项承载） */
+  .side-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 14px; }
+  .nav-item { padding: 7px 10px; border-radius: var(--radius-md); color: var(--muted); text-decoration: none; font-size: 0.92rem; transition: color 0.15s, background 0.15s; }
+  .nav-item:hover { color: var(--text); background: var(--surface); }
+  .nav-item.current { color: var(--text); background: var(--surface); font-weight: 600; }
+
+  /* 侧栏：想法索引——按状态分组；当前想法 = surface 底 + 左侧 2px accent 指示条 */
+  .idea-index { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .idx-title { margin: 0; padding: 0 10px; font-size: 0.76rem; font-weight: 500; letter-spacing: 0.06em; color: var(--muted); }
+  .idx-count { color: color-mix(in srgb, var(--muted) 55%, transparent); }
+  .idx-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: var(--radius-md); color: var(--muted); text-decoration: none; font-size: 0.88rem; transition: color 0.15s, background 0.15s; }
+  .idx-item:hover { color: var(--text); background: var(--surface); }
+  .idx-item.current { color: var(--text); background: var(--surface); box-shadow: inset 2px 0 0 var(--accent); font-weight: 600; }
+  .dot { width: 7px; height: 7px; border-radius: 999px; flex-shrink: 0; }
+  .dot-growing { background: var(--status-growing-fg); }
+  .dot-seed { background: var(--status-seed-fg); }
+  .dot-shipped { background: var(--status-shipped-fg); }
+
+  /* 侧栏：底部小字区 */
+  .side-foot { margin-top: auto; border-top: 1px solid var(--border); padding: 10px 10px 16px; font-size: 0.78rem; }
+  .side-foot a { color: var(--muted); text-decoration: none; }
+  .side-foot a:hover { color: var(--accent); }
+  .side-foot .sep { color: color-mix(in srgb, var(--muted) 55%, transparent); margin: 0 8px; }
+
+  /* ---- <900px：侧栏收成顶栏 + 汉堡，点开为覆盖抽屉（演示级） ---- */
+  .topbar { display: none; }
+  .scrim { display: none; }
+  .menu-btn { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; width: 36px; height: 36px; padding: 0 9px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; }
+  .menu-btn span { height: 1.5px; background: var(--text); border-radius: 1px; }
+  .topbar-title { font-weight: 700; font-size: 1rem; text-decoration: none; }
+  @media (max-width: 899px) {
+    .topbar { display: flex; position: sticky; top: 0; z-index: 30; align-items: center; gap: 12px; padding: 11px 16px; background: color-mix(in srgb, var(--bg) 80%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .layout { display: block; }
+    .sidebar { position: fixed; left: 0; top: 0; bottom: 0; height: auto; z-index: 40; transform: translateX(-102%); transition: transform 0.2s ease; }
+    body.nav-open .sidebar { transform: none; }
+    .scrim { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(4, 6, 10, 0.55); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    body.nav-open .scrim { opacity: 1; pointer-events: auto; }
+    .main-inner { padding: 20px 18px 56px; }
+    .demo-stage { height: min(600px, 80vh); } /* V14 继承：竖屏定高压整屏时 80vh 兜底 */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+
+  /* ---- 想法页主区：页头卡 + 四件套 section 卡（统一节奏 margin-top 20） ---- */
+  .page-head { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px 24px 16px; }
+  .page-head h1 { margin: 0 0 10px; font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1.3; }
+  .meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.82rem; }
+  .block { margin-top: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px 24px; }
+  .block h2 { margin: 0 0 10px; font-size: 1.02rem; }
+  .prose { font-size: 0.95rem; }
+  .prose p { margin: 0 0 12px; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* 状态胶囊（小件圆角 4 档） */
+  .status { display: inline-block; font-size: 0.75rem; line-height: 1; padding: 4px 8px; white-space: nowrap; border-radius: var(--radius-sm); }
+  .status-seed { background: var(--status-seed-bg); color: var(--status-seed-fg); border: 1px solid var(--border); }
+  .status-growing { background: var(--status-growing-bg); color: var(--status-growing-fg); }
+  .status-shipped { background: var(--status-shipped-bg); color: var(--status-shipped-fg); }
+
+  /* demo 檐口：surface 画框（块内距归零，檐口带 + iframe 位示意融成一只框） */
+  .block.demo-live { padding: 0; overflow: hidden; }
+  .demo-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 20px; background: var(--bg-soft); border-bottom: 1px solid var(--border); }
+  .demo-head h2 { margin: 0; }
+  .demo-open { color: var(--muted); font-size: 0.85rem; text-decoration: none; }
+  .demo-open:hover { color: var(--accent); }
+  .demo-stage { display: grid; place-content: center; gap: 6px; height: 600px; background: var(--bg-soft); text-align: center; }
+  .demo-mock { font-size: 3rem; color: var(--muted); letter-spacing: 0.08em; }
+  .demo-stage p { margin: 0; font-size: 0.82rem; }
+
+  /* 更新日志：date + 一行，无线化（禁表格线化） */
+  .changelog { list-style: none; margin: 0; padding: 0; }
+  .changelog li { display: flex; gap: 16px; padding: 7px 0; font-size: 0.92rem; }
+  .changelog time { color: var(--muted); white-space: nowrap; font-size: 0.82rem; padding-top: 1px; }
+
+  /* 占位（giscus 未配置 / 通用空态） */
+  .placeholder { padding: 18px 20px; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--muted); font-size: 0.9rem; background: var(--bg-soft); }
+  .placeholder code { font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace; font-size: 0.85em; color: var(--text); }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="打开导航" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="topbar-title" href="#">想法站</a>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#">想法站<span class="title-dot" aria-hidden="true"></span></a>
+    <div class="side-search"><input type="search" placeholder="搜索想法…" aria-label="搜索想法"></div>
+    <nav class="side-nav" aria-label="主导航">
+      <a class="nav-item" href="#">想法站</a>
+      <a class="nav-item" href="#">about</a>
+      <a class="nav-item" href="#">now</a>
+    </nav>
+    <nav class="idea-index" aria-label="想法索引">
+      <section>
+        <h3 class="idx-title">在育苗 <span class="idx-count">2</span></h3>
+        <a class="idx-item current" href="#" aria-current="page"><span class="dot dot-growing" aria-hidden="true"></span>番茄钟专注计时</a>
+        <a class="idx-item" href="#"><span class="dot dot-growing" aria-hidden="true"></span>倒计时提醒</a>
+      </section>
+      <section>
+        <h3 class="idx-title">种子 <span class="idx-count">1</span></h3>
+        <a class="idx-item" href="#"><span class="dot dot-seed" aria-hidden="true"></span>番茄钟周报小报表</a>
+      </section>
+      <section>
+        <h3 class="idx-title">已出圃 <span class="idx-count">1</span></h3>
+        <a class="idx-item" href="#"><span class="dot dot-shipped" aria-hidden="true"></span>demo 提交协议收口</a>
+      </section>
+    </nav>
+    <div class="side-foot">
+      <a href="#">RSS</a><span class="sep" aria-hidden="true">·</span><a href="#">llms.txt</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+  <main class="main">
+    <div class="main-inner">
+      <header class="page-head">
+        <h1>番茄钟专注计时</h1>
+        <div class="meta mono">
+          <span class="status status-growing">在育苗</span>
+          <span class="muted">创建于 2026-09-23，最近更新 2026-09-26</span>
+          <span class="muted">#效率</span>
+        </div>
+      </header>
+
+      <section class="block">
+        <h2>问题与方案</h2>
+        <div class="prose">
+          <p>多数番茄钟把记录做成打卡负担：中断一次就整段作废，人反而越来越不敢按下开始。这个想法反过来——25 分钟一段的专注节拍，走完亮一格；中断就清零重来，不糊弄自己，也不必向谁交代。</p>
+          <p>demo 做成单文件 HTML，打开就能用：不注册、不同步、不弹通知。想看一周攒了多少段，交给「番茄钟周报小报表」那株去管，两件事分开长。</p>
+        </div>
+      </section>
+
+      <section class="block demo-live">
+        <div class="demo-head">
+          <h2>Demo</h2>
+          <a class="demo-open" href="#" title="在新窗口打开">在新窗口打开 demo</a>
+        </div>
+        <div class="demo-stage" role="img" aria-label="demo 画框位示意">
+          <span class="demo-mock" aria-hidden="true">25:00</span>
+          <p class="muted">iframe 位示意——实机此处载入单文件 demo（定高 600px）</p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>更新日志</h2>
+        <ul class="changelog">
+          <li><time class="mono">2026-09-26</time><span>挂上本地站，进入实走验证</span></li>
+          <li><time class="mono">2026-09-24</time><span>Agnes 通道直出单文件 demo，一次过验收</span></li>
+          <li><time class="mono">2026-09-23</time><span>想法立项，写下问题与方案</span></li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2>反响</h2>
+        <div class="placeholder">评论区待接入：在 GitHub 建公开仓库并开启 Discussions，把 <code>repo / repoId / category / categoryId</code> 四项填入 <code>src/config.ts</code>，这里就会变成 giscus 评论区。</div>
+      </section>
+    </div>
+  </main>
+</div>
+<script>
+(function () {
+  /* 汉堡抽屉（<900px 演示级） */
+  var btn = document.getElementById('menuBtn');
+  var scrim = document.getElementById('scrim');
+  function setNav(open) {
+    document.body.classList.toggle('nav-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+  btn.addEventListener('click', function () { setNav(!document.body.classList.contains('nav-open')); });
+  scrim.addEventListener('click', function () { setNav(false); });
+})();
+</script>
+</body>
+</html>

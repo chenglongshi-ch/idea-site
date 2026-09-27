@@ -1,0 +1,402 @@
+<!doctype html>
+<!-- ============================================================
+  cabinet.html — 标本馆·夜巡馆(dark-first)概念脸 mockup
+  血统: run 20260926T222859-d9e1 / M2 / 2026-09-27
+  token 依据: agents/A2-concept.md §2.1 dark 列(方向值直折)
+  现状对照: rev 823f22c(index.astro / ideas/[slug].astro / Layout.astro)
+  约束: 零外链·零 JS·单文件≤600行·桌面 1200px;过滤为演示性省略
+  结构: 屏1 首页整屏(hero+检索条+柜格卡网格+hover并排标注)
+        屏2 想法页局部(藏品标签页头+demo展柜檐口+空抽屉虚线态)
+============================================================ -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>想法馆藏室 · 夜巡馆概念稿</title>
+<style>
+/* ============ token(A2 §2.1 dark 直折) ============
+   tinted 近黑只留一丝青温(#101314 墨青),勿再加深蓝调 */
+:root {
+  color-scheme: dark;
+  --bg: #101314;           /* 墨青近黑·馆厅底 */
+  --bg-soft: #171b1c;      /* 素柜格/中介底 */
+  --surface: #1d2224;      /* 柜格面 */
+  --border: #2c3336;       /* 柜线 */
+  --border-strong: #4a5459;/* hover 柜线/focus */
+  --text: #e8e5dd;         /* 暖白·展签文字 */
+  --muted: #969a92;
+  --accent: #d94f35;       /* 章戳朱·印记(激活/编号 hover) */
+  --paper: color-mix(in srgb, #d8d2c2 14%, transparent); /* dim 展签条,不做大面 */
+  --brass: #c9a227;        /* 黄铜·全站仅灯带三处:檐口下边线/iframe 画框/直链 hover */
+  --radius-card: 6px;      /* 圆角两档分化:卡 6 */
+  --radius-chip: 3px;      /* chip/小件 3 —— 拆「万物同圆角」 */
+  --font-display: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', SimSun, serif;
+  --status-seed-fg: #9aa4b8;    /* 未定种·灰章(值维持 823f22c) */
+  --status-growing-fg: #f5c453; /* 培养中·琥珀章 */
+  --status-shipped-fg: #52d58a; /* 已定种·定种章 */
+}
+
+* { box-sizing: border-box; }
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  line-height: 1.75;
+}
+body { margin: 0; }
+.mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'PingFang SC', monospace; }
+a { color: var(--text); }
+a:focus-visible, .stamp:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+::selection { background: color-mix(in srgb, var(--accent) 35%, transparent); }
+/* 质量地板:reduced-motion 一切退化瞬时(A2 §3) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+
+.shell { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+/* ============ 页头 ============ */
+.site-head { border-bottom: 1px solid var(--border); }
+.head-inner { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; }
+.site-title { font-size: 1.08rem; font-weight: 700; color: var(--text); text-decoration: none; }
+/* 发光点→mono「№」小字(v2.1-A #8) */
+.site-title .no { margin-left: 8px; font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+.site-nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; margin-left: 18px; transition: color 0.15s; }
+.site-nav a:hover { color: var(--text); }
+
+/* ============ hero:馆训句 ============
+   自带「还在动」级信号词,对冲馆藏冷感(A2 风险 2) */
+.hero { padding: 54px 0 26px; }
+.hero h1 {
+  font-family: var(--font-display); /* 衬线 display,≥1.6rem 门槛 */
+  font-size: clamp(1.9rem, 4.5vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: 0.01em;
+  margin: 0 0 14px;
+}
+.hero-sub { color: var(--muted); font-size: 1rem; max-width: 44em; margin: 0 0 20px; }
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+/* 计数行:表格线分隔,禁中点串(v2.1-A #6) */
+.ledger { display: flex; flex-wrap: wrap; align-items: baseline; font-size: 0.8rem; color: var(--muted); }
+.ledger span { padding: 2px 16px; white-space: nowrap; }
+.ledger span:first-child { padding-left: 0; }
+.ledger span + span { border-left: 1px solid var(--border); }
+.ledger b { margin-left: 7px; color: var(--text); font-weight: 600; }
+
+/* ============ 检索条 + 章戳 chips ============ */
+.toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
+  padding: 14px 16px; margin-bottom: 32px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card);
+}
+.toolbar input {
+  flex: 1; min-width: 220px; padding: 9px 12px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-chip);
+  color: var(--text); font: inherit; transition: border-color 0.15s;
+}
+.toolbar input::placeholder { color: var(--muted); }
+.toolbar input:focus { border-color: var(--border-strong); outline: none; }
+.chips { display: flex; gap: 10px; }
+
+/* 章戳式状态:1px currentColor 外框 + letter-spacing,禁彩色 pill(A2 §2.1) */
+.stamp {
+  padding: 4px 11px; background: transparent;
+  border: 1px solid currentColor; border-radius: var(--radius-chip);
+  font-size: 0.75rem; line-height: 1.6; letter-spacing: 0.06em;
+  font-family: inherit; cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.stamp-seed { color: var(--status-seed-fg); }
+.stamp-growing { color: var(--status-growing-fg); }
+.stamp-shipped { color: var(--status-shipped-fg); }
+.stamp:hover { color: var(--text); }
+.stamp.active { color: var(--accent); border-color: var(--accent); } /* 盖章激活=章朱 */
+
+/* ============ 柜格卡网格 ============ */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.card {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card);
+  text-decoration: none; color: inherit;
+  transition: border-color 0.15s; /* 全站动效预算之一:灯照亮这一格 */
+}
+/* hover=柜线变强+编号变朱;禁 translateY/阴影(A2 §3) */
+.card:hover { border-color: var(--border-strong); }
+.card:hover .card-no { color: var(--accent); }
+
+/* preview 位=素柜格+衬线状态大字(禁彩色 pill/渐变洗,v2.1-A #4) */
+.slot {
+  position: relative; display: grid; place-items: center;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+.slot-word {
+  font-family: var(--font-display); /* 衬线回退大字,1.7rem 过 1.6 门槛 */
+  font-size: 1.7rem; font-weight: 700;
+  letter-spacing: 0.35em; text-indent: 0.35em; opacity: 0.92;
+}
+.slot-seed .slot-word { color: var(--status-seed-fg); }
+.slot-growing .slot-word { color: var(--status-growing-fg); }
+.slot-shipped .slot-word { color: var(--status-shipped-fg); }
+
+/* 卡角 mono 编号:展签条材质(--paper 局部,不做大面) */
+.card-no {
+  position: absolute; top: 10px; right: 10px;
+  padding: 2px 8px; background: var(--paper);
+  color: var(--muted); font-size: 0.72rem; letter-spacing: 0.05em;
+  border-radius: var(--radius-chip);
+  transition: color 0.15s;
+}
+.card-body { display: flex; flex-direction: column; flex: 1; padding: 15px 18px 14px; }
+.card h2 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.summary {
+  margin: 7px 0 12px; color: var(--muted); font-size: 0.88rem; line-height: 1.65;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto; color: var(--muted); font-size: 0.76rem; }
+
+/* ============ hover 并排标注(静态图上看 hover 判据) ============ */
+.hover-lab { margin-top: 40px; }
+.lab-cap { margin: 0 0 12px; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; }
+.hover-lab .pair { display: flex; gap: 20px; flex-wrap: wrap; }
+.mini {
+  width: 250px; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card);
+}
+.mini .slot { aspect-ratio: 16 / 7; }
+.mini-body { padding: 10px 14px 12px; font-size: 0.82rem; color: var(--muted); }
+.mini-body .cap { display: block; margin-top: 3px; font-size: 0.72rem; }
+.mini.hovered { border-color: var(--border-strong); } /* hover 判据静态复现 */
+.mini.hovered .card-no { color: var(--accent); }
+
+/* ============ 屏间标尺 ============ */
+.divider { display: flex; align-items: center; gap: 16px; margin: 76px 0 44px; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.divider span { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.14em; white-space: nowrap; }
+
+/* ============ 屏 2:想法页·藏品标签 ============ */
+.idea { max-width: 800px; margin: 0 auto; }
+.page-head {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card);
+  padding: 22px 26px 18px;
+}
+.page-no-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.page-no {
+  display: inline-block; padding: 2px 9px; background: var(--paper);
+  color: var(--muted); font-size: 0.78rem; letter-spacing: 0.06em; border-radius: var(--radius-chip);
+}
+.page-head h1 {
+  font-family: var(--font-display); /* 衬线 h1,1.75rem 过门槛 */
+  font-size: 1.75rem; font-weight: 700; line-height: 1.3; margin: 0 0 12px;
+}
+.meta-table { padding-top: 10px; border-top: 1px solid var(--border); } /* 表格线 meta */
+
+/* ============ demo 展柜(黄铜三处全在此块) ============ */
+.block {
+  margin-top: 20px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-card);
+  padding: 20px 24px;
+}
+.block h2 { margin: 0 0 12px; font-size: 1.02rem; }
+.demo-live { padding: 0; overflow: hidden; } /* 外墨线=section 柜线(双线之外线) */
+
+/* 檐口=纸色带+2px 黄铜下边线(灯带,黄铜 1/3) */
+.demo-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 11px 18px; background: var(--paper);
+  border-bottom: 2px solid var(--brass);
+}
+.demo-head .head-left { display: flex; align-items: baseline; gap: 12px; }
+.demo-head h2 { margin: 0; }
+/* 标注行:檐口从装饰升为数据位(E4 lineage 折叠将来挂这行) */
+.demo-spec { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.06em; }
+.demo-open { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.15s; }
+.demo-open:hover { color: var(--brass); } /* 黄铜 3/3:柜灯可点 */
+
+/* 展柜舞台:外墨(section 柜线)内铜(iframe 铜线)双线=画框 */
+.demo-stage { padding: 10px; background: var(--bg-soft); }
+.demo-frame { height: 340px; border: 1px solid var(--brass); } /* 黄铜 2/3 */
+
+/* iframe 位内景:模型直出 demo 自带浅底(非站控边界,示意 E1 番茄钟) */
+.pomo { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: #f6f4ef; }
+.pomo-time { margin: 0; font-size: 3.4rem; font-weight: 600; letter-spacing: 0.04em; color: #2e2e2b; }
+.pomo-label { margin: 0; font-size: 0.85rem; color: #8a887f; }
+.pomo-btns { display: flex; gap: 12px; margin-top: 14px; }
+.pomo-btns span { padding: 5px 18px; border: 1px solid #c9c5ba; border-radius: 3px; font-size: 0.85rem; color: #55534b; }
+
+/* ============ 空抽屉虚线态(块级空态,虚线框语义本就正确) ============ */
+.state-cap { margin: 26px 0 10px; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; }
+.placeholder {
+  padding: 22px; border: 1px dashed var(--border); border-radius: var(--radius-chip);
+  background: var(--bg-soft); color: var(--muted); font-size: 0.9rem;
+}
+
+/* ============ 页脚 ============ */
+.site-foot { border-top: 1px solid var(--border); margin-top: 88px; }
+.foot-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 20px 0 36px; font-size: 0.78rem; color: var(--muted); }
+.foot-inner a { color: var(--muted); text-decoration: none; }
+.foot-inner a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="shell head-inner">
+    <a class="site-title" href="#">想法馆藏室<span class="no mono">№</span></a>
+    <nav class="site-nav" aria-label="站内导航">
+      <a href="#">about</a>
+      <a href="#">now</a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell">
+  <!-- ======== 屏 1:首页整屏 ======== -->
+  <section class="hero">
+    <h1>夜间开放的想法馆藏室</h1>
+    <p class="hero-sub">
+      每件藏品都有编号、想法原文,和一件<strong>还在动的活体 demo</strong>——
+      看一个想法从入馆、培养到定种的全过程。
+    </p>
+    <div class="ledger mono">
+      <span>在册藏品<b>4</b></span>
+      <span>培养中<b>1</b></span>
+      <span>已定种<b>1</b></span>
+    </div>
+  </section>
+
+  <!-- 检索条:章戳式状态 chips(演示性,过滤逻辑省略) -->
+  <div class="toolbar">
+    <input type="search" placeholder="检索馆藏(标题 / 关键词)…" aria-label="检索馆藏">
+    <div class="chips" role="group" aria-label="按状态过滤">
+      <button type="button" class="stamp stamp-seed">未定种</button>
+      <button type="button" class="stamp stamp-growing active">培养中</button>
+      <button type="button" class="stamp stamp-shipped">已定种</button>
+    </div>
+  </div>
+
+  <!-- 柜格卡网格 ×4(mono 编号在卡角+素柜格+衬线状态大字) -->
+  <section class="grid" aria-label="藏品列表">
+    <a class="card" href="#">
+      <div class="slot slot-growing">
+        <span class="card-no mono">IDEA-0001</span>
+        <span class="slot-word">培养中</span>
+      </div>
+      <div class="card-body">
+        <h2>番茄钟专注计时</h2>
+        <p class="summary">把一次专注做成一炷香的时间刻度——25 分钟一节,节间强制离席。展柜里的活体 demo 已在运转。</p>
+        <div class="card-meta mono"><time>2026-09-20</time><span>#工具</span><span>#专注</span></div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="slot slot-seed">
+        <span class="card-no mono">IDEA-0002</span>
+        <span class="slot-word">未定种</span>
+      </div>
+      <div class="card-body">
+        <h2>深夜想法收容箱</h2>
+        <p class="summary">凌晨冒出来的念头先登记在册,天亮后再决定培养、合并还是归档。</p>
+        <div class="card-meta mono"><time>2026-09-25</time><span>#收集</span></div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="slot slot-shipped">
+        <span class="card-no mono">IDEA-0003</span>
+        <span class="slot-word">已定种</span>
+      </div>
+      <div class="card-body">
+        <h2>电梯演讲抽认卡</h2>
+        <p class="summary">把 30 秒自我介绍拆成卡组,出门见人前过一遍,卡片自己会排薄弱项。</p>
+        <div class="card-meta mono"><time>2026-09-14</time><span>#表达</span><span>#练习</span></div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="slot slot-seed">
+        <span class="card-no mono">IDEA-0004</span>
+        <span class="slot-word">未定种</span>
+      </div>
+      <div class="card-body">
+        <h2>房间亮度契约</h2>
+        <p class="summary">和房间签一条熄灯曲线:天黑后灯光与屏幕一起降档,违约就记进日志。</p>
+        <div class="card-meta mono"><time>2026-09-24</time><span>#环境</span><span>#习惯</span></div>
+      </div>
+    </a>
+  </section>
+
+  <!-- hover 判据并排标注(网格卡本身也可直接悬停体验) -->
+  <div class="hover-lab">
+    <p class="lab-cap mono">hover 判据 · 并排标注(网格卡在本页可直接悬停)</p>
+    <div class="pair">
+      <div class="mini">
+        <div class="slot"><span class="card-no mono">IDEA-000n</span></div>
+        <div class="mini-body">柜格卡<span class="cap mono">常态 · 柜线 var(--border)</span></div>
+      </div>
+      <div class="mini hovered">
+        <div class="slot"><span class="card-no mono">IDEA-000n</span></div>
+        <div class="mini-body">柜格卡<span class="cap mono">hover · 柜线加强 + 编号变朱(无位移/无阴影)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== 屏 2:想法页局部 ======== -->
+  <div class="divider" role="separator"><span class="mono">屏 2 · 想法页局部 —— 藏品标签 / 展柜 / 空抽屉</span></div>
+
+  <article class="idea">
+    <!-- 藏品标签页头:编号+衬线 h1+表格线 meta -->
+    <header class="page-head">
+      <div class="page-no-row">
+        <span class="page-no mono">IDEA-0001</span>
+        <span class="stamp stamp-growing">培养中</span>
+      </div>
+      <h1>番茄钟专注计时</h1>
+      <div class="ledger mono meta-table">
+        <span>入馆<b>2026-09-20</b></span>
+        <span>最近检视<b>2026-09-26</b></span>
+        <span>标签<b>#工具 #专注</b></span>
+      </div>
+    </header>
+
+    <!-- demo 展柜:纸色檐口+黄铜灯带+外墨内铜双线框 -->
+    <section class="block demo-live">
+      <div class="demo-head">
+        <div class="head-left">
+          <h2>Demo</h2>
+          <span class="demo-spec mono">藏品 №0001 · 活体</span>
+        </div>
+        <a class="demo-open" href="#" title="在新标签页打开">新窗口打开</a>
+      </div>
+      <div class="demo-stage">
+        <div class="demo-frame">
+          <div class="pomo">
+            <p class="pomo-time mono">24:37</p>
+            <p class="pomo-label">专注中 · 第 2 番</p>
+            <p class="pomo-btns"><span>暂停</span><span>重置</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 空抽屉虚线态:未定种藏品(无 demo)时的 Demo 区 -->
+    <p class="state-cap mono">空抽屉态 · 未定种藏品(无 demo)时 ↓</p>
+    <section class="block">
+      <h2>Demo</h2>
+      <div class="placeholder">尚无 demo(未定种)。demo 生成后,这个抽屉会亮灯,变成页内可玩的展柜。</div>
+    </section>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="shell foot-inner mono">
+    <span>概念稿 · 假数据 · run 20260926T222859-d9e1</span>
+    <span><a href="#">RSS</a> / <a href="#">llms.txt</a></span>
+  </div>
+</footer>
+</body>
+</html>

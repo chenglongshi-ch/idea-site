@@ -1,0 +1,265 @@
+<!doctype html>
+<!-- 血统：run 20260926T222859-d9e1 / M1 / 2026-09-27
+  苗圃·留灯的苗圃 概念 mockup（视觉依据：A1 概念稿 §3 词表 / §4 四页贯穿 / §5 檐口）。
+  暖黑泥炭底（非冷蓝黑）/ 补光琥珀 accent 只落在活物（hover 灯照 / 檐口灯带 / 棚名留灯）/
+  宋体系标题（系统宋体栈，≥1.6rem 才用衬线）/ 状态三色按生长阶段：种子=土棕灰、育苗中=新芽黄绿（全站最饱和）、已出圃=成株深绿。
+  反 AI 味纪律：圆角按材质分化（盆位 10 / 玻璃罩 16 / 纸标签 4）；禁叶子插画与植物 emoji；meta 行动词领起、禁中点串。
+  卡片带「入圃登记号 IDEA-000n」＝甲案；去掉编号即纯概念版乙案（第一张卡内一角小注）。
+  零外链零 JS；桌面 1200px；假数据=E1/E1b demo 相关想法名。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>留灯的苗圃 — 概念 mockup</title>
+<style>
+  /* ---- token：六件材质词生成（土/陶/纸/玻璃/灯/棚），值按 A1 §3 方向实拟定 ---- */
+  :root {
+    color-scheme: dark;
+    --bg: #171310;           /* 土：泥炭暖黑 */
+    --bg-soft: #1d1712;      /* 棚内更亮一档 */
+    --surface: #201913;      /* 陶：盆面 */
+    --soil: #251c12;         /* 土面（preview 位） */
+    --paper: #2b2115;        /* 纸：标签面 */
+    --border: #382c1d;
+    --border-strong: #524026;
+    --text: #ede3d3;
+    --muted: #a2917a;
+    --lamp: #d9a441;         /* 灯：补光琥珀，只照活物（P2） */
+    --lamp-glow: rgba(217, 164, 65, 0.16);
+    --status-seed-bg: #261f16;    --status-seed-fg: #a3937c;    /* 种子=土棕灰 */
+    --status-growing-bg: #232a0e; --status-growing-fg: #c8dc52; /* 育苗中=新芽黄绿 */
+    --status-shipped-bg: #152419; --status-shipped-fg: #6fae85; /* 已出圃=成株深绿 */
+    --r-pot: 10px;    /* 盆位：软圆角 */
+    --r-glass: 16px;  /* 玻璃罩：大圆角 */
+    --r-paper: 4px;   /* 纸标签：小圆角 */
+    --serif: 'Noto Serif SC', 'Songti SC', 'STSong', SimSun, serif;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'PingFang SC', monospace;
+  }
+  * { box-sizing: border-box; }
+  html {
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    line-height: 1.75;
+  }
+  body { margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+  .shell { width: 100%; max-width: 1200px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+  main.shell { flex: 1; padding-top: 8px; padding-bottom: 64px; }
+  a { color: var(--text); }
+
+  /* 页头：棚名（<1.6rem 用黑体）+ 留灯小点（「夜里也留着灯」的叙事件） */
+  .site-head { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  .head-inner { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; padding-bottom: 14px; }
+  .site-title { font-size: 1.15rem; font-weight: 700; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; }
+  .lamp-dot { width: 7px; height: 7px; margin-left: 9px; border-radius: 999px; background: var(--lamp); box-shadow: 0 0 10px rgba(217, 164, 65, 0.55); }
+  .site-nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; margin-left: 18px; transition: color 0.2s; }
+  .site-nav a:hover { color: var(--text); }
+
+  /* hero：定位语宋体（≥1.6rem 才衬线，行距放宽）；计数行动词领起、无中点串 */
+  .hero { padding: 52px 0 32px; }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.32; letter-spacing: 0.02em;
+    margin: 0 0 14px;
+  }
+  .hero-sub { color: var(--muted); font-size: 1.02rem; margin: 0 0 12px; max-width: 44em; }
+  .hero-meta { color: var(--muted); font-size: 0.85rem; margin: 0; }
+
+  /* 选苗台（搜索+长势筛选）：棚架构件，盆位圆角档 */
+  .toolbar { display: flex; flex-direction: column; gap: 12px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pot); margin-bottom: 28px; }
+  .toolbar input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-paper); color: var(--text); font: inherit; transition: border-color 0.2s; }
+  .toolbar input:focus { border-color: var(--border-strong); outline: none; }
+  .toolbar input::placeholder { color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 5px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-paper); color: var(--muted); font-size: 0.8rem; font-family: inherit; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .chip:hover { border-color: var(--border-strong); color: var(--text); }
+  .chip.on { border-color: var(--lamp); color: var(--lamp); background: rgba(217, 164, 65, 0.07); }
+  /* ---- 苗床：盆位卡（P3 等距格子，无精选放大）---- */
+  .bed { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .pot {
+    position: relative; display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-pot); overflow: hidden;
+    text-decoration: none; color: inherit; transition: border-color 0.25s;
+  }
+  /* hover = 灯照上来（A1 §4 唯一重注微交互）：暖光落在盆位，替代 border 变色微升 */
+  .pot::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: radial-gradient(360px 180px at 50% -12%, var(--lamp-glow), transparent 72%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .pot:hover { border-color: var(--border-strong); }
+  .pot:hover::after { opacity: 1; }
+  .pot:hover .plant-name { color: var(--lamp); }
+
+  /* 土面 = 植株照位（缺图回退的常态语义：纯色土面 + 株名，非渐变洗） */
+  .soil { display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 10; background: var(--soil); border-bottom: 1px solid var(--border); }
+  .plant-name { font-family: var(--serif); font-size: 1.6rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text); transition: color 0.3s; text-align: center; padding: 0 16px; }
+
+  .pot-body { display: flex; flex-direction: column; flex: 1; padding: 14px 16px 13px; }
+  .pot-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .reg { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.06em; }
+  .pot-summary { margin: 8px 0 10px; color: var(--muted); font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pot-note { margin: 0 0 8px; color: var(--muted); font-size: 0.7rem; opacity: 0.75; }
+  .pot-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: auto; color: var(--muted); font-size: 0.76rem; }
+  .tag { color: var(--muted); opacity: 0.9; } /* 品类牌=中性结构件，不借活物色 */
+
+  /* 长势章：纸标签材质，小圆角；三色按生长阶段 */
+  .badge { display: inline-block; font-size: 0.75rem; line-height: 1; padding: 4px 9px; white-space: nowrap; border-radius: var(--r-paper); }
+  .badge-seed { background: var(--status-seed-bg); color: var(--status-seed-fg); border: 1px solid var(--border); }
+  .badge-growing { background: var(--status-growing-bg); color: var(--status-growing-fg); }
+  .badge-shipped { background: var(--status-shipped-bg); color: var(--status-shipped-fg); }
+
+  /* ---- mockup 分节：想法页局部屏 ---- */
+  .page-cut { display: flex; align-items: center; gap: 16px; margin: 76px 0 30px; color: var(--muted); font-size: 0.78rem; letter-spacing: 0.1em; }
+  .page-cut::before, .page-cut::after { content: ''; flex: 1; border-top: 1px dashed var(--border-strong); }
+
+  .archive { max-width: 720px; margin: 0 auto; }
+  .archive-head { margin-bottom: 26px; }
+  .archive-title-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .plant-title { font-family: var(--serif); font-weight: 700; font-size: 1.95rem; letter-spacing: 0.02em; line-height: 1.3; margin: 0; }
+  .stakes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .stake { background: var(--paper); border: 1px solid var(--border); border-radius: var(--r-paper); padding: 3px 10px; font-size: 0.74rem; color: var(--muted); }
+
+  /* ---- 玻璃罩（A1 §5）：檐口灯带 + catch-light + 大圆角 ---- */
+  .cloche { border: 1px solid var(--border-strong); border-radius: var(--r-glass); overflow: hidden; background: var(--bg-soft); }
+  .cloche-lip {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, rgba(217,164,65,0.02), rgba(217,164,65,0.13) 32%, rgba(217,164,65,0.05) 68%, rgba(217,164,65,0.02));
+  }
+  .lip-title { font-size: 0.85rem; font-weight: 600; }
+  .lift { font-size: 0.85rem; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--border-strong); padding-bottom: 1px; transition: color 0.2s, border-color 0.2s; }
+  .lift:hover { color: var(--lamp); border-color: var(--lamp); }
+  .cloche-glass { position: relative; padding: 18px; }
+  .cloche-glass::before {
+    content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 243, 214, 0.3), transparent);
+  }
+
+  /* 罩内 demo 示意（E1 番茄钟浅色实物的静态占画，非真功能） */
+  .demo { background: #f4f1ea; color: #35302a; border-radius: var(--r-pot); padding: 18px 20px 20px; text-align: center; }
+  .demo-head { font-size: 0.7rem; color: #8a8175; letter-spacing: 0.08em; }
+  .demo-ring { width: 96px; height: 96px; margin: 12px auto; border-radius: 50%; border: 7px solid #d95550; display: grid; place-items: center; }
+  .demo-time { font-size: 1.45rem; font-weight: 700; color: #35302a; }
+  .demo-actions { display: flex; justify-content: center; gap: 10px; }
+  .demo-btn { display: inline-block; font-size: 0.8rem; line-height: 1; padding: 8px 18px; border-radius: 6px; background: #d95550; color: #fff; }
+  .demo-btn.ghost { background: transparent; border: 1px solid #c9c2b4; color: #6b6459; }
+
+  /* 空罩态：罩着等发芽（虚线框，句式=现状+转化去向） */
+  .empty-cloche { margin-top: 20px; border: 2px dashed var(--border-strong); border-radius: var(--r-glass); padding: 46px 20px; text-align: center; color: var(--muted); font-size: 0.92rem; }
+  .empty-cloche p { margin: 0; }
+
+  .muted { color: var(--muted); }
+  .site-foot { border-top: 1px solid var(--border); padding-top: 18px; padding-bottom: 34px; }
+  .foot-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; }
+  .foot-links a { color: var(--muted); text-decoration: none; margin-left: 16px; }
+  .foot-links a:hover { color: var(--text); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="shell head-inner">
+    <a class="site-title" href="#">留灯的苗圃<span class="lamp-dot" aria-hidden="true"></span></a>
+    <nav class="site-nav" aria-label="站内导航"><a href="#">园丁</a><a href="#">棚内近况</a></nav>
+  </div>
+</header>
+<main class="shell">
+  <!-- ==== 首页：温室入口 + 苗床 ==== -->
+  <section class="hero">
+    <h1>想法是种下去的活物，<br>这座棚夜里也留着一盏补光灯。</h1>
+    <p class="hero-sub">读一株想法的来历，掀开玻璃罩玩它的 demo，走前留下你的手记——从种子到出圃，全程公开在苗床上。</p>
+    <p class="hero-meta mono">在育苗 2 株，已出圃 1 株</p>
+  </section>
+
+  <div class="toolbar">
+    <input type="search" placeholder="找一株…" aria-label="搜索想法">
+    <div class="chips" role="group" aria-label="按长势筛选">
+      <button type="button" class="chip">种子</button>
+      <button type="button" class="chip on">育苗中</button>
+      <button type="button" class="chip">已出圃</button>
+    </div>
+  </div>
+
+  <section class="bed" aria-label="苗床">
+    <a class="pot" href="#">
+      <div class="soil"><span class="plant-name">番茄钟专注计时</span></div>
+      <div class="pot-body">
+        <div class="pot-head"><span class="badge badge-growing">育苗中</span><span class="reg mono">IDEA-0001</span></div>
+        <p class="pot-summary">25 分钟一段的专注节拍，走完亮一格；中断清零重来，不糊弄自己。</p>
+        <p class="pot-note">去掉编号即纯概念版（乙案）</p>
+        <div class="pot-meta mono"><time>播于 2026-09-23</time><span class="tag">#效率</span></div>
+      </div>
+    </a>
+    <a class="pot" href="#">
+      <div class="soil"><span class="plant-name">倒计时提醒</span></div>
+      <div class="pot-body">
+        <div class="pot-head"><span class="badge badge-growing">育苗中</span><span class="reg mono">IDEA-0002</span></div>
+        <p class="pot-summary">给任何一件事设个倒数，临近时提醒渐亮；到点只留一件事——去办它。</p>
+        <div class="pot-meta mono"><time>播于 2026-09-25</time><span class="tag">#时间</span></div>
+      </div>
+    </a>
+    <a class="pot" href="#">
+      <div class="soil"><span class="plant-name">番茄钟周报小报表</span></div>
+      <div class="pot-body">
+        <div class="pot-head"><span class="badge badge-seed">种子</span><span class="reg mono">IDEA-0003</span></div>
+        <p class="pot-summary">把一周的专注段落汇成一张一眼读完的小报表：哪几天在长，哪几天荒了。</p>
+        <div class="pot-meta mono"><time>播于 2026-09-26</time><span class="tag">#工具</span></div>
+      </div>
+    </a>
+    <a class="pot" href="#">
+      <div class="soil"><span class="plant-name">demo 提交协议收口</span></div>
+      <div class="pot-body">
+        <div class="pot-head"><span class="badge badge-shipped">已出圃</span><span class="reg mono">IDEA-0004</span></div>
+        <p class="pot-summary">外部项目按两件套提交 demo，站侧只做承载、协议与验收——边界定死，各管各的。</p>
+        <div class="pot-meta mono"><time>播于 2026-09-21</time><span class="tag">#工程</span></div>
+      </div>
+    </a>
+  </section>
+
+  <div class="page-cut mono">以下为想法页 · 植株档案（局部）</div>
+
+  <!-- ==== 想法页：植株档案 ==== -->
+  <section class="archive">
+    <header class="archive-head">
+      <div class="archive-title-row">
+        <h1 class="plant-title">番茄钟专注计时</h1>
+        <span class="badge badge-growing">育苗中</span>
+      </div>
+      <div class="stakes mono">
+        <span class="stake">播于 2026-09-23</span>
+        <span class="stake">最近料理 2026-09-26</span>
+        <span class="stake">#效率</span>
+      </div>
+    </header>
+
+    <section class="cloche" aria-label="玻璃罩下的 demo">
+      <div class="cloche-lip">
+        <span class="lip-title">玻璃罩下的活体 · demo</span>
+        <a class="lift" href="#" title="在新窗口打开 demo">掀开玻璃罩</a>
+      </div>
+      <div class="cloche-glass">
+        <div class="demo" aria-hidden="true">
+          <div class="demo-head mono">tomato-timer · 单文件 demo（E1 实物示意位）</div>
+          <div class="demo-ring"><span class="demo-time mono">25:00</span></div>
+          <div class="demo-actions"><span class="demo-btn">开始专注</span><span class="demo-btn ghost">重置</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="empty-cloche">
+      <p>罩下还是土面——demo 生成后，这里会冒头。</p>
+    </div>
+  </section>
+</main>
+<footer class="site-foot">
+  <div class="shell foot-inner">
+    <span class="muted">本地预览 · 占位假数据</span>
+    <span class="foot-links"><a href="#">棚内动态</a><a href="#">给机器访客的导览单</a></span>
+  </div>
+</footer>
+</body>
+</html>
