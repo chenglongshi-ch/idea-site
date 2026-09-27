@@ -46,7 +46,7 @@ src/content/ideas/<slug>.md   # 想法条目（schema 见 §4）
 
 ① **rev 语义**：`rev` = 生成时刻工作树 HEAD 的 git rev（12 位 hex，**无论脏净一律记**）；工作树脏时**必加** `artifact_sha256`（demo `index.html` 的 sha256 前 12 位）——语义 =「代码基线锚 rev，产物内容锚哈希」，两者互配回答「什么版本什么产物」（新增字段，向后兼容）。可选 `rev_mode` 自由注记（`clean` / `dirty@<基线rev>`）。
 
-② **producer 可指认最低要求（2026-09-27 人裁定案 A）**：走 run 体系（project-lifecycle 等）的提交方，`producer` 指 run 目录（repo 外持久 + run_id 现成追溯 join key，首跑事实通路升格为规范）；**不走 run 的提交方必加 `producer_sha256`**（脚本内容哈希；向后兼容——仅对新提交生效，老 demo 不追溯）。三案利弊与判据存档 `docs/producer-lineage-decision.md`；skill-data 体系迁移/弃用时回填此注，升级路径 = 第三方提交方或里程碑 demo 出现时按 §8 加字段。
+② **producer 可指认最低要求（2026-09-27 人裁定案 A）**：走 run 体系（project-lifecycle 等）的提交方，`producer` 指 run 目录（repo 外持久 + run_id 现成追溯 join key，首跑事实通路升格为规范）；**不走 run 的提交方必加 `producer_sha256`**（脚本内容哈希；向后兼容——仅对新提交生效，老 demo 不追溯）。三案利弊与判据存档 `docs/producer-lineage-decision.md`；skill-data 体系迁移/弃用时回填此注，升级路径 = 第三方提交方或里程碑 demo 出现时按 §8 加字段。**标记自动性（同日用户补令）**：血统标记字段（`rev` / `artifact_sha256` / `producer_sha256`）由生成侧工具链**自动计算回写**，人工手填视为不合规——用户原话「自动更新 vector，这样标记资源和当前显示的内容」（读作：版本/哈希标记自动更新，始终锚定「生成该内容的资源 × 当前显示的产物」）。
 
 ③ **自由扩展边界**：提交方可自加字段（attempts/usage 等），站侧验收只消费协议字段、自加字段风险自负；**禁止**与协议字段同名异义（不得覆盖协议字段语义）。
 
