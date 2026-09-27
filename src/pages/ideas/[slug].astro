@@ -40,6 +40,12 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
 ---
 
 <Layout title={`${entry.data.title} · 想法站`}>
+  <link
+    slot="head"
+    rel="alternate"
+    type="text/markdown"
+    href={`/ideas/${entry.id}.md`}
+  /><!-- Q2：llms.txt 规范 v2 页面级 .md 镜像声明（R3 §7-1），AI/工具链按 link rel 发现镜像 -->
   <article class="idea">
     <header class="page-head">
       <h1>{entry.data.title}</h1>

@@ -9,8 +9,9 @@ export async function GET() {
     a.data.updated < b.data.updated ? 1 : -1
   );
 
+  // 链接直指 .md 镜像（Q2，2026-09-27）：llms.txt 规范「detail behind links」——AI 顺链拿到的是 markdown 而非 HTML
   const ideaLines = ideas
-    .map((idea) => `- [${idea.data.title}](/ideas/${idea.id}/): ${idea.data.summary}`)
+    .map((idea) => `- [${idea.data.title}](/ideas/${idea.id}.md): ${idea.data.summary}`)
     .join('\n');
 
   // 统一 \n 换行；页面节为固定路由，硬编码于模板

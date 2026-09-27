@@ -16,6 +16,7 @@ const { title, description = '每个想法一页：想法原文 + 可交互 demo
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <slot name="head" /> <!-- 页面级 head 注入口（Q2：想法页挂 .md 镜像的 alternate 声明） -->
   </head>
   <body>
     <header class="site-head">
