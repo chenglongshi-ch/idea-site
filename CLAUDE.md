@@ -12,7 +12,7 @@
 
 - solo 开发者，中文交流。
 - 工作机 Windows 11 + Git Bash；Python 用 uv 管理。
-- **协作模式：主线程统筹 + 多 agent 并行**——用户直令，执行动作派 agent；派发记录见 `docs/dispatches.md`。
+- **协作模式：主线程统筹 + 多 agent 并行**——用户直令，执行动作派 agent；派发记录见 `docs/dispatches.md`。**派后台/外查 agent 前先核审批前缀带**（agent 审批弹窗直插用户——2026-09-27 实证：3 外查 agent 逼出 ~45 条一次性 local 条目后才补 settings.json）；外查/长跑 agent 提示须带「分段进行、单步勿静默超 600s」防看门狗，停摆/断网可 SendMessage 原地续跑保上下文（同日两例实证）；**会话收尾树净**：当批 change-set squash 完再结束（跨会话混批致分批困难，2026-09-27 实证）。
 - 形态类评价给实机或截图，不给文档描述（E1b 的倒计时冻结 bug 正是浏览器活体验收抓住的，读代码/文档看不出来）。
 
 ## 领域关键事实（除注明外均为 2026-09-23 实测/一手；过期以官方 console 复核）
@@ -57,7 +57,7 @@
 
 ## 构建命令
 
-- 实验脚本：`python research/experiments/<实验名>/<脚本>.py`（系统 python 或 `d:/project/vedio/.venv/Scripts/python.exe` 皆可）；key 从 `.env` export 后再跑：`set -a; source .env; set +a`。
+- 实验脚本：`python research/experiments/<实验名>/<脚本>.py`（解释器**默认用 `d:/project/vedio/.venv/Scripts/python.exe`**——系统 python 2026-09-27 实测 exit 49 不稳）；key 从 `.env` export 后再跑：`set -a; source .env; set +a`；临时文件给 python 传 Windows 真实路径（`C:/Users/.../Temp/`），Git Bash 的 `/tmp` 对原生 python 不可见。
 - 站构建命令：`npm install`（首次）；`npm run dev`（本地站 http://localhost:4321，4 页见 docs/spec-site.md §3）；`npm run build`（静态产物）。
 - demo 提交协议：外部项目生成 demo，按 `docs/demo-protocol.md`（v0.1，2026-09-26 定界「site 只做承载+协议+验收，不管落码」）提交两件套（demos/ + ideas/）；`gen_demo.py` 归属外部项目侧作参考实现。
 
