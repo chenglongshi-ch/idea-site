@@ -4,9 +4,11 @@
 |---|---|---|---|
 | scaffold | done | 最小骨架+调研+双实验已就位 | research/ docs/dispatches.md |
 | site-spec | done | 本地站功能定稿（4 页/内容模型/全链工作流/验收） | docs/spec-site.md |
-| first-real-idea | pending | 用真实想法跑通「想法→demo→挂本地站」全链。**2026-09-26 定界（用户）：site 只做承载+协议+验收，不管落码**——demo 在外部项目生成，按 docs/demo-protocol.md v0.2 提交（三件套：demos/+ideas/+preview 图）。**站侧 ⑦ 11 条已落码（run 20260926T211205-323e）**；V 验收面随 v2.0 形态翻案重排（V9-V14 新增，见 site-redesign-v2 行），V1 等首个真实 demo | 等外部项目首个提交; docs/spec-site.md; docs/design-spec-site.md; docs/demo-protocol.md |
+| first-real-idea | done | **全链首跑通过（2026-09-27，时空语录）**：Agnes 34.3s 一次成功零兜底（5675 字符/3641 tok）；三件套齐（demo 7.4KB+preview+lineage 带脏树哈希）；ideas 正文 234 字断言过；build 绿×3（主线程复跑）；10 路由 200；交互/搜索/移动端实机过目（V1 过，顺带 V3/V10/V12/V13/V14）。**首跑真产品=协议缺口 9 条**（v0.3 输入，最重三条：llms.txt 手动同步面无主/producer 仓外不可 git 追溯/rev 脏树哈希语义未定，详 run digest）；遗留：语录出处考据（status=growing，shipped 前人工核） | run 20260927T162733-41bb(first-run-digest.md); demos/spacetime-quotes/; shots/first-real-idea/ |
 | site-redesign-v2 | pending | **形态翻案落码完成，等用户实机签收**。代验已过：build 绿+七路由 200+V10 搜索过滤四步+V12 RSS/llms.txt+V13 giscus 占位+V14 移动端（截图 run shots/）。**用户签收位：V9 首页双主题整页+V11 about/now 文案**（占位文案待用户改写）；giscus 真评论需用户建公开 GitHub 仓库后填 src/config.ts。翻案链：用户否决朴素线→premise-audit 增量审计→框架 A 人裁 | run 20260926T214451-f984; docs/design-spec-site.md v2.0 增补节 |
+| design-concept-round | done | 5 agent 设计轮（R1 开源skill/R2 参照/A1+A2 概念/RT 红队）+主线程裁决完毕。**用户裁定：概念后置不拍板**（功能与 UI 不冲突）。沉淀=design-spec **v2.1 增补**（A 净改善8条/B 反AI味清单/C token 生成法/D 编号独立资产）+docs/design-concept-candidates.md（三案候选库，含试样协议）。V9/V11 按 v2.0 原形态签收；概念脸取用协议见候选库。出题层教训=**过度规范化**（「好好思考UI」被窄化成「选概念」单选，用户反应实录收编在候选库尾） | run 20260926T222859-d9e1; docs/design-spec-site.md v2.1; docs/design-concept-candidates.md |
 | process-audit | done | 流程合规审计裁定=有条件成立（6 域 5 符合；rev 血统欠账已清偿，治本+回填见 5d9a6ca）；观察项：实验截图无 LFS 约定、dispatches 机器面（agent_spawns.jsonl）未闭环对账 | run 20260923T190745-a8ee |
+| graveyard-check | done | 坟场对比可行性裁定=**可行，MVP 零基建**。命门已解：结构化死因源全网唯一 killedbyai.net（128 条，causeOfDeath+deathType 六枚举全填，CC BY 4.0，免鉴权 JSON）——恰落 ≤300 条全量塞合法区，一次 LLM 调用即可；>300 条（并爬 dang/404tomb 长尾）再上 bge-small-zh 检索。中文独立坟场不存在=真空档。落位按 9-26 定界：生成归外部项目，站只加协议槽位（带 lineage+数据截至日期）+构建期验收。风险=信噪比（死因 70%+ 偏大厂砍杀型，对 solo 想法弹药薄，首版定位「撞车提醒+死因视角」非「判生死」）。**未拍板：协议槽位是否现在写进 demo-protocol v0.3，还是等首个真实想法同批落** | research/graveyard-compare.md; run 20260927T084815-0a6e; 需求台账 2026-09-27 行 |
 
 # Deadends
 

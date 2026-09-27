@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时空语录</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;background:#050810;color:#e0d8c8}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+.container{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;max-height:600px;width:100%;padding:16px}
+.title{font-size:13px;letter-spacing:6px;color:rgba(180,170,155,.45);margin-bottom:28px;text-transform:uppercase;font-weight:300}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px 32px;max-width:480px;width:90%;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden;transition:opacity .5s ease,transform .5s ease}
+.card.fade-out{opacity:0;transform:translateY(8px)}
+.card.fade-in{opacity:1;transform:translateY(0)}
+.tag{display:inline-block;font-size:10px;letter-spacing:2px;color:rgba(160,190,220,.7);border:1px solid rgba(160,190,220,.2);border-radius:20px;padding:3px 10px;margin-bottom:18px;background:rgba(160,190,220,.06)}
+.quote-text{font-size:17px;line-height:1.85;color:rgba(230,222,208,.92);margin-bottom:22px;font-weight:300;letter-spacing:.5px}
+.quote-text::before{content:"\"";font-size:28px;color:rgba(160,140,100,.4);line-height:0;vertical-align:middle;margin-right:2px}
+.quote-text::after{content:"\"";font-size:28px;color:rgba(160,140,100,.4);line-height:0;vertical-align:middle;margin-left:2px}
+.quote-author{font-size:12.5px;color:rgba(180,170,155,.55);line-height:1.8;font-weight:300}
+.quote-author em{font-style:normal;color:rgba(180,170,155,.75)}
+.btn-wrap{margin-top:28px}
+.btn{background:linear-gradient(135deg,rgba(120,100,60,.3),rgba(80,70,110,.3));border:1px solid rgba(180,160,120,.25);color:rgba(220,210,190,.9);padding:12px 36px;border-radius:40px;font-size:14px;letter-spacing:3px;cursor:pointer;transition:all .3s ease;font-family:inherit;outline:none;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.btn:hover{background:linear-gradient(135deg,rgba(140,120,70,.4),rgba(100,90,130,.4));border-color:rgba(200,180,140,.4);box-shadow:0 4px 24px rgba(120,100,60,.15);transform:translateY(-1px)}
+.btn:active{transform:translateY(0);box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.footer{margin-top:20px;font-size:10px;color:rgba(160,150,140,.25);letter-spacing:1px}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="container">
+  <div class="title">时 空 语 录</div>
+  <div class="card fade-in" id="card">
+    <div class="tag" id="tag">物理学家</div>
+    <div class="quote-text" id="quoteText"></div>
+    <div class="quote-author" id="quoteAuthor"></div>
+  </div>
+  <div class="btn-wrap">
+    <button class="btn" id="btn">随 机 穿 梭</button>
+  </div>
+  <div class="footer">穿越时空 · 遇见智慧</div>
+</div>
+<script>
+var quotes=[
+  {text:"宇宙最不可理解的事情，就是它是可以被理解的。",author:"阿尔伯特·爱因斯坦",source:"《我的世界观》（1931）",type:"物理学家"},
+  {text:"我们是一群在岸边玩耍的孩子，偶尔捡到一块比平时更光滑的鹅卵石或更漂亮的贝壳，而整个真理的海洋还在我们面前未曾被发现。",author:"艾萨克·牛顿",source:"《对炼金术的回忆》（约1693）",type:"物理学家"},
+  {text:"宇宙不仅比我们想象的更奇特，而且比我们能够想象的还要奇特。",author:"J.B.S. 霍尔丹",source:"《当我的死神来临时》（1927）",type:"物理学家"},
+  {text:"我们身上的每一个原子都来自一颗爆炸的恒星。我们是宇宙认识自己的方式。",author:"卡尔·萨根",source:"《宇宙》（Cosmos，1980）",type:"物理学家"},
+  {text:"引力不是力，而是时空的弯曲。",author:"阿尔伯特·爱因斯坦",source:"《广义相对论基础》（1916）",type:"物理学家"},
+  {text:"时间是物质运动的持续时间，空间是物质分布的广延性。",author:"弗里德里希·恩格斯",source:"《自然辩证法》（1873-1883）",type:"物理学家"},
+  {text:"时间并非是一种我们可以置于自身之外的东西，而是我们自身的一部分；我们就是时间本身。",author:"亨利·柏格森",source:"《时间与自由意志》（1889）",type:"哲学家"},
+  {text:"空间和时间是我们感性的先天形式，而不是存在于我们之外的某种独立实体。",author:"伊曼努尔·康德",source:"《纯粹理性批判》（1781）",type:"哲学家"},
+  {text:"时间的现在对我而言总是无限宏大——瞬间就是永恒。",author:"奥古斯丁",source:"《忏悔录》第十一卷",type:"哲学家"},
+  {text:"空间和时间不过是事物并存或相继的顺序形式，而非独立的实在。",author:"戈特弗里德·莱布尼茨",source:"《克拉夫特致史密斯信》（1716）",type:"哲学家"},
+  {text:"时间是我们的经验的形式，是我们感知事物的方式。",author:"埃德蒙德·胡塞尔",source:"《内时间意识现象学》（1928）",type:"哲学家"},
+  {text:"时间是一个永远在流逝的河流，而我们则是河上的舟楫。",author:"米格尔·德·乌纳穆诺",source:"《生命的悲剧意识》（1913）",type:"哲学家"},
+  {text:"时间是一个由永恒当下构成的迷宫。",author:"豪尔赫·路易斯·博尔赫斯",source:"《小径分岔的花园》（1941）",type:"文学家"},
+  {text:"在未来的某一天，我们将不再能区分过去、现在与未来，时间将像一个巨大而平静的瞬间，所有的时刻都将同时呈现。",author:"伊塔洛·卡尔维诺",source:"《宇宙奇趣》（1981）",type:"文学家"},
+  {text:"所有的时间都属于这个瞬间——这个瞬间就是永恒。",author:"弗吉尼亚·伍尔夫",source:"《到灯塔去》（1927）",type:"文学家"},
+  {text:"空间是时间的沉淀，时间是我们无法回头的空间。",author:"博尔赫斯",source:"《探讨集》",type:"文学家"},
+  {text:"宇宙在我们的话语中诞生，又在我们的沉默中消逝。",author:"赫尔曼·黑塞",source:"《悉达多》（1922）",type:"文学家"},
+  {text:"我们都是星尘，在时空的褶皱中寻找归途。",author:"阿尔都斯·赫胥黎",source:"《永恒的旋律》（1961）",type:"文学家"}
+];
+var idx=-1;
+var card=document.getElementById('card');
+var tagEl=document.getElementById('tag');
+var quoteTextEl=document.getElementById('quoteText');
+var quoteAuthorEl=document.getElementById('quoteAuthor');
+var btnEl=document.getElementById('btn');
+function showQuote(){
+  var n;
+  do{n=Math.floor(Math.random()*quotes.length);}while(n===idx&&quotes.length>1);
+  idx=n;
+  var q=quotes[idx];
+  tagEl.textContent=q.type;
+  card.classList.remove('fade-in');
+  card.classList.add('fade-out');
+  setTimeout(function(){
+    quoteTextEl.textContent=q.text;
+    quoteAuthorEl.innerHTML='<em>'+q.author+'</em><br><span style="font-size:11px;opacity:.7">'+q.source+'</span>';
+    card.classList.remove('fade-out');
+    card.classList.add('fade-in');
+  },300);
+}
+btnEl.addEventListener('click',showQuote);
+showQuote();
+</script>
+</body>
+</html>

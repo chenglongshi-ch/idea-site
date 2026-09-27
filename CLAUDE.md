@@ -53,6 +53,7 @@
 - `research/ai-discoverability.md` — 独立站被人 + AI 发现机制（llms.txt/robots/收录）
 - `research/experiments/e1-agnes-html-demo/RESULT.md` — E1：Agnes 直出 HTML，判**通**
 - `research/experiments/e1b-sensenova-html-demo/RESULT.md` — E1b：商汤对称实验，flash-lite 半通 + glm-5.2 不通 + thinking 探针工艺
+- `research/graveyard-compare.md` — 上架时对比 AI 坟场给建议：判**可行**（killedbyai.net 唯一结构化死因源 128 条 CC BY；≤300 条全量塞合法零基建；>300 上 bge-small-zh 检索）
 
 ## 构建命令
 
