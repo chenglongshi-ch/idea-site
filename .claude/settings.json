@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch",
+      "Bash(uv run ~/.claude/skills/manager/scripts/skill_manager.py run-*)",
+      "Bash(uv run ~/.claude/skills/manager/scripts/skill_manager.py log *)",
+      "Bash(uv run ~/.claude/skills/manager/scripts/skill_manager.py bump *)",
+      "Bash(uv run ~/.claude/skills/manager/scripts/_consistency.py --check *)",
+      "Bash(uv run ~/.claude/skills/knowledge/scripts/kb.py *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git switch *)",
+      "Bash(npm run build)",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__list_pages"
+    ]
+  }
+}
