@@ -64,7 +64,7 @@
 
 - 实验脚本：`python research/experiments/<实验名>/<脚本>.py`（解释器**默认用 `d:/project/vedio/.venv/Scripts/python.exe`**——系统 python 2026-09-27 实测 exit 49 不稳）；key 从 `.env` export 后再跑：`set -a; source .env; set +a`；临时文件给 python 传 Windows 真实路径（`C:/Users/.../Temp/`），Git Bash 的 `/tmp` 对原生 python 不可见。
 - 站构建命令：`npm install`（首次）；`npm run dev`（本地站 http://localhost:4321，4 页见 docs/spec-site.md §3）；`npm run build`（静态产物）。
-- demo 提交协议：外部项目生成 demo，按 `docs/demo-protocol.md`（**v0.4**，2026-09-28 编号制；定界「site 只做承载+协议+验收，不管落码」）提交**三件套** + ideas 条目（清单见协议 §0）；slug=`000N-` 前缀由站侧分配（永久链）；`gen_demo.py` 归属外部项目侧作参考实现。
+- demo 提交协议：外部项目生成 demo，按 `docs/demo-protocol.md`（**v0.5**，2026-09-28 编号制+§2 内容组织/血统外显条款；定界「site 只做承载+协议+验收，不管落码」）提交**三件套** + ideas 条目（清单见协议 §0）；slug=`000N-` 前缀由站侧分配（永久链）；`gen_demo.py` 归属外部项目侧作参考实现。
 
 <!-- pl-status-contract@0.16.0 正本: ~/.claude/skills/project-lifecycle/templates/status-contract.md（vintage 锚，manager sediment-audit 对账用；本地适配在下一行可选注记） -->
 

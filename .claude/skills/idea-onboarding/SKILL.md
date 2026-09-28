@@ -12,7 +12,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 | 要查什么 | 去哪 |
 |---|---|
 | 模型通道表（Agnes / flash-lite / glm-5.2 一手结论与端点） | `CLAUDE.md` 领域关键事实节 |
-| 提交协议 v0.4（三件套清单 / lineage schema / 300 字口径 / 验收噪音归类 / slug=000N- 编号制） | `docs/demo-protocol.md` |
+| 提交协议 v0.5（三件套清单 / lineage schema / 300 字口径 / 验收噪音归类 / slug=000N- 编号制 / §2 内容组织+血统外显） | `docs/demo-protocol.md` |
 | 页面清单 / 内容模型 / 新增想法工作流 | `docs/spec-site.md` |
 | Agnes 端点 / 限额 / 节流事实卡 | `research/vedio-assets.md` §2 |
 | 首跑实录（本手册坑位的原始出处） | `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
@@ -32,6 +32,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 - **Agnes `agnes-2.5-flash` 主力**——首跑 34.3s 一次成功零兜底（3641 tok）；二跑 87.7s 一次成功（7735 tok，demo 18.4KB）——耗时/tok 随交互复杂度伸缩（×2.6 与产出量成比例），一次成功率累计 2/2。
 - **flash-lite 备用**，两个前置缺一不可：请求必带 `{"thinking":{"type":"disabled"}}`（否则思考吃光预算正文 0 字）；产出必过浏览器功能验收（E1b 同名 `render()` 覆盖致倒计时冻结的教训）。
 - **glm-5.2 禁用于单发大 HTML**（STATUS Deadends 已录，勿重试）。
+- **v0.5 布局与外显随生成进 prompt，别等验收才发现**：集合型内容（≥10 条/多类别）生成时就要求索引视图（分类切换/目录/网格任一）；探索型交互（探索即玩法）要求收集进度或索引入口；页脚带生成方式行（与 lineage `generator`/`date` 同源）——对应验收 §⑤-7/8（协议 §2）。
 
 命令模板（Windows Git Bash）：
 
@@ -71,6 +72,8 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 4. **移动端 375×667**：宿主页无横向溢出；iframe 高 `min(600px, 80vh)` 分支生效；demo 内部无横向滚动。
 5. **搜索**：想法关键词命中且只命中该卡；无结果词出空态。
 6. **preview 上脸**：卡片从状态色渐变占位 → 真实截图（img src 指向 preview）。
+7. **内容组织（v0.5）**：集合型 demo 检索引视图在场；探索型检收集进度/索引入口——纯线性随机流打回（协议 §2）。
+8. **血统外显（v0.5）**：demo 页脚生成方式行在场且与 lineage.json `generator`/`date` 同源——缺行或不同源打回（协议 §2）。
 
 截图存 `shots/<slug>/`（交互前后对照各一张 + 移动端）。命名模板（2026-09-28 整理定）：「页-状态-视口」固定语序（如 idea页-交互前 / demo-交互后 / 首页-375）——前两跑语序颠倒，自第三个想法起统一。shots/ 已不入 git（2026-09-28 用户裁：.gitignore+untrack，本地留档作验收证据）。走查毕 `npx astro dev stop` + curl 复核端口已关。
 
