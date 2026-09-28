@@ -1,0 +1,45 @@
+{
+  "producer": "D:\\skill-data\\runs\\project-lifecycle\\20260928T104718-4055",
+  "producer_script": "gen_star_photo_demo.py",
+  "rev": "b50aba7ee8c0",
+  "rev_mode": "dirty@b50aba7ee8c0",
+  "date": "2026-09-28",
+  "generator": {
+    "model": "agnes-2.5-flash",
+    "channel": "agnes"
+  },
+  "slug": "star-photo-stories",
+  "attempts": [
+    {
+      "attempt": 1,
+      "seconds": 87.7,
+      "chars": 16937,
+      "structurally_ok": true,
+      "error": null
+    }
+  ],
+  "gen_seconds": 87.7,
+  "usage": {
+    "completion_tokens": 7735,
+    "prompt_tokens": 887,
+    "total_tokens": 8622,
+    "completion_tokens_details": {
+      "reasoning_tokens": 836,
+      "text_tokens": 6899
+    }
+  },
+  "output": "index.html",
+  "output_chars": 16937,
+  "size_bytes": 18840,
+  "starts_with_doctype": true,
+  "ends_with_html": true,
+  "artifact_sha256": "4bca0f17a7ce",
+  "post_edits": [
+    {
+      "date": "2026-09-28",
+      "by": "agent-main（流程允许即自动做）",
+      "note": "最小修×2：sub 标签 ALT AIR→ALTAIR；昴星团故事 サブラ→スバル（先例=时空语录 post_edits）",
+      "artifact_sha256_after": "299606423f1b"
+    }
+  ]
+}

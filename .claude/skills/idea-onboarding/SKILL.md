@@ -5,7 +5,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 
 # idea-onboarding — 想法上架全链操作手册（site 独立站）
 
-把「想法 → 生成 demo → 提交 → 验收 → 上架」的跑法收进一本手册。消费者 = 未来会话 / 被派发的 agent（第二个想法上架起直接照此跑）。血统 = 时空语录首跑（run 20260927T162733-41bb，2026-09-27 全链首次跑通）。
+把「想法 → 生成 demo → 提交 → 验收 → 上架」的跑法收进一本手册。消费者 = 未来会话 / 被派发的 agent（第二个想法上架起直接照此跑）。血统 = 时空语录首跑（run 20260927T162733-41bb，2026-09-27 全链首次跑通）+ 拍星星找故事二跑（run 20260928T104718-4055，2026-09-28，首战校准跑）。
 
 **本文只收操作顺序 + 坑位**；协议细则、通道参数、页面 schema 一律指针，防双源漂移：
 
@@ -16,6 +16,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 | 页面清单 / 内容模型 / 新增想法工作流 | `docs/spec-site.md` |
 | Agnes 端点 / 限额 / 节流事实卡 | `research/vedio-assets.md` §2 |
 | 首跑实录（本手册坑位的原始出处） | `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
+| 二跑实录（首战校准 + 预估对比基准） | `D:\skill-data\runs\project-lifecycle\20260928T104718-4055\second-run-digest.md` |
 
 近同型（查重索引 2026-09-27）：`novel-initializer` agent（obsidian-novel-engine，「想法→vault 结构落地」同形不同域，无复用关系，仅登记）。
 
@@ -28,7 +29,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 
 通道裁定细节看 `CLAUDE.md` 通道表，此处只收跑法：
 
-- **Agnes `agnes-2.5-flash` 主力**——首跑实测 34.3s 一次成功零兜底（3641 tok）。
+- **Agnes `agnes-2.5-flash` 主力**——首跑 34.3s 一次成功零兜底（3641 tok）；二跑 87.7s 一次成功（7735 tok，demo 18.4KB）——耗时/tok 随交互复杂度伸缩（×2.6 与产出量成比例），一次成功率累计 2/2。
 - **flash-lite 备用**，两个前置缺一不可：请求必带 `{"thinking":{"type":"disabled"}}`（否则思考吃光预算正文 0 字）；产出必过浏览器功能验收（E1b 同名 `render()` 覆盖致倒计时冻结的教训）。
 - **glm-5.2 禁用于单发大 HTML**（STATUS Deadends 已录，勿重试）。
 
@@ -47,6 +48,7 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 清单与 schema 全按 `docs/demo-protocol.md` §0-§4，此处只收跑法要点：
 
 - `public/demos/<slug>/`：`index.html`（单文件自包含，行为约束见协议 §2）+ `preview.*`（内容基准 = demo 首屏的**确定状态**——随机开屏的 demo 须截固定帧，否则不可复现；规格见协议 §1）+ `lineage.json`。
+- preview 截法（二跑收编）：chrome-devtools `emulate` viewport `1200x750x2` → `take_screenshot` 带 filePath 直存 `preview.png`（实得 2400×1500）；**必须在交互前截**首屏确定状态。
 - lineage 必填 `producer` / `rev` / `date`；`rev` = 生成时刻工作树 HEAD 12 位 hex（无论脏净一律记），脏树**必加** `artifact_sha256`（index.html sha256 前 12 位）——语义见协议 §3 注①。
 - **producer 仓外记法（2026-09-27 人裁定案 A）**：走 run 体系的提交方 `producer` 指 run 目录（repo 外持久 + run_id 现成追溯）；不走 run 的必加 `producer_sha256`（脚本内容哈希，仅对新提交生效）。三案利弊存档 `docs/producer-lineage-decision.md`。
 - 坑：生成脚本写产物用二进制或 `newline=''`——Windows 文本模式 CRLF 膨胀，致 lineage `size_bytes` 与磁盘不符（首跑实录瑕疵）。
@@ -64,8 +66,8 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 形态类评价只认实机/截图，读代码不算（E1b 冻结 bug 即反例）。逐项：
 
 1. **路由 200**：`/`、`/ideas/<slug>/`、`/demos/<slug>/` + 既有页面全量点一遍。
-2. **console 归类**：报错分两类（协议 §6）——demo 责任（外链请求/弹窗/demo 自身 JS 报错）→ 打回；站级噪音（如 `/favicon.ico` 404）→ 站侧待办，不归提交方。
-3. **交互活体**：iframe 内真点真验（首跑例：穿梭按钮连点 5 次全部切换无连续重复）——显示冻结类 bug 读代码看不出来。
+2. **console 归类**：报错分两类（协议 §6）——demo 责任（外链请求/弹窗/demo 自身 JS 报错）→ 打回；站级噪音（如 `/favicon.ico` 404）→ 站侧待办，不归提交方。dev 环境另有 `[vite] connecting` debug（构建产物无），不算报错（二跑收编）。
+3. **交互活体**：iframe 内真点真验（首跑例：穿梭按钮连点 5 次全部切换无连续重复）——显示冻结类 bug 读代码看不出来。canvas 型 demo（交互对象不进 a11y 树、无 DOM 元素可点）：从内联源码挖比例坐标 map → 合成 MouseEvent/TouchEvent 打坐标，结果以 DOM 状态（polaroid.show / p-title 等）+截图取证（二跑实况）。
 4. **移动端 375×667**：宿主页无横向溢出；iframe 高 `min(600px, 80vh)` 分支生效；demo 内部无横向滚动。
 5. **搜索**：想法关键词命中且只命中该卡；无结果词出空态。
 6. **preview 上脸**：卡片从状态色渐变占位 → 真实截图（img src 指向 preview）。
@@ -85,10 +87,10 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 ## v0-design（2026-09-27 建）
 
 - **适应度声明**：怎么算合适 = 第二个想法上架时，不用再回头翻散装文档（CLAUDE.md / 协议 / spec / digest 四处拼跑法）即合适；最小样本 = 1 次实战（时空语录首跑）。
-- **首战校准条款**：第二个想法跑完，按实际卡点回改本手册——哪步被迫翻了别处（=指针不够用）、哪步多余、哪个实际坑没写进来。
-- **否定式覆盖清单**（「本次未行使什么」，首战后填）：
-  - [ ] 待填：flash-lite 备用通道（首跑未用）
-  - [ ] 待填：打回重修流程（首跑一次过，未走打回）
-  - [ ] 待填：preview 缺失不阻断分支（首跑附带了 preview）
-  - [ ] 待填：坟场分析槽位（协议 §9 定稿后首用）
-- **调整或退役线**：首战后若手册没有减少翻文档量（仍要四处拼），降级回 CLAUDE.md 注记；若第二个想法跑完零回改且第三个想法也不翻文档，摘 v0 标。
+- **首战校准（2026-09-28 done，拍星星找故事二跑）**：指针制全命中（通道表/协议/digest 一次到位，零散装翻找）；回改 3 处——§② 补二跑实测数、§③ 补 preview 截法、§⑤ 补 canvas 交互驱动+vite 噪音归类；无步骤多余；§③ 预收编的 CRLF 坑本次 `newline=''` 生效零瑕疵。
+- **否定式覆盖清单**（「本次未行使什么」，2026-09-28 二跑后填；两跑合计口径）：
+  - [x] flash-lite 备用通道（首跑/二跑均未用——Agnes 一次成功率 2/2，备用通道持续零实战数据）
+  - [x] 打回重修流程（二跑同一次过零打回——结构/功能/实机全绿）
+  - [x] preview 缺失不阻断分支（两跑均附带 preview；站侧回退占位卡分支仍无实战）
+  - [x] 坟场分析槽位（协议 §9 四件套可选件，二跑未附 analysis.md——评审系统外部侧未开工，首析仍是未来事件）
+- **调整或退役线**：首战有回改 → 留 v0；摘标条件顺延为「第三个想法零翻文档零回改」。若届时仍要四处拼跑法，降级回 CLAUDE.md 注记。
