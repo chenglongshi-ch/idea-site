@@ -56,16 +56,23 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
           <span class="muted">{entry.data.tags.map((t) => `#${t}`).join(' ')}</span>
         )}
       </div>
+      <!-- E1 页内锚点导航（2026-09-28 翻案升格：原裁决 #1「四块量级不足」→ 实机体感+排期增长翻案；零 JS） -->
+      <nav class="toc" aria-label="页内导航">
+        <a href="#sec-problem">问题与方案</a>
+        <a href="#sec-demo">Demo</a>
+        <a href="#sec-changelog">更新日志</a>
+        <a href="#sec-reactions">反响</a>
+      </nav>
     </header>
 
-    <section class="block">
+    <section class="block" id="sec-problem">
       <h2>问题与方案</h2>
       <div class="prose">
         <Content />
       </div>
     </section>
 
-    <section class={`block${hasDemo ? ' demo-live' : ''}`}>
+    <section class={`block${hasDemo ? ' demo-live' : ''}`} id="sec-demo">
       {hasDemo ? (
         <>
           <!-- 檐口（v1 ② 保留，v2.② 改 surface 色带适配暗色页）：直链逃生门 + 暗 demo 上沿缓冲 -->
@@ -89,7 +96,7 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
       )}
     </section>
 
-    <section class="block">
+    <section class="block" id="sec-changelog">
       <h2>更新日志</h2>
       {entry.data.changelog.length > 0 ? (
         <ul class="changelog">
@@ -105,7 +112,7 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
       )}
     </section>
 
-    <section class="block">
+    <section class="block" id="sec-reactions">
       <h2>反响</h2>
       {giscusReady ? (
         // giscus 标准挂载（v2.③）：外链 script，主题跟暗色走 dark_dimmed；is:inline 防 Astro 打包改写
@@ -165,13 +172,36 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
     font-size: 0.82rem;
   }
 
-  /* 四件套各为 section 卡（v2.② 重皮；顺序/数据依赖/空态文案 = v1 ③ 原样） */
+  /* E1 页内锚点导航（零 JS）：meta 行下隔线一排小链接 */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--bg-soft);
+  }
+
+  .toc a {
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .toc a:hover {
+    color: var(--accent);
+  }
+
+  /* 四件套各为 section 卡（v2.② 重皮；顺序/数据依赖/空态文案 = v1 ③ 原样）；
+     scroll-margin = sticky 页头遮挡补偿（E1 锚点跳落点下移） */
   .block {
     margin-top: 20px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 20px 24px;
+    scroll-margin-top: 64px;
   }
 
   .prose {
