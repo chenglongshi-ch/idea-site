@@ -1,6 +1,7 @@
 # 开源「想法 → 可运行 demo/应用」生成工具盘点（选型用）
 
 - 调研时点：**2026-09-23**（所有 GitHub 数据均为当日 API 实拉，下同）
+- **结案注（2026-09-28）**：选型已定稿——通道定稿为「模型直出单文件 HTML、无生成式 UI 框架/脚手架」（2026-09-23 双实验裁定，CLAUDE.md），本文 Top3 路线均未采用；本文件退居档案，勿据此重开选型。
 - 使用场景：solo 开发者，Windows 11 + Git Bash + Python(uv)。模型走两家 OpenAI 兼容 API：
   - Agnes AI：`https://apihub.agnes-ai.com/v1`，文本 `agnes-2.5-flash`（512K ctx），免费档 ~20RPM
   - 商汤 SenseNova：由另一 agent 并行调研，本文只要求候选工具**支持自定义 OpenAI 兼容 endpoint**

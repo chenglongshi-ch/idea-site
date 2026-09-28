@@ -72,7 +72,7 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 5. **搜索**：想法关键词命中且只命中该卡；无结果词出空态。
 6. **preview 上脸**：卡片从状态色渐变占位 → 真实截图（img src 指向 preview）。
 
-截图存 `shots/<slug>/`（交互前后对照各一张 + 移动端）。走查毕 `npx astro dev stop` + curl 复核端口已关。
+截图存 `shots/<slug>/`（交互前后对照各一张 + 移动端）。命名模板（2026-09-28 整理定）：「页-状态-视口」固定语序（如 idea页-交互前 / demo-交互后 / 首页-375）——前两跑语序颠倒，自第三个想法起统一。shots/ 已不入 git（2026-09-28 用户裁：.gitignore+untrack，本地留档作验收证据）。走查毕 `npx astro dev stop` + curl 复核端口已关。
 
 ## ⑥ 上架收尾
 
@@ -94,3 +94,4 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
   - [x] preview 缺失不阻断分支（两跑均附带 preview；站侧回退占位卡分支仍无实战）
   - [x] 坟场分析槽位（协议 §9 四件套可选件，二跑未附 analysis.md——评审系统外部侧未开工，首析仍是未来事件）
 - **调整或退役线**：首战有回改 → 留 v0；摘标条件顺延为「第三个想法零翻文档零回改」。若届时仍要四处拼跑法，降级回 CLAUDE.md 注记。
+- **接线声明（2026-09-28 审计补记，清「条款落盘+接线」判据欠账）**：hook/cron 面**零接线且够用**——六步均人/主线程驱动；300 字断言内嵌 astro 构建管线（`src/pages/ideas/[slug].astro`）；llms.txt 自动派生在 `src/pages/llms.txt.js`；收尾记 STATUS/dispatches 由 STATUS 契约三触发承担；权限接线（npm build/dev、`npx astro dev stop`、chrome-devtools MCP）已入项目 settings.json。

@@ -89,7 +89,7 @@
 - **A2UI Generation Skill**：`npx skills add AGenUI/AGenUI` 装进 Claude Code/Cursor/Codex 等 55+ 运行时；
 - **AGenUI Studio**：`npx agenui-studio`，本地 BYO-key 工作台（NL → A2UI → 预览/校验 → 扫码推真机），支持 DeepSeek/Qwen/GLM/OpenAI/Gemini。
 
-**对 site 的意义（比 vedio 时期「弱相关」升级为强相关）**：「想法→demo」的 demo 若是**交互式 UI** 而非静态图/视频，A2UI 正是「LLM 输出结构化 UI 描述」的现成协议——省掉自创 schema，且 Catalog 协商机制天然解决「模型能生成什么组件」的约束问题。**关键抉择**：AGenUI 本体是移动端原生（C++ 内核/鸿蒙），**独立站是 Web**——Web 渲染应看生态里的 **a2ui-vue** 或 doc 指出的 CopilotKit **AG-UI**（15.7k★）；A2UI 协议思想 + Generation Skill（喂给 Claude Code 生成 A2UI 的 skill）可直接用。vedio 当时的裁定「当前阶段不引入」对 site 应重新评估。
+**对 site 的意义（比 vedio 时期「弱相关」升级为强相关）**：「想法→demo」的 demo 若是**交互式 UI** 而非静态图/视频，A2UI 正是「LLM 输出结构化 UI 描述」的现成协议——省掉自创 schema，且 Catalog 协商机制天然解决「模型能生成什么组件」的约束问题。**关键抉择**：AGenUI 本体是移动端原生（C++ 内核/鸿蒙），**独立站是 Web**——Web 渲染应看生态里的 **a2ui-vue** 或 doc 指出的 CopilotKit **AG-UI**（15.7k★）；A2UI 协议思想 + Generation Skill（喂给 Claude Code 生成 A2UI 的 skill）可直接用。vedio 当时的裁定「当前阶段不引入」对 site 应重新评估。**[结案注 2026-09-28]**：此「重新评估」已被同日通道定稿否决——site 走模型直出单文件 HTML，AGenUI/A2UI 不引入，勿据此重开。
 
 ## 4. 「产物血统」模式评估（对 demo 可追溯性的借鉴）
 

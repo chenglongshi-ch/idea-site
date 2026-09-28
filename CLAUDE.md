@@ -23,9 +23,9 @@
 
 | 通道 | Model ID | 角色 | 一手结论 |
 |---|---|---|---|
-| Agnes | `agnes-2.5-flash` | **demo 生成主力** | E1 实测通：38s / 12KB / 功能零缺陷，一次成功无重试，iframe 嵌入可用 |
+| Agnes | `agnes-2.5-flash` | **demo 生成主力** | E1 实测通：38s / 12KB / 功能零缺陷，一次成功无重试，iframe 嵌入可用；全链两跑复证（09-27/28）：34.3s / 87.7s，一次成功率 2/2 |
 | 商汤自研 | `sensenova-6.8-flash-lite` | 备用（成本对冲） | E1b 半通：31.7s / 14k 字，但同名 `render()` 覆盖致倒计时显示冻结——产出必过浏览器功能验收 |
-| 商汤托管 | `glm-5.2` | **禁用于单发大 HTML** | E1b 不通：203.9s + `completion_tokens=16000` 截断 + >300s 读超时；长处在长上下文问答/改码，不弃用只禁此场景 |
+| 商汤托管 | `glm-5.2` | **禁用于单发大 HTML** | E1b 不通：16k 截断（203.9s）+ >300s 读超时，详 STATUS Deadends 首行；长处在长上下文问答/改码，不弃用只禁此场景 |
 
 - flash-lite 备用通道两个前置：① 请求必带 `{"thinking":{"type":"disabled"}}`——否则思考吃光预算正文 0 字（E1b 跑① 230.8s 全烧 reasoning）；② 产出过浏览器功能验收。
 - **端点**：Agnes `https://apihub.agnes-ai.com/v1`（Bearer key，文本 ~20 RPM 实际）；商汤 `https://token.sensenova.cn/v1`（OpenAI 兼容，另有 `/v1/messages` Anthropic 兼容）。均读 `.env`。
@@ -56,12 +56,13 @@
 - `research/experiments/e1-agnes-html-demo/RESULT.md` — E1：Agnes 直出 HTML，判**通**
 - `research/experiments/e1b-sensenova-html-demo/RESULT.md` — E1b：商汤对称实验，flash-lite 半通 + glm-5.2 不通 + thinking 探针工艺
 - `research/graveyard-compare.md` — 上架时对比 AI 坟场给建议：判**可行**（killedbyai.net 唯一结构化死因源 128 条 CC BY；≤300 条全量塞合法零基建；>300 上 bge-small-zh 检索）
+- `research/graveyard-kb/` — 坟场评估知识库种子 v1（五透镜笔记约 470 行 + INDEX；暂住 research/，外部侧评审系统落码时收养）
 
 ## 构建命令
 
 - 实验脚本：`python research/experiments/<实验名>/<脚本>.py`（解释器**默认用 `d:/project/vedio/.venv/Scripts/python.exe`**——系统 python 2026-09-27 实测 exit 49 不稳）；key 从 `.env` export 后再跑：`set -a; source .env; set +a`；临时文件给 python 传 Windows 真实路径（`C:/Users/.../Temp/`），Git Bash 的 `/tmp` 对原生 python 不可见。
 - 站构建命令：`npm install`（首次）；`npm run dev`（本地站 http://localhost:4321，4 页见 docs/spec-site.md §3）；`npm run build`（静态产物）。
-- demo 提交协议：外部项目生成 demo，按 `docs/demo-protocol.md`（v0.1，2026-09-26 定界「site 只做承载+协议+验收，不管落码」）提交两件套（demos/ + ideas/）；`gen_demo.py` 归属外部项目侧作参考实现。
+- demo 提交协议：外部项目生成 demo，按 `docs/demo-protocol.md`（**v0.3**，2026-09-27 定稿；定界「site 只做承载+协议+验收，不管落码」）提交**三件套** + ideas 条目（清单见协议 §0）；`gen_demo.py` 归属外部项目侧作参考实现。
 
 <!-- pl-status-contract@0.16.0 正本: ~/.claude/skills/project-lifecycle/templates/status-contract.md（vintage 锚，manager sediment-audit 对账用；本地适配在下一行可选注记） -->
 

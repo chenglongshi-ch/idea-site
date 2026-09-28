@@ -13,3 +13,6 @@ dist/
 # os
 Thumbs.db
 .DS_Store
+
+# 截图移出仓库（2026-09-28 用户裁：验收证据本地留档不入 git；git 历史中的旧图仍可考）
+shots/

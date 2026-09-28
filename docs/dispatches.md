@@ -63,3 +63,13 @@
 | 2026-09-27 | implement:q2-md-mirror | Q2 想法页 .md 镜像落码（P6 裁定后无依赖先行；消费 R3 口径+llms.txt.js/rss 先例） | 262s | 50,626 | 完成 → [slug].md.js 端点+页面 alternate 声明+Layout head 插槽；build 绿 3 端点；主线程核验过并同批接线 llms.txt 链接直指镜像 | — |
 | 2026-09-28 | research:graveyard-kb×5 | 坟场评估知识库种子·学习阶段：5 透镜 agent（产品砍杀/功能移除/创业失败/模型升级/平台依赖）并行吃透 128 条死因切片（run 20260928T102259-a70f；产物 research/graveyard-kb/personas/；P5 合规原料不落仓） | 546/305/526/744/682s | 39.8k/38.5k/39.3k/45.9k/44.1k | 完成 → 五笔记 470 行全核验（行数/sha/CC BY/temp 零残留逐项过）+主线程 INDEX 合成落盘；引用全实引，跨透镜双计已标去重原则 | — |
 | 2026-09-28 | main:star-photo-stories | 主线程第二想法全链：拍星星找故事——Agnes 生成 87.7s 一次成功→三件套+条目落位→post_edits 最小修×2→build 绿×2→实机六项（iframe 活体四连拍/移动端 533.6/搜索+空态/preview 上脸/console 零报错）→idea-onboarding 手册首战校准回改 3 处（run 20260928T104718-4055） | — | — | 完成 → 9 路由 200+llms.txt 自动零手动；预估对比=流程符合，耗时 ×2.6 与产出量成比例（详 run 目录 second-run-digest.md） | — |
+| 2026-09-23 | research:wiring-facts | [回填] Explore local wiring facts（run e24b 证据 agent；jsonl 机器面对账补录 2026-09-28） | — | — | 完成（推断：premise-audit.md 现存且被台账头引用） | — |
+| 2026-09-23 | research:sessionstart-semantics | [回填] Verify SessionStart hook semantics（claude-code-guide，run e24b） | — | — | 未收（产物去向台账无载） | — |
+| 2026-09-23 | audit:git-skeleton | [回填] 审计 git 与骨架合规（manager） | — | — | 完成（推断：其发现即 fix:audit-debt 行清偿内容） | — |
+| 2026-09-23 | audit:docs-status | [回填] 审计文档实验STATUS合规（manager） | — | — | 完成（推断：同上并入 fix:audit-debt 链） | — |
+| 2026-09-23 | census:multi-project-docs | [回填] 多项目文档盘点（manager，跨项目性质） | — | — | 未收（产物去向台账无载） | — |
+| 2026-09-28 | audit:status-claude | 整理·STATUS+CLAUDE 对账审计（只读 digest；run 20260928T141720-b7c4） | 118s | 34,220 | 完成 → digest：仓库内 14 指针全在；demo-protocol v0.1→v0.3 漂移实锤+死端候选×2；已改 | — |
+| 2026-09-28 | audit:permission-band | 整理·.claude 体系+权限带月度复审（同 run） | 159s | 45,628 | 完成 → digest：主 settings 24 条净（3 条 uv 细分被通配遮蔽）；local 98 条中约 75 条残迹；ask/deny 空；接线欠账 1 笔——已改（local 清至 5 条+deny .env+ask push+SKILL 接线声明） | — |
+| 2026-09-28 | audit:docs-consistency | 整理·docs 一致性审计（同 run） | 222s | 65,849 | 完成 → digest：spec-site v1.2 落后现实 4 处（页面清单/镜像端点/gen_demo 引用/验收框）；graveyard 两处「待拍」残留；candidates 缺终局注——已改（spec v1.3 等） | — |
+| 2026-09-28 | audit:research-outputs | 整理·research+产物目录审计（同 run） | 218s | 69,573 | 完成 → digest：调研索引缺 graveyard-kb 行；demo-generators/vedio-assets §3 无结案注；example-a 退役条件达成未执行；无 .gitattributes——索引/结案注已改，后两项待人裁 | — |
+| 2026-09-28 | audit:dispatches-reconcile | 整理·dispatches 机器面对账草拟（jsonl site 62 ↔ 台账真派发 47；process-audit 观察项闭环） | 215s | 47,876 | 完成 → 回填 5 行 09-23 老账+今日 5 行真实数；反向差 1 条（graveyard-design C 路无 spawn 记录，疑 SendMessage 续跑或 hook 漏记，非旧派发） | — |
