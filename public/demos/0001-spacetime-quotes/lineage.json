@@ -7,7 +7,7 @@
     "model": "agnes-2.5-flash",
     "channel": "agnes"
   },
-  "slug": "spacetime-quotes",
+  "slug": "0001-spacetime-quotes",
   "post_edits": [
     {
       "date": "2026-09-27",
@@ -20,6 +20,11 @@
         "#6 恩格斯 类目改哲学家+整条换《反杜林论》（1878）可考句",
         "#10 莱布尼茨 出处改《莱布尼茨致克拉克第三封信》（1716）"
       ]
+    },
+    {
+      "date": "2026-09-28",
+      "by": "site-main-thread",
+      "reason": "站侧启用编号系统（用户裁采纳）：目录 spacetime-quotes → 0001-spacetime-quotes，slug 随目录名同步（协议 v0.4）"
     }
   ],
   "attempts": [

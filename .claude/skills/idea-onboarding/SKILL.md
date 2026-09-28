@@ -12,7 +12,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 | 要查什么 | 去哪 |
 |---|---|
 | 模型通道表（Agnes / flash-lite / glm-5.2 一手结论与端点） | `CLAUDE.md` 领域关键事实节 |
-| 提交协议 v0.3（三件套清单 / lineage schema / 300 字口径 / 验收噪音归类） | `docs/demo-protocol.md` |
+| 提交协议 v0.4（三件套清单 / lineage schema / 300 字口径 / 验收噪音归类 / slug=000N- 编号制） | `docs/demo-protocol.md` |
 | 页面清单 / 内容模型 / 新增想法工作流 | `docs/spec-site.md` |
 | Agnes 端点 / 限额 / 节流事实卡 | `research/vedio-assets.md` §2 |
 | 首跑实录（本手册坑位的原始出处） | `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
@@ -23,7 +23,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 ## ① 输入与前置
 
 - 想法文本 + 出处。**含引语/名人言论的想法，出处必须可考**——这是对**提交方**的输入要求；**内容考据与修复归提交方（demo 与站分离，2026-09-28 用户定界）**：站侧验收只管结构与功能（三件套/lineage/断言/路由/console/交互活体），发现内容疑点→记档移交提交方，**不代修不阻断**（时空语录 5 处最小修是用户特裁例外，非默认路径；post_edits 字段留给提交方自记）。
-- slug 规则见协议 §5（一经挂站不改）；想法条目 frontmatter 对齐 `src/content.config.ts`。
+- slug 规则见协议 §5（v0.4：`000N-` 编号前缀由站侧按上架顺序分配，一经挂站不改含编号；存量迁移由站侧做，提交方不自改）；想法条目 frontmatter 对齐 `src/content.config.ts`。
 
 ## ② demo 生成（通道选择 + 命令模板）
 

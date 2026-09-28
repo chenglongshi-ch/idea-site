@@ -1,6 +1,6 @@
 # 本地站功能 spec（spec-lite）
 
-- **状态**：v1.3（2026-09-28 整理回填：§3 补已落地派生端点与扩展页、§2/§5 生成职责改指外部侧、§6 移出已实装件、§7 验收框回填）；v1.2（2026-09-26 design-spec ⑦-3 同步：删 `slug` 必填——文件名即 slug，零消费字段即冗余）；v1.1（2026-09-23 骨架实装回填），2026-09-23 定稿——first-real-idea（本地全链跑通）的功能依据与验收依据。
+- **状态**：v1.4（2026-09-28 晚：§4 文件名启用 000N- 编号制、§6 giscus 注更新为站侧就绪待配置）；v1.3（2026-09-28 整理回填：§3 补已落地派生端点与扩展页、§2/§5 生成职责改指外部侧、§6 移出已实装件、§7 验收框回填）；v1.2（2026-09-26 design-spec ⑦-3 同步：删 `slug` 必填——文件名即 slug，零消费字段即冗余）；v1.1（2026-09-23 骨架实装回填），2026-09-23 定稿——first-real-idea（本地全链跑通）的功能依据与验收依据。
 - **推导来源**：`research/precedent-products.md` §二（发布形态与页面清单）+ CLAUDE.md 通道定稿（模型直出单文件 HTML + 静态站承载）。与调研默认不同处（框架起手）已注明理由。
 - **范围**：**本地阶段**——`npm run dev` 可跑、可新增想法、可实机验收即达标。上线件单列 §6 预留，本期一律不做。
 
@@ -31,7 +31,7 @@
 
 ## 4. 内容模型
 
-想法条目 = `src/content/ideas/<slug>.md`（**文件名即 slug，路由用 entry.id**，标题可中文），frontmatter：
+想法条目 = `src/content/ideas/000N-<slug>.md`（**文件名 = 上架序号 + slug，路由用 entry.id**；编号站侧按上架顺序分配、一经挂站不改，标题可中文；v1.4 编号制，协议 §5 v0.4），frontmatter：
 
 ```yaml
 title: <标题>
@@ -54,7 +54,7 @@ demo 产物 = `public/demos/<slug>/index.html` + 同目录 `lineage.json`（必�
 
 ## 6. 明确不做（上线预留，防范围蔓延）
 
-评论区（giscus）、访问分析（umami/Plausible）、「我想要这个」按钮、sitemap、邮件订阅——发布时按 `research/precedent-products.md` §二 8 页清单一次挂上。本期只在想法页模板里留「评论区上线挂载点」注释位。（v1.3 注：原列的 llms.txt/RSS/`/now`/`/about` 已提前实装，移入 §3；giscus 需用户建公开 GitHub 仓库，发布前欠账）
+评论区（giscus）、访问分析（umami/Plausible）、「我想要这个」按钮、sitemap、邮件订阅——发布时按 `research/precedent-products.md` §二 8 页清单一次挂上。本期只在想法页模板里留「评论区上线挂载点」注释位。（v1.3 注：原列的 llms.txt/RSS/`/now`/`/about` 已提前实装，移入 §3；v1.4 注：giscus 站侧接线就绪——配置驱动 `src/config.ts`，未配置渲染占位说明；**待用户三步**：建公开仓→开 Discussions→giscus.app 取 repo/repoId/category/categoryId 填入）
 
 ## 7. 验收（first-real-idea 关闭条件）
 

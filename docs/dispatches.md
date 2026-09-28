@@ -73,3 +73,4 @@
 | 2026-09-28 | audit:docs-consistency | 整理·docs 一致性审计（同 run） | 222s | 65,849 | 完成 → digest：spec-site v1.2 落后现实 4 处（页面清单/镜像端点/gen_demo 引用/验收框）；graveyard 两处「待拍」残留；candidates 缺终局注——已改（spec v1.3 等） | — |
 | 2026-09-28 | audit:research-outputs | 整理·research+产物目录审计（同 run） | 218s | 69,573 | 完成 → digest：调研索引缺 graveyard-kb 行；demo-generators/vedio-assets §3 无结案注；example-a 退役条件达成未执行；无 .gitattributes——索引/结案注已改，后两项待人裁 | — |
 | 2026-09-28 | audit:dispatches-reconcile | 整理·dispatches 机器面对账草拟（jsonl site 62 ↔ 台账真派发 47；process-audit 观察项闭环） | 215s | 47,876 | 完成 → 回填 5 行 09-23 老账+今日 5 行真实数；反向差 1 条（graveyard-design C 路无 spawn 记录，疑 SendMessage 续跑或 hook 漏记，非旧派发） | — |
+| 2026-09-28 | main:numbering-giscus | 主线程：编号迁移 git mv ×4 + lineage slug 同步/post_edits + changelog 簿记 + 协议 v0.4 + 文档同步×5 + build + 实机截图（站能力两件裁定后落地；giscus 站侧零改动确认就绪） | — | — | 完成（本行所属提交） | — |

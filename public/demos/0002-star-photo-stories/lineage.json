@@ -8,7 +8,7 @@
     "model": "agnes-2.5-flash",
     "channel": "agnes"
   },
-  "slug": "star-photo-stories",
+  "slug": "0002-star-photo-stories",
   "attempts": [
     {
       "attempt": 1,
@@ -40,6 +40,11 @@
       "by": "agent-main（流程允许即自动做）",
       "note": "最小修×2：sub 标签 ALT AIR→ALTAIR；昴星团故事 サブラ→スバル（先例=时空语录 post_edits）",
       "artifact_sha256_after": "299606423f1b"
+    },
+    {
+      "date": "2026-09-28",
+      "by": "site-main-thread",
+      "reason": "站侧启用编号系统（用户裁采纳）：目录 star-photo-stories → 0002-star-photo-stories，slug 随目录名同步（协议 v0.4）"
     }
   ]
 }
