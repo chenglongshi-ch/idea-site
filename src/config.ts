@@ -3,9 +3,9 @@
 // 配置步骤：在 GitHub 建公开仓库 → 开启 Discussions → 到 https://giscus.app 拿 repo/repoId/category/categoryId 填到下方。
 export const siteConfig = {
   giscus: {
-    repo: '', // 形如 'your-name/ideas-discuss'
-    repoId: '',
-    category: '', // 形如 'Announcements'
-    categoryId: '',
+    repo: 'chenglongshi-ch/idea-site', // 公开仓+Discussions 已建（2026-09-29，API 直建）
+    repoId: 'R_kgDOUxd8vg',
+    category: 'Announcements', // 仅维护者可开新帖型分类，访客跟帖
+    categoryId: 'DIC_kwDOUxd8vs4DGnub',
   },
 } as const;
