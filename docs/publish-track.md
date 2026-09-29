@@ -37,11 +37,15 @@
 
 推荐 A：付款摩擦最低 + 备案门不焊死。后缀选 .com（认知零成本）；挑名原则：短、可拼读、不含连数字。
 
+**免费档与渐进路线（v0.1.1 补，2026-09-29 用户问「没有免费的吗」）**：托管本就免费，唯一付费项=域名。零成本起步 = `*.pages.dev` 子域直接上线（代价=大陆访问不稳，owner 自查与发链受摩擦；社区子域 is-a.dev/js.org = 借域可回收，与永久链承诺相冲，不用；Freenom 类已死）。**渐进合法**：000N- 永久链路径型不含域名——先 pages.dev 上线验证反响，购域后绑定即升级，链接不断。**修订推荐：起步零成本（pages.dev）→ 反响验证后购域（fork A）**。
+
+**GitHub Pages 路线（同日用户问「github 的 docs 呢」）**：三源——gh-pages 分支 / **main 的 `docs/` 目录**（零构建直发）/ **GitHub Actions 构建**（推源码自动 build+deploy）。**取 Actions 模式**：docs/ 目录模式把构建产物提交进 git，违反不变式②（正本是源码、产物可丢），且非 `用户名.github.io` 专属仓时站挂子路径 `/repo/`，需全站配 `base` 适配根路径假设。免费口径=公开仓全免费（私有仓 Pages 需 Pro；本站反正公开，giscus 同仓）。域名 `*.github.io`（借域，大陆不稳同 pages.dev）。**卖点=账号面只留 GitHub 一家**（代码+评论+托管一仓抓）；默认仍 CF Pages（自定义域大陆实测 200+带宽口径），用户若偏好账号收窄即切。
+
 ## 3. 上线步骤序（U=用户账号/付款，A=agent）
 
 1. [A] 全仓敏感物复查 → git 推 GitHub 建远端（备份即建立）
 2. [U] 注册 Cloudflare 账号；[A] 连仓库 + 构建设置（`npm run build` / `dist`）
-3. [U] 阿里云购域名；[A] NS 切换 + 自定义域绑定（逐步指路）
+3. [U，**可后置**] 阿里云购域名；[A] NS 切换 + 自定义域绑定——先以 pages.dev 上线，购域后无缝升级（永久链路径型不断链）
 4. [A] `astro.config.mjs` 补 `site` 字段；占位文案 ×3（about/now 口吻、页脚）
 5. [U+A] giscus 三步（repo/repoId/category/categoryId → `src/config.ts`）
 6. [A] 上线验证：全路由 200 / RSS / llms.txt / giscus 活体 / console 净 / 大陆直连抽查
