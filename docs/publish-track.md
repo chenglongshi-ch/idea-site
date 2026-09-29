@@ -49,14 +49,18 @@
 
 **零付钱推荐序**：pages.dev 今天上线（零等待）→ 同步 PR 申请 is-a.dev（站已上线才可申请，正好接上）→ 真实访客出现再购 .com（每步升级链接不断）。
 
-## 3. 上线步骤序（U=用户账号/付款，A=agent）
+## 3. 上线步骤序（U=用户账号/付款，A=agent）——**2026-09-29 执行记录**
 
-1. [A] 全仓敏感物复查 → git 推 GitHub 建远端（备份即建立）
-2. [U] 注册 Cloudflare 账号；[A] 连仓库 + 构建设置（`npm run build` / `dist`）
-3. [U，**可后置**] 阿里云购域名；[A] NS 切换 + 自定义域绑定——先以 pages.dev 上线，购域后无缝升级（永久链路径型不断链）
-4. [A] `astro.config.mjs` 补 `site` 字段；占位文案 ×3（about/now 口吻、页脚）
-5. [U+A] giscus 三步（repo/repoId/category/categoryId → `src/config.ts`）
-6. [A] 上线验证：全路由 200 / RSS / llms.txt / giscus 活体 / console 净 / 大陆直连抽查
+> **已上线**：https://chenglongshi-ch.github.io/idea-site/ ——GitHub 路线（用户裁「github 可以实现就 github」），步骤序按实际执行改写如下。
+
+1. [A] ✅ 敏感物复查全绿 → 远端建立 `chenglongshi-ch/idea-site`（public+Discussions）→ main 首推
+2. [U→A] ✅ 用户裁 GitHub 路线（零账号注册）；Pages API 启用（build_type=workflow）+ `deploy.yml`（全第一方 actions，产物不进 git）
+3. [域名·后置中] 当前 = github.io 子路径；零付钱序下一步 = **is-a.dev 申请**（站已上线即满足前提，批下换绑不断链）
+4. [A] ✅ `site`+`base` 子路径全链路适配（模板内链/RSS/llms.txt/.md 镜像；Astro v7 两坑收编入 CLAUDE.md）；页脚占位换中性文案（about/now 口吻仍挂账）
+5. [U→A] ✅ giscus 四值 agent 代办（Announcements 分类，仅维护者可开帖）
+6. [A] ✅ 上线验证：**9 路由 200 + giscus 挂载（2026-09-29 大陆直连实测）**
+
+**残余**：is-a.dev 申请（网址升级）；about/now 文案口吻（发布前欠账在册）；访客流量观察 → 购域决定；浏览器活体走查（console 净）待一次实机抽查。
 
 > 演化位：绑定自定义域之前的 `pages.dev` 临时预览在大陆不保证可用——步 3 完成前不对外发链接。
 

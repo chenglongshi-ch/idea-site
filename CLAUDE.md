@@ -39,6 +39,8 @@
 - 冒烟探测别限小 `max_tokens`：思考模型 reasoning token 也吃预算（E1 冒烟 max_tokens=20 返回空串）。
 - **dev server 别跨 schema 变更长驻**：content.config.ts 改动后，长驻 dev 会话某次热更可能用陈旧 schema 校验新 fixture（collection 清空 → 全页 404 假象，2026-09-26 实测）；`npm run build`（新进程）为准，形态验证前重启 dev。另：TaskStop 杀 npm wrapper 杀不死 astro 子进程，须 `npx astro dev stop`。
 - API key 只进 `.env`（已 gitignore），绝不写进代码、仓库或对话。
+- **git push 到 GitHub 大陆被 reset/超时**：`git -c http.version=HTTP/1.1 push` 一击通（2026-09-29 实测，无代理环境；HTTP/2 被重置/连不上，降 1.1 立即成功）。
+- **Astro v7 子路径部署两坑**（2026-09-29 发布实测）：`site` 上下文不含 base——endpoint（RSS/llms.txt/镜像）手动拼 `import.meta.env.BASE_URL` 段；`BASE_URL` 构建期不带尾斜杠——模板归一化 `` `${BASE_URL.replace(/\/+$/, '')}/` ``，root 部署回退 '/'。
 
 ## 约定
 
