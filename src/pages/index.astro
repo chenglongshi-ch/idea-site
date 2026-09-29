@@ -5,6 +5,8 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 // 首页（design-spec v2.①/v2.②）：hero + 搜索过滤工具条 + preview 卡脸网格
+// 子路径部署（2026-09-29）：内链统一 BASE_URL 前缀（归一化带尾斜杠，root 部署回退 '/'）
+const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
 const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
 const ideas = (await getCollection('ideas')).sort((a, b) =>
   a.data.created < b.data.created ? 1 : -1
@@ -16,7 +18,7 @@ const previewExts = ['png', 'jpg', 'jpeg'] as const;
 function findPreview(slug: string): string | null {
   for (const ext of previewExts) {
     if (fs.existsSync(path.join(process.cwd(), 'public/demos', slug, `preview.${ext}`))) {
-      return `/demos/${slug}/preview.${ext}`;
+      return `${base}demos/${slug}/preview.${ext}`;
     }
   }
   return null;
@@ -80,7 +82,7 @@ const counts = {
           return (
             <a
               class="card"
-              href={`/ideas/${idea.id}/`}
+              href={`${base}ideas/${idea.id}/`}
               data-title={idea.data.title}
               data-summary={idea.data.summary}
               data-status={idea.data.status}

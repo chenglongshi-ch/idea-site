@@ -10,7 +10,7 @@ function demosDirIndex() {
       server.middlewares.use((req, _res, next) => {
         const url = req.url ?? '';
         const [path, query = ''] = url.split('?');
-        if (path.startsWith('/demos/') && path.endsWith('/') && path !== '/demos/') {
+        if (path.startsWith(`${BASE}/demos/`) && path.endsWith('/') && path !== `${BASE}/demos/`) {
           req.url = `${path}index.html${query ? `?${query}` : ''}`;
         }
         next();
@@ -19,8 +19,15 @@ function demosDirIndex() {
   };
 }
 
+// 子路径部署常量（2026-09-29 GitHub Pages 路线）：仓库非 <user>.github.io 专属仓 → 站挂 /idea-site/ 下。
+// RSS/llms.txt/.md 镜像经 site 上下文自动带 base；模板内链一律 import.meta.env.BASE_URL 拼——换根路径部署时只改这两行。
+const SITE = 'https://chenglongshi-ch.github.io';
+const BASE = '/idea-site';
+
 // https://astro.build/config
 export default defineConfig({
+  site: SITE,
+  base: BASE,
   vite: {
     plugins: [demosDirIndex()],
   },

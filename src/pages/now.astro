@@ -6,6 +6,8 @@ import { getCollection } from 'astro:content';
 const growing = (await getCollection('ideas'))
   .filter((i) => i.data.status === 'growing')
   .sort((a, b) => (a.data.updated < b.data.updated ? 1 : -1));
+// 子路径部署（2026-09-29）：内链统一 BASE_URL 前缀（归一化带尾斜杠，root 部署回退 '/'）
+const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
 ---
 
 <Layout title="现在 · 想法站">
@@ -19,7 +21,7 @@ const growing = (await getCollection('ideas'))
       <ul class="focus-list">
         {growing.map((idea) => (
           <li>
-            <a href={`/ideas/${idea.id}/`}>{idea.data.title}</a>
+            <a href={`${base}ideas/${idea.id}/`}>{idea.data.title}</a>
             <span class="muted"> — {idea.data.summary}</span>
           </li>
         ))}

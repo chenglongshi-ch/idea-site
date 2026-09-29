@@ -22,8 +22,11 @@ export async function GET({ props, site }) {
   // hasDemo = 文件存在性探测（[slug].astro 同款）：镜像只对真实存在的 demo 给链接
   const hasDemo = fs.existsSync(path.join(process.cwd(), 'public/demos', entry.id, 'index.html'));
 
-  // astro.config 未设 site → 根相对链接；发布期配 site 后自动补全为绝对 URL（rss.xml.js 同款）
-  const base = site ? site.toString().replace(/\/+$/, '') : '';
+  // site 只含 origin（Astro v7 实测不含 base，2026-09-29 发布验收抓出），BASE_URL 补子路径段（rss.xml.js 同款）
+  const base = `${site ? site.toString().replace(/\/+$/, '') : ''}${import.meta.env.BASE_URL}`.replace(
+    /\/+$/,
+    ''
+  );
 
   // frontmatter：字符串一律 JSON.stringify（双引号串是合法 YAML，防标题/摘要含冒号破格）
   const frontmatter = [

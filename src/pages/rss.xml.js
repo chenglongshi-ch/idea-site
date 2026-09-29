@@ -10,8 +10,11 @@ export async function GET({ site }) {
   const ideas = (await getCollection('ideas')).sort((a, b) =>
     a.data.updated < b.data.updated ? 1 : -1
   );
-  // astro.config 未设 site → 按规格发根相对链接（/ideas/<id>/）；发布期在 astro.config 配 site 后自动补全为绝对 URL
-  const base = site ? site.toString().replace(/\/+$/, '') : '';
+  // site 只含 origin（Astro v7 实测不含 base，2026-09-29 发布验收抓出），BASE_URL 补子路径段；root 部署时 BASE_URL='/' 天然回退
+  const base = `${site ? site.toString().replace(/\/+$/, '') : ''}${import.meta.env.BASE_URL}`.replace(
+    /\/+$/,
+    ''
+  );
 
   const items = ideas
     .map((idea) => {

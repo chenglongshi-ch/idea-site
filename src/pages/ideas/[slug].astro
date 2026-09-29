@@ -37,6 +37,9 @@ if (charCount > 300) {
 // giscus 配置驱动（v2.③）：四字段齐才挂载，否则占位说明
 const giscus = siteConfig.giscus;
 const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && giscus.categoryId);
+
+// 子路径部署（2026-09-29）：内链统一 BASE_URL 前缀（归一化带尾斜杠，root 部署回退 '/'）
+const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
 ---
 
 <Layout title={`${entry.data.title} · 想法站`}>
@@ -44,7 +47,7 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
     slot="head"
     rel="alternate"
     type="text/markdown"
-    href={`/ideas/${entry.id}.md`}
+    href={`${base}ideas/${entry.id}.md`}
   /><!-- Q2：llms.txt 规范 v2 页面级 .md 镜像声明（R3 §7-1），AI/工具链按 link rel 发现镜像 -->
   <article class="idea">
     <header class="page-head">
@@ -78,10 +81,10 @@ const giscusReady = Boolean(giscus.repo && giscus.repoId && giscus.category && g
           <!-- 檐口（v1 ② 保留，v2.② 改 surface 色带适配暗色页）：直链逃生门 + 暗 demo 上沿缓冲 -->
           <div class="demo-head">
             <h2>Demo</h2>
-            <a class="demo-open" href={`/demos/${entry.id}/`} target="_blank">新窗口打开 ↗</a>
+            <a class="demo-open" href={`${base}demos/${entry.id}/`} target="_blank">新窗口打开 ↗</a>
           </div>
           <iframe
-            src={`/demos/${entry.id}/`}
+            src={`${base}demos/${entry.id}/`}
             title={`${entry.data.title} 的可交互 demo`}
             loading="lazy"
           ></iframe>

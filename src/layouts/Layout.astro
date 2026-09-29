@@ -6,12 +6,15 @@ interface Props {
 }
 const { title, description = '每个想法一页：想法原文 + 可交互 demo，从萌芽到做成全程公开。' } =
   Astro.props;
+// 子路径部署（2026-09-29 GitHub Pages /idea-site/）：内链统一 BASE_URL 前缀
+// Astro v7 的 BASE_URL 构建期不带尾斜杠（实测），归一化成带尾斜杠，root 部署回退 '/'
+const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
 ---
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
@@ -21,10 +24,10 @@ const { title, description = '每个想法一页：想法原文 + 可交互 demo
   <body>
     <header class="site-head">
       <div class="shell head-inner">
-        <a class="site-title" href="/">想法站<span class="title-dot" aria-hidden="true"></span></a>
+        <a class="site-title" href={base}>想法站<span class="title-dot" aria-hidden="true"></span></a>
         <nav class="site-nav" aria-label="站内导航">
-          <a href="/about/">about</a>
-          <a href="/now/">now</a>
+          <a href={`${base}about/`}>about</a>
+          <a href={`${base}now/`}>now</a>
         </nav>
       </div>
     </header>
@@ -35,9 +38,9 @@ const { title, description = '每个想法一页：想法原文 + 可交互 demo
       <div class="shell foot-inner">
         <span class="muted">本地预览 · 当前为占位假数据</span>
         <span class="foot-links">
-          <a href="/rss.xml">RSS</a>
+          <a href={`${base}rss.xml`}>RSS</a>
           <span class="muted"> · </span>
-          <a href="/llms.txt">llms.txt</a>
+          <a href={`${base}llms.txt`}>llms.txt</a>
         </span>
       </div>
     </footer>
