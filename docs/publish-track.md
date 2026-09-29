@@ -43,9 +43,9 @@
 
 **免费域三档全景（v0.1.2 补，2026-09-29 用户「不想先付钱」；可达性=本机大陆实测同日）**：
 
-1. **托管自带子域**（零申请零等待）：`*.pages.dev` / `*.github.io` / `*.workers.dev`——大陆不稳（pages.dev 类 DNS 污染），github.io 时好时坏；
+1. **托管自带子域**（零申请零等待）：`*.pages.dev` / `*.github.io` / `*.workers.dev`——**pages.dev 大陆本机浏览器实测 3/3 真实站可开（09-29，含 scratchcn/voice-generator/turnstile-demo；时点实测优先于「被墙」社区共识，波动性已知、上线验收时复测）**；github.io 时好时坏；
 2. **社区子域**（GitHub PR 申请，数天~数周，需站已上线）：**is-a.dev**（开发者个人站/项目）/ **js.org**（JS 开源项目，Astro 合格）——两注册局官网大陆实测 200；CNAME 指向 CF Pages 后可达性≈自定义域（**绑定后须实测确认**）；借域可回收，弱相容永久链承诺（000N- 路径型保证升级不断链）；
-3. **免费真域名**：**eu.org**（1996 年起的免费二级域，DNS 完全自持、可挂 Cloudflare 当真域用，最接近「免费自有域」）——**官网大陆直连超时（09-29 实测）**，申请与管理需代理；人工审批数周~数月，无 SLA。Freenom 类已死；us.kg 等新兴免费域现状未核，不用。学生身份另有 GitHub Student Pack（Namecheap .me 免费一年）；国内新用户 ¥1-9 促销域名=「先付一块钱」档，次年续费恢复原价，与「零付费」目标不符仅备查。
+3. **免费真域名**：**eu.org**——**排除**（curl 超时 + 浏览器 ERR_CERT_AUTHORITY_INVALID 双通道确认大陆直连不可用，且用户浏览器无代理，申请/管理不可行）；us.kg——**排除**（浏览器 ERR_CONNECTION_RESET 实测，服务现状亦未核）；Freenom 类已死。学生身份另有 GitHub Student Pack（Namecheap .me 免费一年）；国内新用户 ¥1-9 促销域名=「先付一块钱」档，次年续费恢复原价，仅备查。
 
 **零付钱推荐序**：pages.dev 今天上线（零等待）→ 同步 PR 申请 is-a.dev（站已上线才可申请，正好接上）→ 真实访客出现再购 .com（每步升级链接不断）。
 
