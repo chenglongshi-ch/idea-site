@@ -18,6 +18,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 | 首跑实录（本手册坑位的原始出处） | `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
 | 二跑实录（首战校准 + 预估对比基准） | `D:\skill-data\runs\project-lifecycle\20260928T104718-4055\second-run-digest.md` |
 | 三跑实录（打回重修 + §9 首析 + 评审面板跑法） | `D:\skill-data\runs\project-lifecycle\20260929T221336-5371\third-run-digest.md` |
+| 外部提交模拟实录（外部侧打包/站侧接收首战，协议 v0.6 输入，测试件已回滚） | `D:\skill-data\runs\project-lifecycle\20260930T095544-ee30\sim-digest.md` |
 | 坟场评审系统设计（透镜/主持人/数据通道/A-B 校准） | `docs/graveyard-review-design.md` |
 
 近同型（查重索引 2026-09-27）：`novel-initializer` agent（obsidian-novel-engine，「想法→vault 结构落地」同形不同域，无复用关系，仅登记）。
@@ -70,7 +71,7 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 形态类评价只认实机/截图，读代码不算（E1b 冻结 bug 即反例）。逐项：
 
 1. **路由 200**：`/`、`/ideas/<slug>/`、`/demos/<slug>/` + 既有页面全量点一遍。**走查介质用 `npx astro preview`（build 后）**——base 子路径下 `astro dev` 对 public 静态目录 URL 一律 404（`/demos/<slug>/` 404、`/index.html` 200，三跑实测，存量 demo 同症状），别被 dev 假 404 带偏。
-2. **console 归类**：报错分两类（协议 §6）——demo 责任（外链请求/弹窗/demo 自身 JS 报错）→ 打回；站级噪音（如 `/favicon.ico` 404）→ 站侧待办，不归提交方。dev 环境另有 `[vite] connecting` debug（构建产物无），不算报错（二跑收编）。
+2. **console 归类**：报错分两类（协议 §6）——demo 责任（外链请求/弹窗/demo 自身 JS 报错）→ 打回；站级噪音（如 `/favicon.ico` 404）→ 站侧待办，不归提交方。dev 环境另有 `[vite] connecting` debug（构建产物无），不算报错（二跑收编）。外部自验 file:// 直开报 `Unsafe attempt to load URL` = 环境伪影非 demo 责任（http 复验消失，模拟首战收编）；giscus「Discussion not found」新想法零评论正常提示 = 站级。
 3. **交互活体**：iframe 内真点真验（首跑例：穿梭按钮连点 5 次全部切换无连续重复）——显示冻结类 bug 读代码看不出来。canvas 型 demo（交互对象不进 a11y 树、无 DOM 元素可点）：从内联源码挖比例坐标 map → 合成 MouseEvent/TouchEvent 打坐标，结果以 DOM 状态（polaroid.show / p-title 等）+截图取证（二跑实况）。
 4. **移动端 375×667**：宿主页无横向溢出；iframe 高 `min(600px, 80vh)` 分支生效；demo 内部无横向滚动。
 5. **搜索**：想法关键词命中且只命中该卡；无结果词出空态。
@@ -88,6 +89,16 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 - **llms.txt 零手动**：构建期自动派生（`src/pages/llms.txt.js`，源 = ideas collection）——提交物不含它、零同步责任；走查带一眼 `/llms.txt` 200 即可。首跑曾手动漏同步出真实事故，v0.3 已治本，勿再手写。
 - git 提交归主线程 / change-set squash（main 只收 squash merge；被派发 agent 零 commit）。
 
+## ⑦ 外部提交接收（站侧视角；2026-09-30 模拟首战，协议 v0.6）
+
+站侧收到**外部提交包**（非站内自产）时走本节 + 复用 ④⑤：
+
+1. **判包**：`<name>/`（三件套，无编号）+ `<name>.md`（想法条目）；lineage 必填三件齐 + **非 run 提交方必带 `producer_sha256`**（协议 §3②，脚本自动计算——模拟首战首次行使该分支；人工手填=不合规）。
+2. **协议校验**：单文件自包含（iframe/fetch/src 零外链 grep 即判）、300 字口径、体积软限 200KB、§2 内容组织 + 血统外显——站侧**只验不改内容**，考据疑点记档移交提交方（见 ① 定界）。
+3. **落位**：分配下一个 `000N-`（现库 3 个 → 0004 起）→ 目录 + 条目改名、lineage.slug 同步加前缀、`post_edits` 簿记「站侧接入」一行——**站侧对提交物的唯一改动**（协议 §5 v0.6 提交时序）。
+4. **验收**：走 ④（build 断言）+ ⑤（preview 八项），外部包无豁免项。
+5. 模拟首战实测（2026-09-30，节气小历测试件）：Agnes 51.5s/13KB 一次成功（通道累计 **4/4**）；163 字提交方自算 = 构建断言一致；iframe 桌面 600px / 移动 534px 精确；iframe 内点击展开活体过；console 零 demo 责任；llms.txt 零手动收录。4 缺口（门面/交接/编号时序/过时 dev 走查）已随协议 v0.6 收口，清单见指针表 sim-digest 行。
+
 ---
 
 ## v0-design（2026-09-27 建）
@@ -98,6 +109,7 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 - **否定式覆盖清单**（「未行使什么」，三跑后口径；~~-删除线~~=已行使）：
   - [x] flash-lite 备用通道（三跑均未用——Agnes 一次成功率 3/3，备用通道持续零实战数据）
   - ~~打回重修流程~~（**三跑已行使**：375px 成员卡溢出 382>341 → 打回提交方最小修 `flex-wrap` → post_edits 簿记 → 复验清零——闭环走通）
+  - ~~外部提交接收路径~~（**2026-09-30 模拟行使**：外部侧临时目录打包 + 站侧接收全链通，⑦ 节即其沉淀——强度=流程全通，非真外部方；真外部首提时按 ⑦ 复核）
   - [x] preview 缺失不阻断分支（三跑均附带 preview；站侧回退占位卡分支仍无实战）
   - ~~坟场分析槽位~~（**三跑已行使**：§9 四件套首析落地——analysis.md + lineage 四字段 + 构建断言 + 想法页区块全链通）
 - **调整或退役线**：首战有回改 → 留 v0；摘标条件顺延。若届时仍要四处拼跑法，降级回 CLAUDE.md 注记。

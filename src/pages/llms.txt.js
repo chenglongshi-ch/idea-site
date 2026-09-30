@@ -39,6 +39,10 @@ ${ideaLines}
 - [ideas.json](${origin}/v1/ideas.json): 全量想法结构化列表——status/tags/demo 直链；带 review 字段的条目附有坟场对照分析（analysis.md，五透镜死因评审）
 - [feed.json](${origin}/v1/feed.json): JSON Feed v1.1（与 rss.xml 同源同序，正文以纯文本直给）
 
+## 提交（收外部 demo）
+
+- [demo 提交协议](https://github.com/chenglongshi-ch/idea-site/blob/main/docs/demo-protocol.md): 把想法做成单文件 HTML demo 提交到本站的打包/血统/验收契约（三件套 + 想法条目，站侧分配编号上架）——2026-09-30 模拟实测前，外部视角从站面零入口可发现协议，此节即门面
+
 > 本文件由构建自动生成（源 = ideas collection），勿手改；想法上架后随 build 自动同步。
 `;
 
