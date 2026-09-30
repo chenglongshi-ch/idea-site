@@ -5,7 +5,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 
 # idea-onboarding — 想法上架全链操作手册（site 独立站）
 
-把「想法 → 生成 demo → 提交 → 验收 → 上架」的跑法收进一本手册。消费者 = 未来会话 / 被派发的 agent（第二个想法上架起直接照此跑）。血统 = 时空语录首跑（run 20260927T162733-41bb，2026-09-27 全链首次跑通）+ 拍星星找故事二跑（run 20260928T104718-4055，2026-09-28，首战校准跑）。
+把「想法 → 生成 demo → 提交 → 验收 → 上架」的跑法收进一本手册。消费者 = 未来会话 / 被派发的 agent（第二个想法上架起直接照此跑）。血统 = 时空语录首跑（run 20260927T162733-41bb，2026-09-27 全链首次跑通）+ 拍星星找故事二跑（run 20260928T104718-4055，2026-09-28，首战校准跑）+ 家庭任务清单三跑（run 20260929T221336-5371，2026-09-29，摘标窗口跑：首次打回重修 + 首次带 §9 四件套）。
 
 **本文只收操作顺序 + 坑位**；协议细则、通道参数、页面 schema 一律指针，防双源漂移：
 
@@ -17,6 +17,8 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 | Agnes 端点 / 限额 / 节流事实卡 | `research/vedio-assets.md` §2 |
 | 首跑实录（本手册坑位的原始出处） | `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
 | 二跑实录（首战校准 + 预估对比基准） | `D:\skill-data\runs\project-lifecycle\20260928T104718-4055\second-run-digest.md` |
+| 三跑实录（打回重修 + §9 首析 + 评审面板跑法） | `D:\skill-data\runs\project-lifecycle\20260929T221336-5371\third-run-digest.md` |
+| 坟场评审系统设计（透镜/主持人/数据通道/A-B 校准） | `docs/graveyard-review-design.md` |
 
 近同型（查重索引 2026-09-27）：`novel-initializer` agent（obsidian-novel-engine，「想法→vault 结构落地」同形不同域，无复用关系，仅登记）。
 
@@ -29,7 +31,7 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 
 通道裁定细节看 `CLAUDE.md` 通道表，此处只收跑法：
 
-- **Agnes `agnes-2.5-flash` 主力**——首跑 34.3s 一次成功零兜底（3641 tok）；二跑 87.7s 一次成功（7735 tok，demo 18.4KB）——耗时/tok 随交互复杂度伸缩（×2.6 与产出量成比例），一次成功率累计 2/2。
+- **Agnes `agnes-2.5-flash` 主力**——首跑 34.3s / 二跑 87.7s / 三跑 62.8s，全部一次成功零兜底（一次成功率累计 3/3）；耗时/tok 随交互复杂度伸缩、与产出量成比例。
 - **flash-lite 备用**，两个前置缺一不可：请求必带 `{"thinking":{"type":"disabled"}}`（否则思考吃光预算正文 0 字）；产出必过浏览器功能验收（E1b 同名 `render()` 覆盖致倒计时冻结的教训）。
 - **glm-5.2 禁用于单发大 HTML**（STATUS Deadends 已录，勿重试）。
 - **v0.5 布局与外显随生成进 prompt，别等验收才发现**：集合型内容（≥10 条/多类别）生成时就要求索引视图（分类切换/目录/网格任一）；探索型交互（探索即玩法）要求收集进度或索引入口；页脚带生成方式行（与 lineage `generator`/`date` 同源）——对应验收 §⑤-7/8（协议 §2）。
@@ -54,6 +56,7 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 - **producer 仓外记法（2026-09-27 人裁定案 A）**：走 run 体系的提交方 `producer` 指 run 目录（repo 外持久 + run_id 现成追溯）；不走 run 的必加 `producer_sha256`（脚本内容哈希，仅对新提交生效）。三案利弊存档 `docs/producer-lineage-decision.md`。
 - 坑：生成脚本写产物用二进制或 `newline=''`——Windows 文本模式 CRLF 膨胀，致 lineage `size_bytes` 与磁盘不符（首跑实录瑕疵）。
 - 想法 + demo 同批一次提交：`status` 取 `growing`，changelog 行随条目由提交方写（时序口径见协议 §4）。
+- **四件套条件件（§9，三跑起）**：附坟场对照分析时提交物 = 三件套 + `analysis.md`（同目录），lineage 加 `review_producer`/`data_source`/`data_as_of`/`personas` 四字段（协议 §9）——构建期断言（`[slug].astro`）执法，缺字段 build 红 Panels；想法页自动渲染「坟场对照」区块 + 锚点。面板跑法（5 透镜 N+1、数据直连 api.github.com、A/B 校准）见指针表 graveyard-review-design 行；**并发 ≤5**（10 并发实测触发 glm-5.2 429，三跑 3 agent 阵亡后 SendMessage 原地续跑救回）。
 
 ## ④ 构建验收
 
@@ -66,7 +69,7 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 
 形态类评价只认实机/截图，读代码不算（E1b 冻结 bug 即反例）。逐项：
 
-1. **路由 200**：`/`、`/ideas/<slug>/`、`/demos/<slug>/` + 既有页面全量点一遍。
+1. **路由 200**：`/`、`/ideas/<slug>/`、`/demos/<slug>/` + 既有页面全量点一遍。**走查介质用 `npx astro preview`（build 后）**——base 子路径下 `astro dev` 对 public 静态目录 URL 一律 404（`/demos/<slug>/` 404、`/index.html` 200，三跑实测，存量 demo 同症状），别被 dev 假 404 带偏。
 2. **console 归类**：报错分两类（协议 §6）——demo 责任（外链请求/弹窗/demo 自身 JS 报错）→ 打回；站级噪音（如 `/favicon.ico` 404）→ 站侧待办，不归提交方。dev 环境另有 `[vite] connecting` debug（构建产物无），不算报错（二跑收编）。
 3. **交互活体**：iframe 内真点真验（首跑例：穿梭按钮连点 5 次全部切换无连续重复）——显示冻结类 bug 读代码看不出来。canvas 型 demo（交互对象不进 a11y 树、无 DOM 元素可点）：从内联源码挖比例坐标 map → 合成 MouseEvent/TouchEvent 打坐标，结果以 DOM 状态（polaroid.show / p-title 等）+截图取证（二跑实况）。
 4. **移动端 375×667**：宿主页无横向溢出；iframe 高 `min(600px, 80vh)` 分支生效；demo 内部无横向滚动。
@@ -91,10 +94,11 @@ set -a; source d:/project/site/.env; set +a   # key 只从 .env export，绝不�
 
 - **适应度声明**：怎么算合适 = 第二个想法上架时，不用再回头翻散装文档（CLAUDE.md / 协议 / spec / digest 四处拼跑法）即合适；最小样本 = 1 次实战（时空语录首跑）。
 - **首战校准（2026-09-28 done，拍星星找故事二跑）**：指针制全命中（通道表/协议/digest 一次到位，零散装翻找）；回改 3 处——§② 补二跑实测数、§③ 补 preview 截法、§⑤ 补 canvas 交互驱动+vite 噪音归类；无步骤多余；§③ 预收编的 CRLF 坑本次 `newline=''` 生效零瑕疵。
-- **否定式覆盖清单**（「本次未行使什么」，2026-09-28 二跑后填；两跑合计口径）：
-  - [x] flash-lite 备用通道（首跑/二跑均未用——Agnes 一次成功率 2/2，备用通道持续零实战数据）
-  - [x] 打回重修流程（二跑同一次过零打回——结构/功能/实机全绿）
-  - [x] preview 缺失不阻断分支（两跑均附带 preview；站侧回退占位卡分支仍无实战）
-  - [x] 坟场分析槽位（协议 §9 四件套可选件，二跑未附 analysis.md——评审系统外部侧未开工，首析仍是未来事件）
-- **调整或退役线**：首战有回改 → 留 v0；摘标条件顺延为「第三个想法零翻文档零回改」。若届时仍要四处拼跑法，降级回 CLAUDE.md 注记。
+- **摘标窗口跑（2026-09-29 三跑，家庭任务清单）**：**未摘标，留 v0**——回改 5 处（§② 三跑实测数、§③ 四件套条件件、§⑤ dev/preview 走查介质坑、指针表 +2、v0 本节）；判定依据=手册未覆盖 §9 首析时的提交路径，逼出指针表外翻 `docs/graveyard-review-design.md`（协议 §9 的指针链二跳——严格口径算翻文档）。**首次行使**：打回重修（375 溢出→最小修→lineage post_edits→复验）、§9 四件套、preview 走 preview server。摘标条件顺延为「第四个想法零翻文档零回改」。
+- **否定式覆盖清单**（「未行使什么」，三跑后口径；~~-删除线~~=已行使）：
+  - [x] flash-lite 备用通道（三跑均未用——Agnes 一次成功率 3/3，备用通道持续零实战数据）
+  - ~~打回重修流程~~（**三跑已行使**：375px 成员卡溢出 382>341 → 打回提交方最小修 `flex-wrap` → post_edits 簿记 → 复验清零——闭环走通）
+  - [x] preview 缺失不阻断分支（三跑均附带 preview；站侧回退占位卡分支仍无实战）
+  - ~~坟场分析槽位~~（**三跑已行使**：§9 四件套首析落地——analysis.md + lineage 四字段 + 构建断言 + 想法页区块全链通）
+- **调整或退役线**：首战有回改 → 留 v0；摘标条件顺延。若届时仍要四处拼跑法，降级回 CLAUDE.md 注记。
 - **接线声明（2026-09-28 审计补记，清「条款落盘+接线」判据欠账）**：hook/cron 面**零接线且够用**——六步均人/主线程驱动；300 字断言内嵌 astro 构建管线（`src/pages/ideas/[slug].astro`）；llms.txt 自动派生在 `src/pages/llms.txt.js`；收尾记 STATUS/dispatches 由 STATUS 契约三触发承担；权限接线（npm build/dev、`npx astro dev stop`、chrome-devtools MCP）已入项目 settings.json。

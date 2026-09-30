@@ -78,3 +78,10 @@
 - Google Dark Web Report（feature-removed，Google）
 
 数据源 killedbyai.net graveyard.json（CC BY 4.0）@ shaf1258b39，截至 2026-09-28
+
+
+## 2026-09-29 首析回写（run 20260929T221336-5371，《家庭任务清单》评审；学习环写层——整层 consolidation 未触发，以下为带置信度的增量观察）
+
+- **P2 增补子类型「Model Deprecation 连坐」**（confidence 中；依据：OpenAI Operator (CUA Preview)（Model Deprecation）+ OpenAI Realtime API (Beta)（API Consolidation））——依附 beta/preview 模型或接口的功能位随宿主换代死亡且无迁移保证；并入 P2 作子类型注记，不开新 P。
+- **§5 引用清单补漏 4 条**：Google Duplex on the Web（Strategic Pivot）、Copilot GPT Builder（Product Pivot）、OpenAI Operator (CUA Preview)、Anthropic Legacy Workbench——为笔记漏列非数据新增（切片 128→135 新增 7 条均落本切片外，当期仍 23 条 @ sha ee47d45043d7）。
+- **检查单问 6 加家庭/小群体场景注记**（confidence 中，含场景外推成分）——语料实据=平台死时从不主动保用户资产（Workbench/Doubao&Qwen/Mariner/DALL·E 四例）；「家庭成员零导出习惯」为场景外推非语料证据：面向家庭/非技术小群体的工具，资产随迁义务比 pro 工具更重，同步层选型应把「地基死时数据可整体搬家」当硬约束。

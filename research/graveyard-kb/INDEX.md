@@ -58,4 +58,10 @@
 - 学习环回写/consolidation 阈值/冲突 forced fork/清理硬规则：设计定稿在 docs/graveyard-review-design.md §3，评审系统落码时实装。
 - 换代纪律：透镜笔记 substantive 修改记 run 溯源；坟场数据大刷新（条目数显著变化）时整体回测。
 
-数据源 killedbyai.net graveyard.json（CC BY 4.0）@ sha f1258b39，截至 2026-09-28
+## 首析实录（2026-09-29，《家庭任务清单》，run 20260929T221336-5371）
+
+- **首战校准（§4 A/B）完成**：A 臂（带本 KB）× B 臂（裸语料）各 5 透镜独立评审 + 双主持人。**裁定=学习环留用+改配**：KB 臂在系统性销账、活回测（抓出本库 feature-removed 引用清单漏列 4 条 + product-killed 头部计数出入）、判级依据上胜出；裸语料臂产出两条最高决策价值独有洞察（指责界面、全员采用环）——**检查单「不适用」出口存在锚定效应**，透镜 prompt 改进方向=销账前先做自由转译扫描（A+B 混合）。五笔记已各追加「2026-09-29 首析回写」增量节（15 条候选，整层 consolidation 未触发）。
+- **活回测实证**：当期数据 128→135（sha f1258b39→ee47d45043d7，2026-09-29）——新增 7 条落 product-killed×2/startup-failed×4/acqui-hired×1；无未覆盖新死法机制（新枚举 Parent Pulled Funding 收画像补条、Overpromised 收个案备注）。
+- 运营教训：10 agent 并发触发 glm-5.2 速率限制（429×3）——面板并发度 ≤5 安全（09-28 五连发实证），续跑走 SendMessage 原地保上下文。
+
+数据源 killedbyai.net graveyard.json（CC BY 4.0）@ sha f1258b39，截至 2026-09-28（当期最新：sha ee47d45043d7，135 条，2026-09-29——见首析实录）

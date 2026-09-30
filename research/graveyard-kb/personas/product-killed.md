@@ -101,3 +101,10 @@ AI 产品推理成本是持续失血。烧钱速度（Sora 约 $1M/天、Alexa �
 25. Facebook AI Chatbots (Bob & Alice) — Meta
 
 数据源 killedbyai.net graveyard.json（CC BY 4.0）@ shaf1258b39，截至 2026-09-28
+
+
+## 2026-09-29 首析回写（run 20260929T221336-5371，《家庭任务清单》评审；学习环写层——整层 consolidation 未触发，以下为带置信度的增量观察）
+
+- **P1/检查单2 补「分期处决」**（confidence 高；依据：Google Assistant (Classic) 2025-01-01 + (on Mobile) 2026-03-01 两期相隔 14 个月）——平台换代不是一刀切，第一期幸存会给依赖者安全错觉；检查单2 追加「所依赖平台面是否已出现第一期砍杀信号」。
+- **画像补条：出资人止损杀（Parent Pulled Funding）**（confidence 中，单例标注不升正式 pattern；依据：GM Cruise，killedBy General Motors）——本切片含「startup 被股东杀」型，枚举完整性补全；对 solo 评审零直接适用。
+- **检查单7 善终测试补 localStorage 条款**（confidence 高；依据：TV Time / OpenAI Sora collateral + 本轮评审转译）——solo 静态网页「网页永活 ≠ 数据永活」，善终最低配 = JSON 导出/导入。另：头部自述「26 条」与引用清单 25 行有 1 条出入，以引用清单为准；当期（2026-09-29，sha ee47d45043d7）切片 27 条，新增 Google Assistant (on Mobile)、GM Cruise。

@@ -34,6 +34,11 @@ ${ideaLines}
 - [关于本站](${origin}/about/): 身份、为什么公开想法、联系方式
 - [当前焦点](${origin}/now/): 正在验证的想法与下一步
 
+## 查询端点（机器可读，Q3/Q4）
+
+- [ideas.json](${origin}/v1/ideas.json): 全量想法结构化列表——status/tags/demo 直链；带 review 字段的条目附有坟场对照分析（analysis.md，五透镜死因评审）
+- [feed.json](${origin}/v1/feed.json): JSON Feed v1.1（与 rss.xml 同源同序，正文以纯文本直给）
+
 > 本文件由构建自动生成（源 = ideas collection），勿手改；想法上架后随 build 自动同步。
 `;
 

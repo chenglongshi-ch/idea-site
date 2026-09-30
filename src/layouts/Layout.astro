@@ -19,6 +19,7 @@ const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="alternate" type="application/feed+json" title="想法站 JSON Feed" href={`${base}v1/feed.json`} />
     <slot name="head" /> <!-- 页面级 head 注入口（Q2：想法页挂 .md 镜像的 alternate 声明） -->
   </head>
   <body>

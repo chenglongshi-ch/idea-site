@@ -84,3 +84,10 @@ hardware-failed 五条没有一条死于物理损坏，**死状全部是远程�
 - Amazon Bedrock Agents (Classic) — product-killed — AWS
 
 数据源 killedbyai.net graveyard.json（CC BY 4.0）@ sha f1258b39，截至 2026-09-28
+
+
+## 2026-09-29 首析回写（run 20260929T221336-5371，《家庭任务清单》评审；学习环写层——整层 consolidation 未触发，以下为带置信度的增量观察）
+
+- **P2 扩充候选「生成类工具=模型厂收购关停的高发品类」**（confidence 中；依据：Reve AI Image Generation（acqui-hired，OpenAI，2026-09-27 关停，当期新条目）与 Weights（weights.gg）同凶手、同品类——acqui-hired 切片 8 条中 OpenAI 占 2）。
+- **P5/尾部凶手榜计数更新**：128→135 @ sha ee47d45043d7（2026-09-29）。当期原始字段 top15：OpenAI 29、Google 20、Anthropic 10、Microsoft 7……top15 内可见合并约 71/135 ≈ 53%（前口径 75/128 ≈ 59%；Google 家族长尾落 top15 外未计，此为下限近似，别名合并近似性声明保留）。
+- **新增透镜操作经验「检查单前置分流」**（confidence 中，单轮实践待验证）：对零运行时依赖的纯本地 demo，本透镜正确产出=（a）标出未来引入依赖的决策点并预埋数据出口条件；（b）对照 OS 原生功能带预判产品化碾压面（P4 机制迁移、凶手从模型厂换成 OS 生态时须声明跨选样边界）。

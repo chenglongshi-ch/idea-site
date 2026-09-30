@@ -19,7 +19,23 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const statusLabel = { seed: '萌芽', growing: '在验证', shipped: '已做成' } as const;
 // hasDemo = 文件存在性探测（v1 ⑦-1 保留）：status 只管胶囊文案，不再推断存在性
-const hasDemo = fs.existsSync(path.join(process.cwd(), 'public/demos', entry.id, 'index.html'));
+const demoDir = path.join(process.cwd(), 'public/demos', entry.id);
+const hasDemo = fs.existsSync(path.join(demoDir, 'index.html'));
+
+// §9 分析槽位（协议 v0.5 四件套可选件，首析 2026-09-29 落地）：
+// analysis.md 在场 → lineage 四扩展字段必齐（构建期断言，同 300 字断言先例）；齐则渲染「坟场对照」区块
+const hasAnalysis = fs.existsSync(path.join(demoDir, 'analysis.md'));
+let review = null;
+if (hasAnalysis) {
+  const lineage = JSON.parse(fs.readFileSync(path.join(demoDir, 'lineage.json'), 'utf-8'));
+  const missing = ['review_producer', 'data_source', 'data_as_of', 'personas'].filter((k) => !lineage[k]);
+  if (missing.length > 0) {
+    throw new Error(
+      `[§9 断言] 「${entry.data.title}」analysis.md 在场但 lineage 缺扩展字段：${missing.join(', ')}（协议 §9）`
+    );
+  }
+  review = lineage;
+}
 
 // 300 字断言（v1 ③ 保留）：body 去 markdown 标记后按字符计，>300 构建/dev 期报错阻断
 const plain = (entry.body ?? '')
@@ -63,6 +79,7 @@ const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
       <nav class="toc" aria-label="页内导航">
         <a href="#sec-problem">问题与方案</a>
         <a href="#sec-demo">Demo</a>
+        {review && <a href="#sec-review">坟场对照</a>}
         <a href="#sec-changelog">更新日志</a>
         <a href="#sec-reactions">反响</a>
       </nav>
@@ -98,6 +115,20 @@ const base = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
         </>
       )}
     </section>
+
+    {review && (
+      <section class="block" id="sec-review">
+        <h2>坟场对照</h2>
+        <div class="prose">
+          <p>
+            上架前经 {review.personas.length} 透镜评审面板（{review.personas.join(' / ')}）对照 AI
+            产品死因库（killedbyai.net，CC BY 4.0）独立评审，各透镜论断互不见面、保留分歧——定位是「撞车提醒
+            + 死因视角」，不判生死，采纳与否由作者终审。死因库数据截至 {review.data_as_of}。
+            <a href={`${base}demos/${entry.id}/analysis.md`}>读分析全文（analysis.md）</a>
+          </p>
+        </div>
+      </section>
+    )}
 
     <section class="block" id="sec-changelog">
       <h2>更新日志</h2>

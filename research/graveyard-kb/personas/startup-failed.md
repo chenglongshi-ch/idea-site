@@ -97,3 +97,10 @@
 21. theGist（startup-failed，Itself）
 
 数据源 killedbyai.net graveyard.json（CC BY 4.0）@ shaf1258b39，截至 2026-09-28
+
+
+## 2026-09-29 首析回写（run 20260929T221336-5371，《家庭任务清单》评审；学习环写层——整层 consolidation 未触发，以下为带置信度的增量观察）
+
+- **P3 增补「战略金主断粮」变体**（confidence 高；依据：当期新增 Argo AI（Backers Pulled Out，Ford & Volkswagen，$2.7B write-down）、Embark Trucks（Capital Dried Up）、Ghost Autonomy（Funding Collapse））——断粮机制与 VC 收紧同构但输血人是企业战略方；子型注记「依赖单一/少数战略金主=把融资风险换成关系风险」。
+- **收录新 causeOfDeath 标签 Overpromised**（confidence 中，单条；依据：Forward (CarePods)，killedBy Itself）——机制=承诺交付远超成本与审批承受力（监管谷+成本结构混合，无 P5 式造假），入个案备注。
+- **头部基数修订 + 诚实边界补一条**：切片 21→25、数据 @ sha ee47d45043d7 截至 2026-09-29，引用清单补 4 条；诚实边界加注——语料 100% AI 公司，评非 AI 工具类想法时 P1-P7 多数机制失配，本透镜退化为两条借用（平台免费内置天花板类比 + collateral 数据锁死前置），本轮 9 问 6 问不适用即实例。
