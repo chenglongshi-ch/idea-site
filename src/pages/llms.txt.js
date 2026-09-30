@@ -42,6 +42,7 @@ ${ideaLines}
 ## 提交（收外部 demo）
 
 - [demo 提交协议](https://github.com/chenglongshi-ch/idea-site/blob/main/docs/demo-protocol.md): 把想法做成单文件 HTML demo 提交到本站的打包/血统/验收契约（三件套 + 想法条目，站侧分配编号上架）——2026-09-30 模拟实测前，外部视角从站面零入口可发现协议，此节即门面
+- 提交通道：向本仓库提 Pull Request（按协议路径加包），或开 Issue 附提交包链接——站侧验收后分配编号上架
 
 > 本文件由构建自动生成（源 = ideas collection），勿手改；想法上架后随 build 自动同步。
 `;

@@ -1,6 +1,10 @@
 # site
 
-想法展示独立站。白话说：每个想法做成一页——想法本身 + 一个能点的 demo；人和 AI 都能发现它、查询它、留下反响。现在先把「想法 → demo → 挂本地站」这条链在本地跑通，发布上线后置（demo 生成通道已双实验定稿：Agnes 主力 / 商汤 flash-lite 备用）。
+想法展示独立站。白话说：每个想法做成一页——想法本身 + 一个能点的 demo；人和 AI 都能发现它、查询它、留下反响。**已上线：<https://chenglongshi-ch.github.io/idea-site/>**（2026-09-29 起；demo 生成通道已双实验定稿：Agnes 主力 / 商汤 flash-lite 备用）。
+
+## 提交 demo（外部项目）
+
+收外部想法 demo，契约见 [docs/demo-protocol.md](docs/demo-protocol.md)（打包三件套 + 血统 + 验收标准）。提交通道三档：**Pull Request**（fork/分支本仓按协议路径加包，主通道）、Issue 附提交包链接（低门槛）、站内目录交接（操作员代办）——验收标准同一，站侧过验后分配 `000N-` 编号上架。
 
 ## 安装
 
