@@ -62,7 +62,7 @@ demo 产物 = `public/demos/<slug>/index.html` + 同目录 `lineage.json`（必�
 ## 7. 验收（first-real-idea 关闭条件）
 
 - [x] 用第一个真实想法走完 §5 四步（2026-09-27 时空语录；2026-09-28 拍星星找故事复跑亦过）；
-- [x] 实机：首页 → 想法页 → demo 三跳全部可用，demo 页内可玩（两跑实机六项过）；
+- [x] 实机：首页 → 想法页 → demo 三跳全部可用，demo 页内可玩（两跑实机过——当时口径六项，验收清单现已扩至 8 项，见 SKILL §⑤）；
 - [x] `lineage.json` 血统齐全（producer + rev）；
 - [x] STATUS：first-real-idea → done。
 
