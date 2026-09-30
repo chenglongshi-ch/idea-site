@@ -1,0 +1,60 @@
+{
+  "producer": "D:\\skill-data\\runs\\project-lifecycle\\20260929T221336-5371",
+  "producer_script": "gen_family_checklist_demo.py",
+  "rev": "66116ba59627",
+  "rev_mode": "dirty@66116ba59627",
+  "date": "2026-09-29",
+  "generator": {
+    "model": "agnes-2.5-flash",
+    "channel": "agnes"
+  },
+  "slug": "0003-family-task-checklist",
+  "attempts": [
+    {
+      "attempt": 1,
+      "seconds": 62.8,
+      "chars": 13663,
+      "structurally_ok": true,
+      "error": null
+    }
+  ],
+  "gen_seconds": 62.8,
+  "usage": {
+    "completion_tokens": 5179,
+    "prompt_tokens": 826,
+    "total_tokens": 6005,
+    "completion_tokens_details": {
+      "reasoning_tokens": 640,
+      "text_tokens": 4539
+    },
+    "prompt_tokens_details": {
+      "cached_tokens": 256
+    }
+  },
+  "output": "index.html",
+  "output_chars": 13663,
+  "size_bytes": 14093,
+  "starts_with_doctype": true,
+  "ends_with_html": true,
+  "artifact_sha256": "b53f77449cab",
+  "footer_line_present": true,
+  "post_edits": [
+    {
+      "date": "2026-09-29",
+      "editor": "submitter(main-thread)",
+      "what": "375px 移动端成员卡行溢出最小修：.members 加 flex-wrap:wrap + .member-badge flex-basis 40%（@media max-width:420px），桌面布局零改动",
+      "why": "实机验收抓到：小明卡进度环右缘 382px > 视口 341px（iframe 内横向溢出）；修后 341=341 零越界元素，复验通过",
+      "verify": "chrome-devtools 375x667 实测 overflowEls=[] ; 533.59=min(600,80vh)"
+    }
+  ],
+  "review_producer": "D:\\skill-data\\runs\\project-lifecycle\\20260929T221336-5371",
+  "data_source": "killedbyai.net graveyard.json @ repo sha ee47d45043d7 (mixtpatrik/killedbyai)",
+  "data_as_of": "2026-09-29",
+  "personas": [
+    "产品砍杀",
+    "功能移除",
+    "创业失败",
+    "模型升级",
+    "平台依赖"
+  ]
+}

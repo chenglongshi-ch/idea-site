@@ -24,7 +24,8 @@
       "mcp__chrome-devtools__emulate",
       "mcp__chrome-devtools__close_page",
       "mcp__chrome-devtools__resize_page",
-      "mcp__chrome-devtools__select_page"
+      "mcp__chrome-devtools__select_page",
+      "mcp__chrome-devtools__click"
     ],
     "deny": [
       "Read(.env)",
