@@ -2,7 +2,7 @@
 
 > demo-protocol v0.3 缺口②的决策件。你的指令（2026-09-27）：「你思考下研究之后给我文档，我来决策利弊」。
 > 问题：`lineage.producer` 指向站仓外的生成脚本，站侧无法用 git 追溯其内容/版本——「可指认」的最低要求是什么？
-> 现状事实：首跑（时空语录）的 producer = `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\gen_spacetime_demo.py`——脚本实际存在 skill-data 的 run 目录里，但这条通路是首跑自行走的，协议没写。
+> 现状事实：首跑（时空语录）的 producer = `$CLAUDE_DATA/runs\project-lifecycle\20260927T162733-41bb\gen_spacetime_demo.py`——脚本实际存在 skill-data 的 run 目录里，但这条通路是首跑自行走的，协议没写。
 
 ## 先说白话：这是个什么问题
 

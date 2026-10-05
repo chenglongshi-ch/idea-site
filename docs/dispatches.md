@@ -1,7 +1,7 @@
 # 派发台账（append-only）
 
 > runtime-contract 协议3：每次 Agent 派发记一行 `日期 | agent | 任务 | 时长 | token | 结局 | 断点状态`。
-> kill 不触发通知，本台账是在途工作的人可读凭据；机器面自动账本在 `$SKILL_DATA/logs/agent_spawns.jsonl`。
+> kill 不触发通知，本台账是在途工作的人可读凭据；机器面自动账本在 `$CLAUDE_DATA/logs/agent_spawns.jsonl`。
 > 关联：run `20260923T081530-e24b`；派发动机见 `.claude/premise-audit.md` 与 run.json `next_step`。
 
 | 日期 | agent | 任务 | 时长 | token | 结局 | 断点状态 |

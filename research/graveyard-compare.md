@@ -50,5 +50,5 @@
 
 ## 血统
 
-- 产线：run 20260927T084815-0a6e（三 digest：agent-a-repo-sweep.md / agent-b-data-sources.md / agent-c-mechanism.md，存 `$SKILL_DATA/runs/project-lifecycle/<run_id>/`）
+- 产线：run 20260927T084815-0a6e（三 digest：agent-a-repo-sweep.md / agent-b-data-sources.md / agent-c-mechanism.md，存 `$CLAUDE_DATA/runs/project-lifecycle/<run_id>/`）
 - 本文 producer = 主线程汇总；外部事实时点均为 2026-09-27 实查；git rev 见随附提交。

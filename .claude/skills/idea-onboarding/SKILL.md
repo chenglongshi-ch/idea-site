@@ -15,10 +15,10 @@ description: 想法上架全链操作手册（site 独立站）——想法→�
 | 提交协议 v0.5（三件套清单 / lineage schema / 300 字口径 / 验收噪音归类 / slug=000N- 编号制 / §2 内容组织+血统外显） | `docs/demo-protocol.md` |
 | 页面清单 / 内容模型 / 新增想法工作流 | `docs/spec-site.md` |
 | Agnes 端点 / 限额 / 节流事实卡 | `research/vedio-assets.md` §2 |
-| 首跑实录（本手册坑位的原始出处） | `D:\skill-data\runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
-| 二跑实录（首战校准 + 预估对比基准） | `D:\skill-data\runs\project-lifecycle\20260928T104718-4055\second-run-digest.md` |
-| 三跑实录（打回重修 + §9 首析 + 评审面板跑法） | `D:\skill-data\runs\project-lifecycle\20260929T221336-5371\third-run-digest.md` |
-| 外部提交模拟实录（外部侧打包/站侧接收首战，协议 v0.6 输入，测试件已回滚） | `D:\skill-data\runs\project-lifecycle\20260930T095544-ee30\sim-digest.md` |
+| 首跑实录（本手册坑位的原始出处） | `$CLAUDE_DATA/runs\project-lifecycle\20260927T162733-41bb\first-run-digest.md` |
+| 二跑实录（首战校准 + 预估对比基准） | `$CLAUDE_DATA/runs\project-lifecycle\20260928T104718-4055\second-run-digest.md` |
+| 三跑实录（打回重修 + §9 首析 + 评审面板跑法） | `$CLAUDE_DATA/runs\project-lifecycle\20260929T221336-5371\third-run-digest.md` |
+| 外部提交模拟实录（外部侧打包/站侧接收首战，协议 v0.6 输入，测试件已回滚） | `$CLAUDE_DATA/runs\project-lifecycle\20260930T095544-ee30\sim-digest.md` |
 | 坟场评审系统设计（透镜/主持人/数据通道/A-B 校准） | `docs/graveyard-review-design.md` |
 
 近同型（查重索引 2026-09-27）：`novel-initializer` agent（obsidian-novel-engine，「想法→vault 结构落地」同形不同域，无复用关系，仅登记）。
